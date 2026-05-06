@@ -221,32 +221,45 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 #manage-view{display:flex;flex-direction:column;gap:10px}
 /* CHANGED: 관리하기 탭 */
 .manage-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
-.period-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.period-tag{font-size:11px;padding:3px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s;user-select:none}
-.period-tag:hover{border-color:var(--info-border);color:var(--info-text)}
-.period-tag.active{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text);font-weight:500}
-.detail-toggle-btn{font-size:11px;padding:3px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
-.detail-toggle-btn:hover{color:var(--text);border-color:var(--border2)}
-.manage-item{border:0.5px solid var(--border);border-radius:var(--radius);background:var(--bg2);margin-bottom:5px;transition:border-color .15s}
+/* CHANGED: manage tab 재설계 */
+.manage-sub-tabs{display:flex;gap:0;border-bottom:0.5px solid var(--border);margin-bottom:12px}
+.manage-sub-tab{font-size:12px;padding:5px 16px;cursor:pointer;border-bottom:2px solid transparent;color:var(--text3);transition:all .15s;user-select:none}
+.manage-sub-tab.active{color:var(--info-text);border-bottom-color:var(--info-text);font-weight:500}
+.manage-item{border:0.5px solid var(--border);border-radius:var(--radius);background:var(--bg2);margin-bottom:4px;transition:border-color .15s}
 .manage-item:last-child{margin-bottom:0}
 .manage-item.checked{background:var(--success-bg);border-color:var(--success-border)}
-.manage-item-row{display:flex;align-items:center;gap:8px;padding:8px 10px}
-.manage-check-box{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--border2);background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s}
+.manage-item-row{display:flex;align-items:center;gap:6px;padding:5px 8px}
+.manage-check-box{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border2);background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s}
 .manage-item.checked .manage-check-box{background:var(--success-text);border-color:var(--success-text)}
-.manage-check-mark{font-size:9px;color:#fff;display:none}
+.manage-check-mark{font-size:8px;color:#fff;display:none}
 .manage-item.checked .manage-check-mark{display:block}
-.manage-item-name{font-size:13px;color:var(--text);flex:1}
+.manage-item-name{font-size:12px;color:var(--text);flex:1}
 .manage-item.checked .manage-item-name{text-decoration:line-through;color:var(--text3)}
+.manage-period-badge{font-size:9px;padding:1px 5px;border-radius:var(--radius-pill);background:var(--info-bg);color:var(--info-text);border:0.5px solid var(--info-border);flex-shrink:0;white-space:nowrap}
+.manage-memo-btn{font-size:10px;padding:1px 6px;border-radius:3px;border:0.5px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;line-height:1.5;transition:all .15s;flex-shrink:0}
+.manage-memo-btn:hover{color:var(--info-text);border-color:var(--info-border)}
+.manage-memo-btn.has-memo{color:var(--info-text);border-color:var(--info-border);background:var(--info-bg)}
 .manage-reorder{display:flex;flex-direction:column;gap:1px;flex-shrink:0}
 .reorder-btn{font-size:9px;color:var(--text3);background:none;border:none;cursor:pointer;padding:1px 3px;line-height:1.3;font-family:inherit;transition:color .15s}
 .reorder-btn:hover{color:var(--text)}
-.period-mini{font-size:10px;padding:2px 6px;border-radius:4px;border:0.5px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap}
-.period-mini:hover{border-color:var(--info-border);color:var(--info-text)}
-.period-mini.selected{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
-.manage-memo{padding:0 10px 8px 33px}
+.manage-memo{padding:3px 8px 7px 28px;display:none}
+.manage-memo.open{display:block}
 .manage-memo-input{width:100%;font-size:11px;color:var(--text2);border:none;border-bottom:0.5px solid var(--border);background:transparent;outline:none;font-family:inherit;padding:2px 0;transition:border-color .15s}
 .manage-memo-input:focus{border-color:var(--border2)}
 .manage-memo-input::placeholder{color:var(--text3)}
+.manage-board{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.board-col{min-width:110px;flex:1;display:flex;flex-direction:column}
+.board-col-header{font-size:11px;font-weight:500;color:var(--text2);padding:5px 8px;background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0;border:0.5px solid var(--border);border-bottom:none;text-align:center;white-space:nowrap}
+.board-col-body{flex:1;min-height:260px;background:var(--bg2);border:0.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:5px;display:flex;flex-direction:column;gap:4px;transition:background .15s,border-color .15s}
+.board-col-body.drag-over{background:var(--info-bg);border-color:var(--info-border)}
+.board-card{font-size:11px;color:var(--text);background:var(--bg);border:0.5px solid var(--border);border-radius:5px;padding:5px 7px;cursor:grab;user-select:none;transition:border-color .15s;word-break:keep-all;display:flex;align-items:flex-start;gap:5px}
+.board-card:hover{border-color:var(--border2)}
+.board-card.is-dragging{opacity:.35}
+.board-card-dot{width:9px;height:9px;border-radius:2px;border:1px solid var(--border2);flex-shrink:0;margin-top:1px;background:transparent}
+.board-card.checked .board-card-dot{background:var(--success-text);border-color:var(--success-text)}
+.board-card-name{font-size:11px;flex:1;line-height:1.4}
+.board-card.checked .board-card-name{color:var(--text3);text-decoration:line-through}
+.board-empty{font-size:11px;color:var(--text3);text-align:center;padding:18px 0}
 /* CHANGED: 통합 list-manager 내 여행지 선택 */
 .trip-section{border-top:0.5px solid var(--border)}
 .trip-section-header{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
@@ -439,35 +452,30 @@ const db=firebase.firestore();
 </div><!-- /main-grid -->
 </div><!-- /pack-view -->
 <!-- CHANGED: 관리하기 뷰 -->
+<!-- CHANGED: manage-view 재설계 - 전체/일정별 서브탭 -->
 <div id="manage-view" style="display:none">
   <div class="manage-panel">
-    <div class="top-row" style="margin-bottom:12px">
-      <span class="section-title">선택한 준비물</span>
-      <div style="display:flex;align-items:center;gap:8px">
+    <div class="manage-sub-tabs">
+      <span class="manage-sub-tab active" id="msub-all" onclick="switchManageSub('all')">전체</span>
+      <span class="manage-sub-tab" id="msub-board" onclick="switchManageSub('board')">일정별</span>
+    </div>
+    <!-- 전체 뷰 -->
+    <div id="manage-all-view">
+      <div class="top-row" style="margin-bottom:8px">
+        <span class="section-title">선택한 준비물</span>
         <span id="manage-ratio" style="font-size:11px;color:var(--text3)"></span>
-        <button class="detail-toggle-btn" id="detail-toggle-btn" onclick="toggleDetailMode()">디테일 설정 ▼</button>
       </div>
-    </div>
-    <!-- Period filter row -->
-    <div id="period-filter-row" style="margin-bottom:10px">
-      <div class="period-tags">
-        <span class="period-tag active" data-period="all" onclick="selectPeriod('all')">전체</span>
-        <div id="period-detail-tags" style="display:none;gap:6px;flex-wrap:wrap">
-          <span class="period-tag" data-period="before" onclick="selectPeriod('before')">여행 전</span>
-          <span class="period-tag" data-period="dayBefore" onclick="selectPeriod('dayBefore')">하루 전</span>
-          <span class="period-tag" data-period="day" onclick="selectPeriod('day')">당일</span>
-          <span class="period-tag" data-period="during" onclick="selectPeriod('during')">여행 중</span>
-          <span class="period-tag" data-period="after" onclick="selectPeriod('after')">여행 후</span>
-        </div>
+      <div class="progress-row">
+        <div class="progress-bar"><div class="progress-fill" id="manage-progress" style="width:0%"></div></div>
+        <span class="progress-text" id="manage-progress-text">0%</span>
       </div>
+      <div id="manage-list" style="margin-top:8px"></div>
     </div>
-    <!-- Progress bar -->
-    <div class="progress-row">
-      <div class="progress-bar"><div class="progress-fill" id="manage-progress" style="width:0%"></div></div>
-      <span class="progress-text" id="manage-progress-text">0%</span>
+    <!-- 일정별 보드 뷰 -->
+    <div id="manage-board-view" style="display:none">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">카드를 드래그해서 일정을 배정하세요</div>
+      <div class="manage-board" id="manage-board"></div>
     </div>
-    <!-- Item list -->
-    <div id="manage-list" style="margin-top:10px"></div>
   </div>
   <button class="pdf-preview-btn" onclick="openPrintPreview()">PDF 미리보기</button>
 </div>
@@ -537,6 +545,7 @@ let srcDragged=null,sortDragCat=null,sortDragIdx=null,sortOverIdx=null;
 let toastTimer=null,tripOpen=true,infoCountry=null,infoOpen=true,openQtyIdx=null;
 // CHANGED: 관리하기 탭 + 닉네임 상태
 let detailMode=false,currentPeriod='all',currentMode='pack',userNickname=null;
+let manageSub='all',boardDragIdx=null,openMemoSet=new Set();
 
 function CL(){return lists.find(l=>l.id===currentListId)||lists[0]}
 function allFlat(){return[...Object.values(REGIONS)].flat()}
@@ -689,19 +698,72 @@ function renderCatDropZones(){
   updateSourceChips();
 }
 
-// CHANGED: 관리하기 탭 기능 (renderCheckPanel 대체)
-function toggleDetailMode(){
-  detailMode=!detailMode;
-  document.getElementById('detail-toggle-btn').textContent=detailMode?'디테일 설정 ▲':'디테일 설정 ▼';
-  const dt=document.getElementById('period-detail-tags');
-  dt.style.display=detailMode?'flex':'none';
-  if(!detailMode&&currentPeriod!=='all'){selectPeriod('all');}
-  save();
+// CHANGED: manage 서브탭 전환
+const PERIOD_LABELS={'null':'미배정','before':'여행 전','dayBefore':'하루 전','day':'당일','during':'여행 중','after':'여행 후'};
+const PERIOD_KEYS=[null,'before','dayBefore','day','during','after'];
+function switchManageSub(sub){
+  manageSub=sub;
+  document.getElementById('msub-all').classList.toggle('active',sub==='all');
+  document.getElementById('msub-board').classList.toggle('active',sub==='board');
+  document.getElementById('manage-all-view').style.display=sub==='all'?'block':'none';
+  document.getElementById('manage-board-view').style.display=sub==='board'?'block':'none';
+  if(sub==='board')renderBoard();
 }
-function selectPeriod(period){
-  currentPeriod=period;
-  document.querySelectorAll('.period-tag').forEach(t=>t.classList.toggle('active',t.dataset.period===period));
+function toggleMemo(idx){
+  if(openMemoSet.has(idx))openMemoSet.delete(idx);else openMemoSet.add(idx);
   renderManageTab();
+}
+function boardDragStart(e,idx){
+  boardDragIdx=idx;
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>{const c=document.querySelector('.board-card[data-drag-idx="'+idx+'"]');if(c)c.classList.add('is-dragging');},0);
+}
+function boardDragEnd(e){
+  document.querySelectorAll('.board-card.is-dragging').forEach(c=>c.classList.remove('is-dragging'));
+  document.querySelectorAll('.board-col-body.drag-over').forEach(c=>c.classList.remove('drag-over'));
+  boardDragIdx=null;
+}
+function boardDragOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over');}
+function boardDragLeave(e){e.currentTarget.classList.remove('drag-over');}
+function boardDrop(e,period){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if(boardDragIdx===null)return;
+  CL().items[boardDragIdx].period=period==='null'?null:period;
+  boardDragIdx=null;
+  save();renderBoard();
+}
+function renderBoard(){
+  const items=CL().items||[];
+  const container=document.getElementById('manage-board');
+  container.innerHTML='';
+  PERIOD_KEYS.forEach(p=>{
+    const key=p===null?'null':p;
+    const label=PERIOD_LABELS[key];
+    const colItems=items.map((item,i)=>({item,i})).filter(({item})=>(item.period||null)===p);
+    const col=document.createElement('div');col.className='board-col';
+    const header=document.createElement('div');header.className='board-col-header';header.textContent=label;
+    const body=document.createElement('div');body.className='board-col-body';
+    body.setAttribute('ondragover','boardDragOver(event)');
+    body.setAttribute('ondragleave','boardDragLeave(event)');
+    body.setAttribute('ondrop',`boardDrop(event,'${key}')`);
+    if(!colItems.length){
+      const empty=document.createElement('div');empty.className='board-empty';empty.textContent='없음';
+      body.appendChild(empty);
+    }else{
+      colItems.forEach(({item,i})=>{
+        const card=document.createElement('div');
+        card.className='board-card'+(item.checked?' checked':'');
+        card.draggable=true;
+        card.dataset.dragIdx=i;
+        card.setAttribute('ondragstart',`boardDragStart(event,${i})`);
+        card.setAttribute('ondragend','boardDragEnd(event)');
+        card.innerHTML=`<div class="board-card-dot"></div><span class="board-card-name">${item.name}${item.qty>1?` ×${item.qty}`:''}</span>`;
+        body.appendChild(card);
+      });
+    }
+    col.appendChild(header);col.appendChild(body);container.appendChild(col);
+  });
 }
 function toggleManageCheck(idx){
   CL().items[idx].checked=!CL().items[idx].checked;
@@ -723,41 +785,41 @@ function reorderManageItem(idx,dir){
   [items[idx],items[newIdx]]=[items[newIdx],items[idx]];
   save();renderManageTab();
 }
+// CHANGED: renderManageTab - period 필터 제거, 메모 토글
 function renderManageTab(){
   const items=CL().items||[];
-  const filtered=currentPeriod==='all'?items.map((item,i)=>({item,i})):items.map((item,i)=>({item,i})).filter(({item})=>item.period===currentPeriod);
-  const checked=filtered.filter(({item})=>item.checked).length;
-  const total=filtered.length;
+  const checked=items.filter(i=>i.checked).length;
+  const total=items.length;
   const pct=total?Math.round(checked/total*100):0;
   document.getElementById('manage-ratio').textContent=checked+' / '+total;
   document.getElementById('manage-progress').style.width=pct+'%';
   document.getElementById('manage-progress-text').textContent=pct+'%';
   const container=document.getElementById('manage-list');
   container.innerHTML='';
-  if(!filtered.length){
-    container.innerHTML='<div class="right-empty">'+(currentPeriod==='all'?'준비물을 추가하면 여기서 체크할 수 있어요':'이 시간대에 배정된 준비물이 없어요')+'</div>';
+  if(!items.length){
+    container.innerHTML='<div class="right-empty">준비물을 추가하면 여기서 체크할 수 있어요</div>';
     return;
   }
-  const PERIOD_LABELS={'before':'여행 전','dayBefore':'하루 전','day':'당일','during':'여행 중','after':'여행 후'};
-  filtered.forEach(({item,i})=>{
+  items.forEach((item,i)=>{
     const div=document.createElement('div');
     div.className='manage-item'+(item.checked?' checked':'');
-    const periodSel=Object.entries(PERIOD_LABELS).map(([p,label])=>
-      `<span class="period-mini${item.period===p?' selected':''}" onclick="setItemPeriod(${i},'${p}')">${label}</span>`
-    ).join('');
+    const hasMemo=!!(item.memo&&item.memo.trim());
+    const memoOpen=openMemoSet.has(i);
+    const periodLabel=item.period?PERIOD_LABELS[item.period]:'';
     div.innerHTML=`
       <div class="manage-item-row">
         <div class="manage-check-box" onclick="toggleManageCheck(${i})">
           <span class="manage-check-mark">✓</span>
         </div>
         <span class="manage-item-name">${item.name}${item.qty>1?` <span style="font-size:10px;color:var(--text3)">×${item.qty}</span>`:''}</span>
-        <div class="manage-period-select" style="display:${detailMode?'flex':'none'};gap:3px;flex-wrap:wrap">${periodSel}</div>
+        ${periodLabel?`<span class="manage-period-badge">${periodLabel}</span>`:''}
+        <button class="manage-memo-btn${hasMemo?' has-memo':''}" onclick="toggleMemo(${i})">${hasMemo?'메모 ✎':'메모'}</button>
         <div class="manage-reorder">
           <button class="reorder-btn" onclick="reorderManageItem(${i},-1)">▲</button>
           <button class="reorder-btn" onclick="reorderManageItem(${i},1)">▼</button>
         </div>
       </div>
-      <div class="manage-memo">
+      <div class="manage-memo${memoOpen?' open':''}">
         <input class="manage-memo-input" placeholder="메모 추가..." value="${(item.memo||'').replace(/"/g,'&quot;')}"
           onchange="updateManageMemo(${i},this.value)">
       </div>`;
@@ -798,23 +860,16 @@ nd.addEventListener('dblclick',startEdit);
 function showToast(){if(toastTimer)clearTimeout(toastTimer);const t=document.getElementById('toast');t.classList.add('show');toastTimer=setTimeout(()=>t.classList.remove('show'),1800);}
 // CHANGED: Firebase 동기화
 let currentUser=null;
-// CHANGED: save/load 포함 detailMode, currentPeriod
-function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,detailMode,currentPeriod}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
-async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,detailMode,currentPeriod,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
-async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.detailMode!==undefined)detailMode=d.detailMode;if(d.currentPeriod)currentPeriod=d.currentPeriod;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
+// CHANGED: save/load 포함 manageSub
+function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,manageSub}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
+async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,manageSub,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
+async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.manageSub)manageSub=d.manageSub;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
 // CHANGED: 도메인 등록 후 popup 방식으로 복구
 function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
 function doSignOut(){auth.signOut();}
-function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.detailMode!==undefined)detailMode=d.detailMode;if(d.currentPeriod)currentPeriod=d.currentPeriod;}}catch(e){}}
-function restoreManageUI(){
-  if(detailMode){
-    const btn=document.getElementById('detail-toggle-btn');if(btn)btn.textContent='디테일 설정 ▲';
-    const dt=document.getElementById('period-detail-tags');if(dt)dt.style.display='flex';
-  }
-  document.querySelectorAll('.period-tag').forEach(t=>t.classList.toggle('active',t.dataset.period===currentPeriod));
-}
-// CHANGED: renderAll 업데이트 (renderManageTab + restoreManageUI 호출)
-function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCatDropZones();renderManageTab();restoreManageUI();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
+function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.manageSub)manageSub=d.manageSub;}}catch(e){}}
+// CHANGED: renderAll 업데이트
+function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCatDropZones();renderManageTab();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
 load();renderAll();
 // CHANGED: 모드 전환
 function switchMode(mode){
