@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>여행 준비물 관리</title>
+<!-- CHANGED: 탭 제목 + 이모지 파비콘 -->
+<title>pack-all</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:#ddeef8;color:#1a1a18;min-height:100vh;padding:24px 16px}
@@ -106,7 +108,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .cat-drop-section:last-child{margin-bottom:0}
 .cat-drop-label{font-size:11px;color:var(--text3);margin:0 0 4px}
 /* CHANGED: drop-zone flex-wrap, pack-item inline */
-.drop-zone{min-height:36px;border:1.5px dashed var(--border);border-radius:var(--radius);padding:5px;transition:background .15s;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
+/* CHANGED: 태그 간격 축소 */
+.drop-zone{min-height:36px;border:1.5px dashed var(--border);border-radius:var(--radius);padding:5px;transition:background .15s;display:flex;flex-wrap:wrap;gap:3px;align-content:flex-start}
 .drop-zone.over{background:var(--info-bg);border-color:var(--info-border)}
 .drop-zone.empty::after{content:'클릭 또는 드래그해서 추가';font-size:11px;color:var(--text3);display:block;text-align:center;padding:6px 0;width:100%}
 .pack-item{position:relative}
@@ -114,7 +117,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .drag-handle{font-size:11px;color:var(--text3);cursor:grab;padding:0 2px;opacity:0;user-select:none}
 .pack-item-row:hover .drag-handle{opacity:1}
 .drag-handle:active{cursor:grabbing}
-.pack-item-tag{font-size:12px;padding:3px 6px 3px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg2);color:var(--text);display:flex;align-items:center;gap:4px;position:relative}
+/* CHANGED: 태그 드래그 커서, tag-remove */
+.pack-item-tag{font-size:12px;padding:3px 6px 3px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg2);color:var(--text);display:flex;align-items:center;gap:4px;position:relative;cursor:grab;user-select:none}
+.pack-item-tag:active{cursor:grabbing}
+.tag-remove{font-size:9px;color:var(--text3);cursor:pointer;opacity:0;padding:0 1px;margin-left:1px;flex-shrink:0;transition:opacity .15s,color .15s;line-height:1}
+.pack-item-tag:hover .tag-remove{opacity:.7}
+.tag-remove:hover{opacity:1!important;color:var(--danger-text)}
 .qty-plus-btn{width:16px;height:16px;border-radius:50%;border:0.5px solid var(--border);background:#fff;color:var(--text3);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:all .15s;padding:0}
 .qty-plus-btn:hover{background:var(--info-bg);color:var(--info-text);border-color:var(--info-border)}
 .qty-num{font-size:10px;font-weight:500;color:var(--info-text);background:var(--info-bg);border:0.5px solid var(--info-border);border-radius:10px;padding:0 5px;line-height:1.6;cursor:pointer}
@@ -551,20 +559,22 @@ function renderCatDropZones(){
       const gi=items.indexOf(item);
       if(sortOverIdx===gi&&sortDragCat===cat){const ph=document.createElement('div');ph.className='sort-placeholder';dz.appendChild(ph);}
       const pi=document.createElement('div');pi.className='pack-item';
+      // CHANGED: 태그 전체 드래그, 핸들 제거, X 버튼 태그 안으로
+      pi.draggable=true;
+      pi.addEventListener('dragstart',e=>{sortDragCat=cat;sortDragIdx=gi;e.dataTransfer.effectAllowed='move';setTimeout(()=>pi.style.opacity='0.4',0);});
+      pi.addEventListener('dragend',()=>{pi.style.opacity='1';sortDragCat=null;sortDragIdx=null;sortOverIdx=null;renderCatDropZones();renderCheckPanel();});
       const row=document.createElement('div');row.className='pack-item-row';
-      const h=document.createElement('span');h.className='drag-handle';h.textContent='⠿';h.draggable=true;
-      h.addEventListener('dragstart',e=>{sortDragCat=cat;sortDragIdx=gi;e.dataTransfer.effectAllowed='move';e.stopPropagation();setTimeout(()=>pi.style.opacity='0.4',0);});
-      h.addEventListener('dragend',()=>{pi.style.opacity='1';sortDragCat=null;sortDragIdx=null;sortOverIdx=null;renderCatDropZones();renderCheckPanel();});
       const tag=document.createElement('div');tag.className='pack-item-tag';
       const tn=document.createElement('span');tn.textContent=item.name;tag.appendChild(tn);
       const qty=item.qty||1;
       if(qty>1){const qn=document.createElement('span');qn.className='qty-num';qn.textContent='×'+qty;qn.addEventListener('click',e=>{e.stopPropagation();openQtyIdx=openQtyIdx===gi?null:gi;renderCatDropZones();});tag.appendChild(qn);}
-      const pb=document.createElement('button');pb.className='qty-plus-btn';pb.textContent='+';pb.title='수량';
+      const pb=document.createElement('button');pb.className='qty-plus-btn';pb.textContent='+';pb.title='수량';pb.draggable=false;
       pb.addEventListener('click',e=>{e.stopPropagation();openQtyIdx=openQtyIdx===gi?null:gi;renderCatDropZones();});
       tag.appendChild(pb);
-      const rb=document.createElement('span');rb.className='remove-btn';rb.textContent='✕';
+      const rb=document.createElement('span');rb.className='tag-remove';rb.textContent='✕';rb.draggable=false;
       rb.addEventListener('click',e=>{e.stopPropagation();CL().items.splice(gi,1);openQtyIdx=null;save();renderCatDropZones();renderCheckPanel();updateSourceChips();renderEssentials();});
-      row.appendChild(h);row.appendChild(tag);row.appendChild(rb);pi.appendChild(row);
+      tag.appendChild(rb);
+      row.appendChild(tag);pi.appendChild(row);
       if(openQtyIdx===gi){
         const pop=document.createElement('div');pop.className='qty-popover';pop.addEventListener('click',e=>e.stopPropagation());
         const minus=document.createElement('button');minus.className='qty-popover-btn';minus.textContent='−';
