@@ -153,11 +153,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .progress-text{font-size:11px;color:var(--text3);white-space:nowrap}
 .save-toast{position:fixed;bottom:20px;right:20px;font-size:12px;background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border);padding:6px 14px;border-radius:var(--radius-pill);opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .save-toast.show{opacity:1}
+/* CHANGED: 인증 바 */
+#auth-bar{display:flex;align-items:center;justify-content:flex-end;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:10px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.auth-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
+.auth-btn:hover{background:var(--bg3)}
+.auth-btn.primary{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
 @media(max-width:640px){.main-grid{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}}
 </style>
+<!-- CHANGED: Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<!-- CHANGED: Firebase 설정 — 아래 값을 Step 4에서 복사한 값으로 교체 -->
+<script>
+const firebaseConfig={
+  apiKey:"AIzaSyAi8GH9BFKRi4AZwAaCQhcEh6Fbb--69SA",
+  authDomain:"pack-all-c1794.firebaseapp.com",
+  projectId:"pack-all-c1794",
+  storageBucket:"pack-all-c1794.firebasestorage.app",
+  messagingSenderId:"1033545847188",
+  appId:"1:1033545847188:web:91367da0e81c2132e2bf81"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+</script>
 </head>
 <body>
 <div class="app">
+
+<!-- CHANGED: 인증 바 -->
+<div id="auth-bar">
+  <div id="auth-guest" style="display:flex;align-items:center;gap:8px">
+    <span style="font-size:12px;color:var(--text3)">로그인하면 여행 데이터가 저장됩니다</span>
+    <button class="auth-btn primary" onclick="signInWithGoogle()">Google로 로그인</button>
+  </div>
+  <div id="auth-user" style="display:none;align-items:center;gap:8px">
+    <img id="auth-photo" style="width:24px;height:24px;border-radius:50%;border:0.5px solid var(--border)" alt="">
+    <span id="auth-name" style="font-size:12px;color:var(--text)"></span>
+    <button class="auth-btn" onclick="doSignOut()">로그아웃</button>
+  </div>
+</div>
 
 <div class="list-manager">
   <div class="list-tabs-row" id="list-tabs-row"><span class="list-tab-add" id="add-list-btn">+</span></div>
@@ -518,10 +554,29 @@ function startEdit(){
 nd.addEventListener('dblclick',startEdit);
 
 function showToast(){if(toastTimer)clearTimeout(toastTimer);const t=document.getElementById('toast');t.classList.add('show');toastTimer=setTimeout(()=>t.classList.remove('show'),1800);}
-function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen}));showToast();}catch(e){}}
+// CHANGED: Firebase 동기화
+let currentUser=null;
+function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
+async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
+async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
+function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
+function doSignOut(){auth.signOut();}
 function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;}}catch(e){}}
 function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCatDropZones();renderCheckPanel();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
 load();renderAll();
+// CHANGED: 인증 상태 감지 → Firestore 로드
+auth.onAuthStateChanged(async user=>{
+  currentUser=user;
+  const g=document.getElementById('auth-guest'),u=document.getElementById('auth-user');
+  if(user){
+    g.style.display='none';u.style.display='flex';
+    document.getElementById('auth-photo').src=user.photoURL||'';
+    document.getElementById('auth-name').textContent=user.displayName||user.email;
+    if(await loadFromFirestore())renderAll();
+  }else{
+    g.style.display='flex';u.style.display='none';
+  }
+});
 </script>
 </body>
 </html>
