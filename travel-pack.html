@@ -262,6 +262,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .board-card-name{font-size:11px;flex:1;line-height:1.4}
 .board-card.checked .board-card-name{color:var(--text3);text-decoration:line-through}
 .board-empty{font-size:11px;color:var(--text3);text-align:center;padding:18px 0}
+/* CHANGED: 기본 컬럼 위계 차별화 */
+.board-col-header.col-default{background:var(--bg2);color:var(--text3);font-weight:400}
+.board-col-body.col-default{background:var(--bg);border-style:dashed}
 /* CHANGED: 통합 list-manager 내 여행지 선택 */
 .trip-section{border-top:0.5px solid var(--border)}
 .trip-section-header{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
@@ -462,10 +465,10 @@ const db=firebase.firestore();
       <span class="manage-sub-tab active" id="msub-all" onclick="switchManageSub('all')">카테고리별</span>
       <span class="manage-sub-tab" id="msub-board" onclick="switchManageSub('board')">일정별</span>
     </div>
-    <!-- 전체 뷰 -->
+    <!-- 카테고리별 뷰 -->
+    <!-- CHANGED: '선택한 준비물' 텍스트 제거 -->
     <div id="manage-all-view">
       <div class="top-row" style="margin-bottom:8px">
-        <span class="section-title">선택한 준비물</span>
         <span id="manage-ratio" style="font-size:11px;color:var(--text3)"></span>
       </div>
       <div class="progress-row">
@@ -488,7 +491,11 @@ const db=firebase.firestore();
       <div class="manage-board" id="manage-board"></div>
     </div>
   </div>
-  <button class="pdf-preview-btn" onclick="openPrintPreview()">PDF 미리보기</button>
+  <!-- CHANGED: 카테고리별/일정별 PDF 분리 -->
+  <div style="display:flex;gap:6px;margin-top:8px">
+    <button class="pdf-preview-btn" onclick="openPrintPreview('cat')" style="flex:1;width:auto;margin-top:0">카테고리별 PDF</button>
+    <button class="pdf-preview-btn" onclick="openPrintPreview('board')" style="flex:1;width:auto;margin-top:0">일정별 PDF</button>
+  </div>
 </div>
 </div><!-- /app -->
 <!-- CHANGED: 닉네임 설정 모달 (첫 로그인 강제) -->
@@ -758,8 +765,9 @@ function renderBoard(){
     const label=PERIOD_LABELS[key];
     const colItems=items.map((item,i)=>({item,i})).filter(({item})=>(item.period||null)===p);
     const col=document.createElement('div');col.className='board-col';
-    const header=document.createElement('div');header.className='board-col-header';header.textContent=label;
-    const body=document.createElement('div');body.className='board-col-body';
+    const isDefault=p===null;
+    const header=document.createElement('div');header.className='board-col-header'+(isDefault?' col-default':'');header.textContent=label;
+    const body=document.createElement('div');body.className='board-col-body'+(isDefault?' col-default':'');
     body.setAttribute('ondragover','boardDragOver(event)');
     body.setAttribute('ondragleave','boardDragLeave(event)');
     body.setAttribute('ondrop',`boardDrop(event,'${key}')`);
@@ -1001,8 +1009,33 @@ function buildPrintHTML(){
 function openDeleteListModal(){document.getElementById('delete-list-name').textContent=CL().name;document.getElementById('delete-list-modal').style.display='flex';}
 function closeDeleteListModal(){document.getElementById('delete-list-modal').style.display='none';}
 function confirmDeleteList(){closeDeleteListModal();deleteCurrentList();}
-function openPrintPreview(){const h=buildPrintHTML();document.getElementById('pm-content').innerHTML=h;document.getElementById('print-content').innerHTML=h;document.getElementById('print-modal').style.display='flex';}
+// CHANGED: PDF 카테고리별/일정별 분리
+function openPrintPreview(type){
+  const h=type==='board'?buildBoardPrintHTML():buildPrintHTML();
+  document.getElementById('pm-content').innerHTML=h;
+  document.getElementById('print-content').innerHTML=h;
+  document.getElementById('print-modal').style.display='flex';
+}
 function closePrintPreview(){document.getElementById('print-modal').style.display='none';}
+function buildBoardPrintHTML(){
+  const list=CL();const items=list.items||[];
+  const dests=(list.destinations||[]).map(c=>{const i=allFlat().find(x=>x.c===c);return i?`${i.f} ${i.n}`:null;}).filter(Boolean).join('  ');
+  const checked=items.filter(i=>i.checked).length,total=items.length;
+  const pct=total?Math.round(checked/total*100):0;
+  let html=`<div class="pc-title">${list.name}</div>`;
+  if(dests)html+=`<div class="pc-dests">${dests}</div>`;
+  if(total)html+=`<div class="pc-progress-row"><div class="pc-progress-bar"><div class="pc-progress-fill" style="width:${pct}%"></div></div><span class="pc-progress-text">${checked}/${total} 챙김 (${pct}%)</span></div>`;
+  PERIOD_KEYS.forEach(p=>{
+    const key=p===null?'null':p;
+    const label=PERIOD_LABELS[key];
+    const pi=items.filter(i=>(i.period||null)===p);
+    if(!pi.length)return;
+    html+=`<div class="pc-cat"><div class="pc-cat-label">${label}</div><div class="pc-items">`;
+    pi.forEach(item=>{const qty=item.qty||1;html+=`<div class="pc-item${item.checked?' checked':''}"><div class="pc-checkbox">${item.checked?'✓':''}</div><span class="pc-item-name">${item.name}</span>${qty>1?`<span class="pc-item-qty">×${qty}</span>`:''}</div>`;});
+    html+=`</div></div>`;
+  });
+  return html||`<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">준비물이 없습니다</div>`;
+}
 </script>
 </body>
 </html>
