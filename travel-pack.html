@@ -213,9 +213,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 }
 /* CHANGED: 모달 position fix + 모드 탭 + 관리 뷰 */
 #delete-list-modal,#nickname-modal{position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center}
-.mode-tabs-row{display:flex;background:var(--bg3);border-radius:var(--radius-lg);padding:4px;gap:3px}
-.mode-tab{flex:1;font-size:13px;font-weight:500;padding:10px 0;border-radius:var(--radius);border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:background .2s,color .2s,box-shadow .2s;text-align:center}
-.mode-tab.active{background:var(--bg);color:var(--text);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+/* CHANGED: 메인 탭 강조 */
+.mode-tabs-row{display:flex;background:var(--bg3);border-radius:var(--radius-lg);padding:5px;gap:4px;border:1px solid var(--border2)}
+.mode-tab{flex:1;font-size:13px;font-weight:500;padding:11px 0;border-radius:var(--radius);border:none;background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .18s;text-align:center;letter-spacing:-.01em}
+.mode-tab.active{background:var(--info-text);color:#fff;font-weight:600;box-shadow:0 2px 8px rgba(16,85,170,.3)}
 @keyframes viewFadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 #pack-view,#manage-view{animation:viewFadeIn .18s ease}
 #manage-view{display:flex;flex-direction:column;gap:10px}
@@ -247,6 +248,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .manage-memo-input{width:100%;font-size:11px;color:var(--text2);border:none;border-bottom:0.5px solid var(--border);background:transparent;outline:none;font-family:inherit;padding:2px 0;transition:border-color .15s}
 .manage-memo-input:focus{border-color:var(--border2)}
 .manage-memo-input::placeholder{color:var(--text3)}
+.cat-group-header{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:2px 0 5px;margin-top:4px;border-bottom:0.5px solid var(--border);margin-bottom:5px}
 .manage-board{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
 .board-col{min-width:110px;flex:1;display:flex;flex-direction:column}
 .board-col-header{font-size:11px;font-weight:500;color:var(--text2);padding:5px 8px;background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0;border:0.5px solid var(--border);border-bottom:none;text-align:center;white-space:nowrap}
@@ -455,8 +457,9 @@ const db=firebase.firestore();
 <!-- CHANGED: manage-view 재설계 - 전체/일정별 서브탭 -->
 <div id="manage-view" style="display:none">
   <div class="manage-panel">
+    <!-- CHANGED: 서브탭 카테고리별/일정별 -->
     <div class="manage-sub-tabs">
-      <span class="manage-sub-tab active" id="msub-all" onclick="switchManageSub('all')">전체</span>
+      <span class="manage-sub-tab active" id="msub-all" onclick="switchManageSub('all')">카테고리별</span>
       <span class="manage-sub-tab" id="msub-board" onclick="switchManageSub('board')">일정별</span>
     </div>
     <!-- 전체 뷰 -->
@@ -472,7 +475,15 @@ const db=firebase.firestore();
       <div id="manage-list" style="margin-top:8px"></div>
     </div>
     <!-- 일정별 보드 뷰 -->
+    <!-- CHANGED: 일정별 뷰에 % 표시 추가 -->
     <div id="manage-board-view" style="display:none">
+      <div class="top-row" style="margin-bottom:8px">
+        <span id="board-ratio" style="font-size:11px;color:var(--text3)"></span>
+      </div>
+      <div class="progress-row" style="margin-bottom:10px">
+        <div class="progress-bar"><div class="progress-fill" id="board-progress" style="width:0%"></div></div>
+        <span class="progress-text" id="board-progress-text">0%</span>
+      </div>
       <div style="font-size:11px;color:var(--text3);margin-bottom:8px">카드를 드래그해서 일정을 배정하세요</div>
       <div class="manage-board" id="manage-board"></div>
     </div>
@@ -699,8 +710,9 @@ function renderCatDropZones(){
 }
 
 // CHANGED: manage 서브탭 전환
-const PERIOD_LABELS={'null':'미배정','before':'여행 전','dayBefore':'하루 전','day':'당일','during':'여행 중','after':'여행 후'};
-const PERIOD_KEYS=[null,'before','dayBefore','day','during','after'];
+// CHANGED: 일정 분류 재정의
+const PERIOD_LABELS={'null':'기본','before':'여행 전','dayBefore':'하루 전','day':'당일','airport':'공항','during':'여행 중'};
+const PERIOD_KEYS=[null,'before','dayBefore','day','airport','during'];
 function switchManageSub(sub){
   manageSub=sub;
   document.getElementById('msub-all').classList.toggle('active',sub==='all');
@@ -735,6 +747,10 @@ function boardDrop(e,period){
 }
 function renderBoard(){
   const items=CL().items||[];
+  const checked=items.filter(i=>i.checked).length;const total=items.length;const pct=total?Math.round(checked/total*100):0;
+  const br=document.getElementById('board-ratio');if(br)br.textContent=checked+' / '+total;
+  const bp=document.getElementById('board-progress');if(bp)bp.style.width=pct+'%';
+  const bpt=document.getElementById('board-progress-text');if(bpt)bpt.textContent=pct+'%';
   const container=document.getElementById('manage-board');
   container.innerHTML='';
   PERIOD_KEYS.forEach(p=>{
@@ -785,32 +801,31 @@ function reorderManageItem(idx,dir){
   [items[idx],items[newIdx]]=[items[newIdx],items[idx]];
   save();renderManageTab();
 }
-// CHANGED: renderManageTab - period 필터 제거, 메모 토글
+// CHANGED: renderManageTab - 카테고리별 그룹, 메모 토글
 function renderManageTab(){
   const items=CL().items||[];
   const checked=items.filter(i=>i.checked).length;
   const total=items.length;
   const pct=total?Math.round(checked/total*100):0;
-  document.getElementById('manage-ratio').textContent=checked+' / '+total;
-  document.getElementById('manage-progress').style.width=pct+'%';
-  document.getElementById('manage-progress-text').textContent=pct+'%';
+  ['manage-ratio','board-ratio'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=checked+' / '+total;});
+  ['manage-progress','board-progress'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';});
+  ['manage-progress-text','board-progress-text'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=pct+'%';});
   const container=document.getElementById('manage-list');
   container.innerHTML='';
   if(!items.length){
     container.innerHTML='<div class="right-empty">준비물을 추가하면 여기서 체크할 수 있어요</div>';
+    if(manageSub==='board')renderBoard();
     return;
   }
-  items.forEach((item,i)=>{
+  function makeItemEl(item,i){
     const div=document.createElement('div');
     div.className='manage-item'+(item.checked?' checked':'');
     const hasMemo=!!(item.memo&&item.memo.trim());
     const memoOpen=openMemoSet.has(i);
-    const periodLabel=item.period?PERIOD_LABELS[item.period]:'';
+    const periodLabel=item.period?(PERIOD_LABELS[item.period]||''):'';
     div.innerHTML=`
       <div class="manage-item-row">
-        <div class="manage-check-box" onclick="toggleManageCheck(${i})">
-          <span class="manage-check-mark">✓</span>
-        </div>
+        <div class="manage-check-box" onclick="toggleManageCheck(${i})"><span class="manage-check-mark">✓</span></div>
         <span class="manage-item-name">${item.name}${item.qty>1?` <span style="font-size:10px;color:var(--text3)">×${item.qty}</span>`:''}</span>
         ${periodLabel?`<span class="manage-period-badge">${periodLabel}</span>`:''}
         <button class="manage-memo-btn${hasMemo?' has-memo':''}" onclick="toggleMemo(${i})">${hasMemo?'메모 ✎':'메모'}</button>
@@ -823,8 +838,21 @@ function renderManageTab(){
         <input class="manage-memo-input" placeholder="메모 추가..." value="${(item.memo||'').replace(/"/g,'&quot;')}"
           onchange="updateManageMemo(${i},this.value)">
       </div>`;
-    container.appendChild(div);
+    return div;
+  }
+  ALL_CATS.forEach(cat=>{
+    const catItems=items.map((item,i)=>({item,i})).filter(({item})=>(item.cat||'기타')===cat);
+    if(!catItems.length)return;
+    const group=document.createElement('div');
+    group.style.marginBottom='12px';
+    const hdr=document.createElement('div');
+    hdr.className='cat-group-header';
+    hdr.textContent=CAT_LABELS[cat]||cat;
+    group.appendChild(hdr);
+    catItems.forEach(({item,i})=>group.appendChild(makeItemEl(item,i)));
+    container.appendChild(group);
   });
+  if(manageSub==='board')renderBoard();
 }
 
 function addItem(name,cat){
