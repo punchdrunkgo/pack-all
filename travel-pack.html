@@ -155,7 +155,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .save-toast{position:fixed;bottom:20px;right:20px;font-size:12px;background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border);padding:6px 14px;border-radius:var(--radius-pill);opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .save-toast.show{opacity:1}
 /* CHANGED: 인증 바 */
-#auth-bar{display:flex;align-items:center;justify-content:flex-end;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:10px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+/* CHANGED: 로고 포함 확장 헤더 */
+#auth-bar{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+#auth-logo{display:flex;align-items:center;gap:10px}
+#auth-logo-text{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.4px;line-height:1}
+#auth-logo-text span{color:var(--info-text)}
 .auth-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
 .auth-btn:hover{background:var(--bg3)}
 .auth-btn.primary{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
@@ -223,8 +227,21 @@ const db=firebase.firestore();
 <body>
 <div class="app">
 
-<!-- CHANGED: 인증 바 -->
+<!-- CHANGED: 인증 바 + 로고 -->
 <div id="auth-bar">
+  <div id="auth-logo">
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 손잡이 -->
+      <path d="M11 11V8.5C11 7.67 11.67 7 12.5 7h5C18.33 7 19 7.67 19 8.5V11" stroke="#1055aa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- 본체 -->
+      <rect x="4" y="11" width="22" height="15" rx="3" stroke="#1055aa" stroke-width="1.8"/>
+      <!-- 중간 구분선 -->
+      <line x1="4" y1="18.5" x2="26" y2="18.5" stroke="#1055aa" stroke-width="1.2" stroke-opacity="0.3"/>
+      <!-- 잠금 장치 -->
+      <rect x="13" y="14.5" width="4" height="3" rx="1" stroke="#1055aa" stroke-width="1.2" stroke-opacity="0.6"/>
+    </svg>
+    <span id="auth-logo-text">pack<span>-all</span></span>
+  </div>
   <div id="auth-guest" style="display:flex;align-items:center;gap:8px">
     <span style="font-size:12px;color:var(--text3)">로그인하면 여행 데이터가 저장됩니다</span>
     <button class="auth-btn primary" onclick="signInWithGoogle()">Google로 로그인</button>
