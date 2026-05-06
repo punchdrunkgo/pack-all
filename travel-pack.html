@@ -105,11 +105,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .cat-drop-section{margin-bottom:10px}
 .cat-drop-section:last-child{margin-bottom:0}
 .cat-drop-label{font-size:11px;color:var(--text3);margin:0 0 4px}
-.drop-zone{min-height:36px;border:1.5px dashed var(--border);border-radius:var(--radius);padding:5px;transition:background .15s}
+/* CHANGED: drop-zone flex-wrap, pack-item inline */
+.drop-zone{min-height:36px;border:1.5px dashed var(--border);border-radius:var(--radius);padding:5px;transition:background .15s;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
 .drop-zone.over{background:var(--info-bg);border-color:var(--info-border)}
-.drop-zone.empty::after{content:'클릭 또는 드래그해서 추가';font-size:11px;color:var(--text3);display:block;text-align:center;padding:6px 0}
-.pack-item{margin-bottom:4px;position:relative}
-.pack-item:last-child{margin-bottom:0}
+.drop-zone.empty::after{content:'클릭 또는 드래그해서 추가';font-size:11px;color:var(--text3);display:block;text-align:center;padding:6px 0;width:100%}
+.pack-item{position:relative}
 .pack-item-row{display:flex;align-items:center;gap:5px}
 .drag-handle{font-size:11px;color:var(--text3);cursor:grab;padding:0 2px;opacity:0;user-select:none}
 .pack-item-row:hover .drag-handle{opacity:1}
@@ -124,15 +124,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .qty-popover-num{font-size:13px;font-weight:500;color:var(--text);min-width:18px;text-align:center}
 .remove-btn{font-size:10px;color:var(--text3);cursor:pointer;opacity:0;flex-shrink:0;padding:2px 3px}
 .pack-item-row:hover .remove-btn{opacity:1}
-.sort-placeholder{height:26px;border:1.5px dashed var(--info-border);border-radius:var(--radius-pill);background:var(--info-bg);margin-bottom:4px;opacity:.5}
+.sort-placeholder{height:28px;width:70px;border:1.5px dashed var(--info-border);border-radius:var(--radius-pill);background:var(--info-bg);opacity:.5}
 .input-row{display:flex;gap:6px;margin-top:10px}
 .input-row input{flex:1;font-size:13px;padding:6px 10px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--bg2);color:var(--text);outline:none;font-family:inherit}
 .input-row input:focus{border-color:var(--border2)}
 .input-row button{font-size:13px;padding:6px 12px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;white-space:nowrap;font-family:inherit}
 .input-row button:hover{background:var(--bg3)}
-.action-row{display:flex;gap:6px;margin-top:8px}
-.action-row button{flex:1;font-size:11px;padding:4px 6px;border-radius:var(--radius);border:0.5px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit}
-.action-row button:hover{background:var(--bg2);color:var(--text)}
+/* CHANGED: 전체삭제 인라인 버튼 */
+.clear-all-btn{font-size:11px;padding:2px 8px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s}
+.clear-all-btn:hover{background:var(--danger-bg);color:var(--danger-text);border-color:#e0b0b0}
 .check-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
 .check-cat-section{margin-bottom:10px}
 .check-cat-section:last-child{margin-bottom:0}
@@ -241,7 +241,8 @@ const db=firebase.firestore();
   <div class="list-body">
     <div class="list-name-row">
       <span class="list-name" id="list-name-display">나의 첫 번째 여행</span>
-      <span class="list-delete-btn" id="list-delete-btn" onclick="deleteCurrentList()">삭제</span>
+      <!-- CHANGED: 삭제 확인 모달 트리거 -->
+      <span class="list-delete-btn" id="list-delete-btn" onclick="openDeleteListModal()">삭제</span>
     </div>
     <div class="list-meta" id="list-meta"></div>
     <div class="edit-hint" id="edit-hint">더블클릭해서 이름 수정</div>
@@ -345,18 +346,18 @@ const db=firebase.firestore();
 
   <div class="right-col">
     <div class="right-panel">
+      <!-- CHANGED: 전체삭제 버튼을 카운트 옆으로 이동 -->
       <div class="top-row">
         <span class="section-title">내 준비물</span>
-        <span class="count-badge" id="count-badge">0개</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="count-badge" id="count-badge">0개</span>
+          <button class="clear-all-btn" onclick="clearAll()">전체 삭제</button>
+        </div>
       </div>
       <div id="cat-drop-zones"></div>
       <div class="input-row">
         <input type="text" id="custom-input" placeholder="직접 추가..." />
         <button onclick="addCustom()">+ 추가</button>
-      </div>
-      <div class="action-row">
-        <button onclick="uncheckAll()">체크 초기화</button>
-        <button onclick="clearAll()">전체 삭제</button>
       </div>
       <!-- CHANGED: PDF 미리보기 버튼 -->
       <button class="pdf-preview-btn" onclick="openPrintPreview()">PDF 미리보기</button>
@@ -374,6 +375,24 @@ const db=firebase.firestore();
     </div>
   </div>
 </div>
+</div>
+<!-- CHANGED: 리스트 삭제 확인 모달 -->
+<div id="delete-list-modal" style="display:none">
+  <div class="pm-overlay" onclick="closeDeleteListModal()"></div>
+  <div class="pm-box" style="width:min(360px,88vw);max-height:none">
+    <div class="pm-header">
+      <span class="pm-header-title">리스트 삭제</span>
+      <button class="pm-close" onclick="closeDeleteListModal()">✕</button>
+    </div>
+    <div style="padding:20px 18px;font-size:13px;color:var(--text2);line-height:1.7">
+      <strong id="delete-list-name" style="color:var(--text)"></strong>을(를) 삭제할까요?<br>
+      <span style="font-size:12px;color:var(--text3)">삭제 후 복구할 수 없습니다.</span>
+    </div>
+    <div class="pm-footer">
+      <button class="pm-btn" onclick="closeDeleteListModal()">취소</button>
+      <button class="pm-btn" style="background:var(--danger-bg);border-color:#e0b0b0;color:var(--danger-text)" onclick="confirmDeleteList()">삭제</button>
+    </div>
+  </div>
 </div>
 <!-- CHANGED: PDF 미리보기 모달 -->
 <div id="print-modal" style="display:none">
@@ -655,6 +674,10 @@ function buildPrintHTML(){
   });
   return html||`<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">준비물이 없습니다</div>`;
 }
+// CHANGED: 리스트 삭제 확인 모달
+function openDeleteListModal(){document.getElementById('delete-list-name').textContent=CL().name;document.getElementById('delete-list-modal').style.display='flex';}
+function closeDeleteListModal(){document.getElementById('delete-list-modal').style.display='none';}
+function confirmDeleteList(){closeDeleteListModal();deleteCurrentList();}
 function openPrintPreview(){const h=buildPrintHTML();document.getElementById('pm-content').innerHTML=h;document.getElementById('print-content').innerHTML=h;document.getElementById('print-modal').style.display='flex';}
 function closePrintPreview(){document.getElementById('print-modal').style.display='none';}
 </script>
