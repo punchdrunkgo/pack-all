@@ -666,9 +666,8 @@ let currentUser=null;
 function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
 async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
 async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
-// CHANGED: popup → redirect (GitHub Pages 팝업 차단 우회)
-function signInWithGoogle(){auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
-auth.getRedirectResult().catch(e=>{if(e.code&&e.code!=='auth/no-auth-event')console.error('로그인 오류:',e.message);});
+// CHANGED: 도메인 등록 후 popup 방식으로 복구
+function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
 function doSignOut(){auth.signOut();}
 function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;}}catch(e){}}
 function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCatDropZones();renderCheckPanel();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
