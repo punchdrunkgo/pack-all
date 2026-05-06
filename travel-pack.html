@@ -207,10 +207,53 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 #print-content{display:none}
 @media print{
   body{background:#fff;padding:20px;margin:0}
-  .app,#auth-bar,.save-toast,#print-modal{display:none!important}
+  .app,#auth-bar,.save-toast,#print-modal,#nickname-modal{display:none!important}
   #print-content{display:block!important}
   .pc-item,.pc-checkbox,.pc-progress-fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+/* CHANGED: 모달 position fix + 모드 탭 + 관리 뷰 */
+#delete-list-modal,#nickname-modal{position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center}
+.mode-tabs-row{display:flex;background:var(--bg3);border-radius:var(--radius-lg);padding:4px;gap:3px}
+.mode-tab{flex:1;font-size:13px;font-weight:500;padding:10px 0;border-radius:var(--radius);border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:background .2s,color .2s,box-shadow .2s;text-align:center}
+.mode-tab.active{background:var(--bg);color:var(--text);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+@keyframes viewFadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+#pack-view,#manage-view{animation:viewFadeIn .18s ease}
+#manage-view{display:flex;flex-direction:column;gap:10px}
+/* CHANGED: 관리하기 탭 */
+.manage-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
+.period-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.period-tag{font-size:11px;padding:3px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s;user-select:none}
+.period-tag:hover{border-color:var(--info-border);color:var(--info-text)}
+.period-tag.active{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text);font-weight:500}
+.detail-toggle-btn{font-size:11px;padding:3px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.detail-toggle-btn:hover{color:var(--text);border-color:var(--border2)}
+.manage-item{border:0.5px solid var(--border);border-radius:var(--radius);background:var(--bg2);margin-bottom:5px;transition:border-color .15s}
+.manage-item:last-child{margin-bottom:0}
+.manage-item.checked{background:var(--success-bg);border-color:var(--success-border)}
+.manage-item-row{display:flex;align-items:center;gap:8px;padding:8px 10px}
+.manage-check-box{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--border2);background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s}
+.manage-item.checked .manage-check-box{background:var(--success-text);border-color:var(--success-text)}
+.manage-check-mark{font-size:9px;color:#fff;display:none}
+.manage-item.checked .manage-check-mark{display:block}
+.manage-item-name{font-size:13px;color:var(--text);flex:1}
+.manage-item.checked .manage-item-name{text-decoration:line-through;color:var(--text3)}
+.manage-reorder{display:flex;flex-direction:column;gap:1px;flex-shrink:0}
+.reorder-btn{font-size:9px;color:var(--text3);background:none;border:none;cursor:pointer;padding:1px 3px;line-height:1.3;font-family:inherit;transition:color .15s}
+.reorder-btn:hover{color:var(--text)}
+.period-mini{font-size:10px;padding:2px 6px;border-radius:4px;border:0.5px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;transition:all .15s;white-space:nowrap}
+.period-mini:hover{border-color:var(--info-border);color:var(--info-text)}
+.period-mini.selected{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
+.manage-memo{padding:0 10px 8px 33px}
+.manage-memo-input{width:100%;font-size:11px;color:var(--text2);border:none;border-bottom:0.5px solid var(--border);background:transparent;outline:none;font-family:inherit;padding:2px 0;transition:border-color .15s}
+.manage-memo-input:focus{border-color:var(--border2)}
+.manage-memo-input::placeholder{color:var(--text3)}
+/* CHANGED: 통합 list-manager 내 여행지 선택 */
+.trip-section{border-top:0.5px solid var(--border)}
+.trip-section-header{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.trip-section-label{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.07em;text-transform:uppercase}
+/* CHANGED: 닉네임 편집 */
+#auth-name{cursor:pointer}
+#auth-name:hover{text-decoration:underline;text-decoration-style:dotted}
 @media(max-width:640px){.main-grid{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}}
 </style>
 <!-- CHANGED: Firebase SDK -->
@@ -256,11 +299,12 @@ const db=firebase.firestore();
   </div>
   <div id="auth-user" style="display:none;align-items:center;gap:8px">
     <img id="auth-photo" style="width:24px;height:24px;border-radius:50%;border:0.5px solid var(--border)" alt="">
-    <span id="auth-name" style="font-size:12px;color:var(--text)"></span>
+    <span id="auth-name" style="font-size:12px;color:var(--text)" title="더블클릭해서 닉네임 수정"></span>
     <button class="auth-btn" onclick="doSignOut()">로그아웃</button>
   </div>
 </div>
 
+<!-- CHANGED: trip-card merged into list-manager -->
 <div class="list-manager">
   <div class="list-tabs-row" id="list-tabs-row"><span class="list-tab-add" id="add-list-btn">+</span></div>
   <div class="list-body">
@@ -272,17 +316,23 @@ const db=firebase.firestore();
     <div class="list-meta" id="list-meta"></div>
     <div class="edit-hint" id="edit-hint">더블클릭해서 이름 수정</div>
   </div>
-</div>
-
-<div class="trip-card">
-  <div class="trip-header" onclick="toggleTripCard()">
-    <span class="trip-label">여행 정보 — 여행지 선택</span>
-    <span class="trip-toggle" id="trip-toggle">접기 ▲</span>
+  <!-- CHANGED: 여행지 선택 섹션 (trip-card 통합) -->
+  <div class="trip-section">
+    <div class="trip-section-header" onclick="toggleTripCard()">
+      <span class="trip-section-label">여행지 선택</span>
+      <span class="trip-toggle" id="trip-toggle">접기 ▲</span>
+    </div>
+    <div class="country-regions open" id="country-regions"><div id="regions-body"></div></div>
+    <div id="country-info-panel"></div>
   </div>
-  <div class="country-regions open" id="country-regions"><div id="regions-body"></div></div>
-  <div id="country-info-panel"></div>
 </div>
 
+<!-- CHANGED: 모드 탭 -->
+<div class="mode-tabs-row">
+  <button class="mode-tab active" id="tab-pack" onclick="switchMode('pack')">준비물 챙기기</button>
+  <button class="mode-tab" id="tab-manage" onclick="switchMode('manage')">관리하기</button>
+</div>
+<div id="pack-view">
 <div class="main-grid">
   <div class="left-col">
     <div class="panel">
@@ -384,22 +434,55 @@ const db=firebase.firestore();
         <input type="text" id="custom-input" placeholder="직접 추가..." />
         <button onclick="addCustom()">+ 추가</button>
       </div>
-      <!-- CHANGED: PDF 미리보기 버튼 -->
-      <button class="pdf-preview-btn" onclick="openPrintPreview()">PDF 미리보기</button>
-    </div>
-    <div class="check-panel" id="check-panel" style="display:none">
-      <div class="top-row" style="margin-bottom:8px">
-        <span class="section-title">챙겼어요</span>
-        <span id="check-ratio" style="font-size:11px;color:var(--text3)"></span>
-      </div>
-      <div class="progress-row">
-        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
-        <span class="progress-text" id="progress-text">0%</span>
-      </div>
-      <div id="check-list"></div>
     </div>
   </div>
+</div><!-- /main-grid -->
+</div><!-- /pack-view -->
+<!-- CHANGED: 관리하기 뷰 -->
+<div id="manage-view" style="display:none">
+  <div class="manage-panel">
+    <div class="top-row" style="margin-bottom:12px">
+      <span class="section-title">선택한 준비물</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="manage-ratio" style="font-size:11px;color:var(--text3)"></span>
+        <button class="detail-toggle-btn" id="detail-toggle-btn" onclick="toggleDetailMode()">디테일 설정 ▼</button>
+      </div>
+    </div>
+    <!-- Period filter row -->
+    <div id="period-filter-row" style="margin-bottom:10px">
+      <div class="period-tags">
+        <span class="period-tag active" data-period="all" onclick="selectPeriod('all')">전체</span>
+        <div id="period-detail-tags" style="display:none;gap:6px;flex-wrap:wrap">
+          <span class="period-tag" data-period="before" onclick="selectPeriod('before')">여행 전</span>
+          <span class="period-tag" data-period="dayBefore" onclick="selectPeriod('dayBefore')">하루 전</span>
+          <span class="period-tag" data-period="day" onclick="selectPeriod('day')">당일</span>
+          <span class="period-tag" data-period="during" onclick="selectPeriod('during')">여행 중</span>
+          <span class="period-tag" data-period="after" onclick="selectPeriod('after')">여행 후</span>
+        </div>
+      </div>
+    </div>
+    <!-- Progress bar -->
+    <div class="progress-row">
+      <div class="progress-bar"><div class="progress-fill" id="manage-progress" style="width:0%"></div></div>
+      <span class="progress-text" id="manage-progress-text">0%</span>
+    </div>
+    <!-- Item list -->
+    <div id="manage-list" style="margin-top:10px"></div>
+  </div>
+  <button class="pdf-preview-btn" onclick="openPrintPreview()">PDF 미리보기</button>
 </div>
+</div><!-- /app -->
+<!-- CHANGED: 닉네임 설정 모달 (첫 로그인 강제) -->
+<div id="nickname-modal" style="display:none">
+  <div class="pm-overlay"></div>
+  <div class="pm-box" style="width:min(380px,88vw);max-height:none">
+    <div class="pm-header"><span class="pm-header-title">✈️ 환영합니다</span></div>
+    <div style="padding:20px 18px">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">pack-all에서 사용할 닉네임을 입력해주세요.</p>
+      <input id="nickname-input" type="text" maxlength="20" placeholder="닉네임 (최대 20자)" style="width:100%;font-size:13px;padding:9px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);color:var(--text);outline:none;font-family:inherit;display:block">
+    </div>
+    <div class="pm-footer"><button class="pm-btn pm-btn-primary" onclick="saveNickname()">시작하기</button></div>
+  </div>
 </div>
 <!-- CHANGED: 리스트 삭제 확인 모달 -->
 <div id="delete-list-modal" style="display:none">
@@ -452,6 +535,8 @@ let lists=[{id:1,name:'나의 첫 번째 여행',items:[],destinations:[]}];
 let currentListId=1,nextListId=2;
 let srcDragged=null,sortDragCat=null,sortDragIdx=null,sortOverIdx=null;
 let toastTimer=null,tripOpen=true,infoCountry=null,infoOpen=true,openQtyIdx=null;
+// CHANGED: 관리하기 탭 + 닉네임 상태
+let detailMode=false,currentPeriod='all',currentMode='pack',userNickname=null;
 
 function CL(){return lists.find(l=>l.id===currentListId)||lists[0]}
 function allFlat(){return[...Object.values(REGIONS)].flat()}
@@ -562,7 +647,7 @@ function renderCatDropZones(){
       // CHANGED: 태그 전체 드래그, 핸들 제거, X 버튼 태그 안으로
       pi.draggable=true;
       pi.addEventListener('dragstart',e=>{sortDragCat=cat;sortDragIdx=gi;e.dataTransfer.effectAllowed='move';setTimeout(()=>pi.style.opacity='0.4',0);});
-      pi.addEventListener('dragend',()=>{pi.style.opacity='1';sortDragCat=null;sortDragIdx=null;sortOverIdx=null;renderCatDropZones();renderCheckPanel();});
+      pi.addEventListener('dragend',()=>{pi.style.opacity='1';sortDragCat=null;sortDragIdx=null;sortOverIdx=null;renderCatDropZones();renderManageTab();});
       const row=document.createElement('div');row.className='pack-item-row';
       const tag=document.createElement('div');tag.className='pack-item-tag';
       const tn=document.createElement('span');tn.textContent=item.name;tag.appendChild(tn);
@@ -572,16 +657,16 @@ function renderCatDropZones(){
       pb.addEventListener('click',e=>{e.stopPropagation();openQtyIdx=openQtyIdx===gi?null:gi;renderCatDropZones();});
       tag.appendChild(pb);
       const rb=document.createElement('span');rb.className='tag-remove';rb.textContent='✕';rb.draggable=false;
-      rb.addEventListener('click',e=>{e.stopPropagation();CL().items.splice(gi,1);openQtyIdx=null;save();renderCatDropZones();renderCheckPanel();updateSourceChips();renderEssentials();});
+      rb.addEventListener('click',e=>{e.stopPropagation();CL().items.splice(gi,1);openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();});
       tag.appendChild(rb);
       row.appendChild(tag);pi.appendChild(row);
       if(openQtyIdx===gi){
         const pop=document.createElement('div');pop.className='qty-popover';pop.addEventListener('click',e=>e.stopPropagation());
         const minus=document.createElement('button');minus.className='qty-popover-btn';minus.textContent='−';
-        minus.addEventListener('click',e=>{e.stopPropagation();const cur=CL().items[gi].qty||1;if(cur>1){CL().items[gi].qty=cur-1;save();renderCatDropZones();renderCheckPanel();}});
+        minus.addEventListener('click',e=>{e.stopPropagation();const cur=CL().items[gi].qty||1;if(cur>1){CL().items[gi].qty=cur-1;save();renderCatDropZones();renderManageTab();}});
         const num=document.createElement('span');num.className='qty-popover-num';num.textContent=qty;
         const plus=document.createElement('button');plus.className='qty-popover-btn';plus.textContent='+';
-        plus.addEventListener('click',e=>{e.stopPropagation();CL().items[gi].qty=(CL().items[gi].qty||1)+1;save();renderCatDropZones();renderCheckPanel();});
+        plus.addEventListener('click',e=>{e.stopPropagation();CL().items[gi].qty=(CL().items[gi].qty||1)+1;save();renderCatDropZones();renderManageTab();});
         pop.appendChild(minus);pop.appendChild(num);pop.appendChild(plus);pi.appendChild(pop);
       }
       pi.addEventListener('dragover',e=>{if(sortDragCat!==cat)return;e.preventDefault();e.stopPropagation();if(sortOverIdx!==gi){sortOverIdx=gi;renderCatDropZones();}});
@@ -595,7 +680,7 @@ function renderCatDropZones(){
       else if(sortDragCat===cat&&sortDragIdx!==null&&sortOverIdx!==null&&sortDragIdx!==sortOverIdx){
         const arr=CL().items;const moved=arr.splice(sortDragIdx,1)[0];
         arr.splice(sortOverIdx>sortDragIdx?sortOverIdx-1:sortOverIdx,0,moved);
-        sortDragCat=null;sortDragIdx=null;sortOverIdx=null;save();renderCatDropZones();renderCheckPanel();
+        sortDragCat=null;sortDragIdx=null;sortOverIdx=null;save();renderCatDropZones();renderManageTab();
       }
     });
     section.appendChild(dz);container.appendChild(section);
@@ -604,40 +689,90 @@ function renderCatDropZones(){
   updateSourceChips();
 }
 
-function renderCheckPanel(){
+// CHANGED: 관리하기 탭 기능 (renderCheckPanel 대체)
+function toggleDetailMode(){
+  detailMode=!detailMode;
+  document.getElementById('detail-toggle-btn').textContent=detailMode?'디테일 설정 ▲':'디테일 설정 ▼';
+  const dt=document.getElementById('period-detail-tags');
+  dt.style.display=detailMode?'flex':'none';
+  if(!detailMode&&currentPeriod!=='all'){selectPeriod('all');}
+  save();
+}
+function selectPeriod(period){
+  currentPeriod=period;
+  document.querySelectorAll('.period-tag').forEach(t=>t.classList.toggle('active',t.dataset.period===period));
+  renderManageTab();
+}
+function toggleManageCheck(idx){
+  CL().items[idx].checked=!CL().items[idx].checked;
+  save();renderManageTab();
+}
+function setItemPeriod(idx,period){
+  const item=CL().items[idx];
+  item.period=item.period===period?null:period;
+  save();renderManageTab();
+}
+function updateManageMemo(idx,val){
+  CL().items[idx].memo=val;
+  save();
+}
+function reorderManageItem(idx,dir){
+  const items=CL().items;
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=items.length)return;
+  [items[idx],items[newIdx]]=[items[newIdx],items[idx]];
+  save();renderManageTab();
+}
+function renderManageTab(){
   const items=CL().items||[];
-  const panel=document.getElementById('check-panel'),list=document.getElementById('check-list');
-  if(!items.length){panel.style.display='none';return;}
-  panel.style.display='block';list.innerHTML='';
-  const checked=items.filter(i=>i.checked).length;
-  const pct=Math.round(checked/items.length*100);
-  document.getElementById('check-ratio').textContent=checked+' / '+items.length;
-  document.getElementById('progress').style.width=pct+'%';
-  document.getElementById('progress-text').textContent=pct+'%';
-  ALL_CATS.forEach(cat=>{
-    const ci=items.filter(i=>i.cat===cat);if(!ci.length)return;
-    const sec=document.createElement('div');sec.className='check-cat-section';
-    const lbl=document.createElement('div');lbl.className='check-cat-label';lbl.textContent=CAT_LABELS[cat];
-    const ie=document.createElement('div');ie.className='check-items';
-    ci.forEach(item=>{
-      const gi=items.indexOf(item);const qty=item.qty||1;
-      const row=document.createElement('div');row.className='check-row'+(item.checked?' checked':'');
-      row.innerHTML=`<div class="check-box"><span class="check-mark">✓</span></div><span class="check-item-name">${item.name}</span>${qty>1?`<span class="check-qty">×${qty}</span>`:''}`;
-      row.addEventListener('click',()=>{CL().items[gi].checked=!CL().items[gi].checked;save();renderCheckPanel();renderCatDropZones();});
-      ie.appendChild(row);
-    });
-    sec.appendChild(lbl);sec.appendChild(ie);list.appendChild(sec);
+  const filtered=currentPeriod==='all'?items.map((item,i)=>({item,i})):items.map((item,i)=>({item,i})).filter(({item})=>item.period===currentPeriod);
+  const checked=filtered.filter(({item})=>item.checked).length;
+  const total=filtered.length;
+  const pct=total?Math.round(checked/total*100):0;
+  document.getElementById('manage-ratio').textContent=checked+' / '+total;
+  document.getElementById('manage-progress').style.width=pct+'%';
+  document.getElementById('manage-progress-text').textContent=pct+'%';
+  const container=document.getElementById('manage-list');
+  container.innerHTML='';
+  if(!filtered.length){
+    container.innerHTML='<div class="right-empty">'+(currentPeriod==='all'?'준비물을 추가하면 여기서 체크할 수 있어요':'이 시간대에 배정된 준비물이 없어요')+'</div>';
+    return;
+  }
+  const PERIOD_LABELS={'before':'여행 전','dayBefore':'하루 전','day':'당일','during':'여행 중','after':'여행 후'};
+  filtered.forEach(({item,i})=>{
+    const div=document.createElement('div');
+    div.className='manage-item'+(item.checked?' checked':'');
+    const periodSel=Object.entries(PERIOD_LABELS).map(([p,label])=>
+      `<span class="period-mini${item.period===p?' selected':''}" onclick="setItemPeriod(${i},'${p}')">${label}</span>`
+    ).join('');
+    div.innerHTML=`
+      <div class="manage-item-row">
+        <div class="manage-check-box" onclick="toggleManageCheck(${i})">
+          <span class="manage-check-mark">✓</span>
+        </div>
+        <span class="manage-item-name">${item.name}${item.qty>1?` <span style="font-size:10px;color:var(--text3)">×${item.qty}</span>`:''}</span>
+        <div class="manage-period-select" style="display:${detailMode?'flex':'none'};gap:3px;flex-wrap:wrap">${periodSel}</div>
+        <div class="manage-reorder">
+          <button class="reorder-btn" onclick="reorderManageItem(${i},-1)">▲</button>
+          <button class="reorder-btn" onclick="reorderManageItem(${i},1)">▼</button>
+        </div>
+      </div>
+      <div class="manage-memo">
+        <input class="manage-memo-input" placeholder="메모 추가..." value="${(item.memo||'').replace(/"/g,'&quot;')}"
+          onchange="updateManageMemo(${i},this.value)">
+      </div>`;
+    container.appendChild(div);
   });
 }
 
 function addItem(name,cat){
   if(!CL().items)CL().items=[];
-  CL().items.push({name,cat:cat||'기타',qty:1,checked:false});
-  save();renderCatDropZones();renderCheckPanel();updateSourceChips();renderEssentials();
+  CL().items.push({name,cat:cat||'기타',qty:1,checked:false,memo:'',period:null});
+  save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();
 }
 function addCustom(){const input=document.getElementById('custom-input');const val=input.value.trim();if(!val)return;addItem(val,'기타');input.value='';}
-function clearAll(){if(!(CL().items||[]).length)return;CL().items=[];openQtyIdx=null;save();renderCatDropZones();renderCheckPanel();updateSourceChips();renderEssentials();}
-function uncheckAll(){(CL().items||[]).forEach(i=>i.checked=false);save();renderCatDropZones();renderCheckPanel();}
+function clearAll(){if(!(CL().items||[]).length)return;CL().items=[];openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();}
+function uncheckAll(){(CL().items||[]).forEach(i=>i.checked=false);save();renderCatDropZones();renderManageTab();}
 
 document.querySelectorAll('.item-chip').forEach(chip=>{
   let dragStarted=false;
@@ -663,16 +798,90 @@ nd.addEventListener('dblclick',startEdit);
 function showToast(){if(toastTimer)clearTimeout(toastTimer);const t=document.getElementById('toast');t.classList.add('show');toastTimer=setTimeout(()=>t.classList.remove('show'),1800);}
 // CHANGED: Firebase 동기화
 let currentUser=null;
-function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
-async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
-async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
+// CHANGED: save/load 포함 detailMode, currentPeriod
+function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,detailMode,currentPeriod}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
+async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,detailMode,currentPeriod,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
+async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.detailMode!==undefined)detailMode=d.detailMode;if(d.currentPeriod)currentPeriod=d.currentPeriod;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
 // CHANGED: 도메인 등록 후 popup 방식으로 복구
 function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
 function doSignOut(){auth.signOut();}
-function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;}}catch(e){}}
-function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCatDropZones();renderCheckPanel();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
+function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.detailMode!==undefined)detailMode=d.detailMode;if(d.currentPeriod)currentPeriod=d.currentPeriod;}}catch(e){}}
+function restoreManageUI(){
+  if(detailMode){
+    const btn=document.getElementById('detail-toggle-btn');if(btn)btn.textContent='디테일 설정 ▲';
+    const dt=document.getElementById('period-detail-tags');if(dt)dt.style.display='flex';
+  }
+  document.querySelectorAll('.period-tag').forEach(t=>t.classList.toggle('active',t.dataset.period===currentPeriod));
+}
+// CHANGED: renderAll 업데이트 (renderManageTab + restoreManageUI 호출)
+function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCatDropZones();renderManageTab();restoreManageUI();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
 load();renderAll();
-// CHANGED: 인증 상태 감지 → Firestore 로드
+// CHANGED: 모드 전환
+function switchMode(mode){
+  currentMode=mode;
+  document.getElementById('tab-pack').classList.toggle('active',mode==='pack');
+  document.getElementById('tab-manage').classList.toggle('active',mode==='manage');
+  const pv=document.getElementById('pack-view');
+  const mv=document.getElementById('manage-view');
+  if(mode==='pack'){mv.style.display='none';pv.style.display='block';}
+  else{pv.style.display='none';mv.style.display='flex';}
+}
+// CHANGED: 닉네임 기능
+async function checkAndShowNickname(user){
+  try{
+    const snap=await db.collection('users').doc(user.uid).collection('profile').doc('info').get();
+    if(snap.exists&&snap.data().nickname){
+      userNickname=snap.data().nickname;
+      document.getElementById('auth-name').textContent=userNickname;
+    }else{
+      // 첫 로그인: 닉네임 모달 표시
+      const inp=document.getElementById('nickname-input');
+      inp.value=user.displayName||'';
+      document.getElementById('nickname-modal').style.display='flex';
+    }
+  }catch(e){console.error('닉네임 로드 오류:',e);}
+}
+async function saveNickname(){
+  const inp=document.getElementById('nickname-input');
+  const val=inp.value.trim();
+  if(!val)return;
+  userNickname=val;
+  document.getElementById('auth-name').textContent=val;
+  document.getElementById('nickname-modal').style.display='none';
+  if(currentUser){
+    try{await db.collection('users').doc(currentUser.uid).collection('profile').doc('info').set({nickname:val});}
+    catch(e){console.error('닉네임 저장 오류:',e);}
+  }
+}
+// CHANGED: 닉네임 인라인 편집 (더블클릭)
+function setupNicknameEdit(){setupNicknameEditOn(document.getElementById('auth-name'));}
+function setupNicknameEditOn(el){el.addEventListener('dblclick',startNicknameEdit);}
+function startNicknameEdit(){
+  if(!currentUser)return;
+  const nameEl=document.getElementById('auth-name');
+  const cur=userNickname||nameEl.textContent;
+  const inp=document.createElement('input');
+  inp.value=cur;inp.style.cssText='font-size:12px;border:none;border-bottom:1px solid var(--info-text);background:transparent;outline:none;color:var(--text);font-family:inherit;width:80px';
+  nameEl.replaceWith(inp);inp.focus();inp.select();
+  let committed=false;
+  async function commitNick(){
+    if(committed)return;committed=true;
+    const v=inp.value.trim()||cur;userNickname=v;
+    const s=document.createElement('span');s.id='auth-name';s.title='더블클릭해서 닉네임 수정';
+    s.style.cssText='font-size:12px;color:var(--text)';s.textContent=v;
+    inp.replaceWith(s);setupNicknameEditOn(s);
+    if(currentUser){try{await db.collection('users').doc(currentUser.uid).collection('profile').doc('info').set({nickname:v});}catch(e){}}
+  }
+  function cancelNick(){
+    if(committed)return;committed=true;
+    const s=document.createElement('span');s.id='auth-name';s.title='더블클릭해서 닉네임 수정';
+    s.style.cssText='font-size:12px;color:var(--text)';s.textContent=cur;
+    inp.replaceWith(s);setupNicknameEditOn(s);
+  }
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')commitNick();if(e.key==='Escape')cancelNick();});
+  inp.addEventListener('blur',commitNick);
+}
+// CHANGED: 인증 상태 감지 → Firestore 로드 + 닉네임
 auth.onAuthStateChanged(async user=>{
   currentUser=user;
   const g=document.getElementById('auth-guest'),u=document.getElementById('auth-user');
@@ -680,11 +889,14 @@ auth.onAuthStateChanged(async user=>{
     g.style.display='none';u.style.display='flex';
     document.getElementById('auth-photo').src=user.photoURL||'';
     document.getElementById('auth-name').textContent=user.displayName||user.email;
+    await checkAndShowNickname(user);
     if(await loadFromFirestore())renderAll();
   }else{
-    g.style.display='flex';u.style.display='none';
+    g.style.display='flex';u.style.display='none';userNickname=null;
   }
 });
+// setup nickname inline edit after DOM ready
+setupNicknameEdit();
 // CHANGED: PDF 미리보기
 function buildPrintHTML(){
   const list=CL();const items=list.items||[];
