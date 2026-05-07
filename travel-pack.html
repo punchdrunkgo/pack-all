@@ -191,47 +191,55 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .auth-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
 .auth-btn:hover{background:var(--bg3)}
 .auth-btn.primary{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
-/* CHANGED: 내 물품 탭 */
+/* CHANGED: 내 물품 탭 — 디자인 전면 개선 */
 #myitems-view{display:none}
-.mi-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.mi-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:start}
 @media(max-width:640px){.mi-grid{grid-template-columns:1fr}}
-.mi-source-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
-.mi-owned-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem;position:sticky;top:12px}
-.mi-owned-header{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.mi-owned-count{font-size:11px;font-weight:600;background:var(--info-bg);color:var(--info-text);border:0.5px solid var(--info-border);padding:2px 8px;border-radius:var(--radius-pill)}
-.mi-owned-empty{font-size:12px;color:var(--text3);text-align:center;padding:28px 0;border:1.5px dashed var(--border);border-radius:var(--radius)}
-.mi-chip{font-size:12px;padding:4px 11px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;user-select:none;transition:all .15s}
-.mi-chip:hover{border-color:var(--border2);background:var(--bg3)}
-.mi-chip.owned{background:#e3f5e1;border-color:#7ec87a;color:#256020;font-weight:500}
-.mi-cat-group{margin-bottom:14px}
+/* 소스 패널 (좌) */
+.mi-source-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px}
+.mi-cat-group{margin-bottom:16px}
 .mi-cat-group:last-child{margin-bottom:0}
-.mi-cat-label{font-size:11px;color:var(--text3);margin:0 0 5px}
-.mi-owned-item{border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:6px;overflow:hidden}
+.mi-cat-label{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin:0 0 6px;padding-bottom:5px;border-bottom:0.5px solid var(--border)}
+.mi-chip{font-size:12px;padding:4px 12px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;user-select:none;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
+.mi-chip:hover{border-color:var(--border2);background:var(--bg3);color:var(--text)}
+.mi-chip.owned{background:#eaf6e8;border-color:#7ec87a;color:#1e6b1b;font-weight:600}
+.mi-chip.owned::before{content:'✓';font-size:10px;opacity:.8}
+/* 보유 패널 (우) */
+.mi-owned-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;position:sticky;top:12px}
+.mi-owned-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--bg2);border-bottom:0.5px solid var(--border)}
+.mi-owned-title{font-size:13px;font-weight:700;color:var(--text)}
+.mi-owned-count{font-size:11px;font-weight:600;background:var(--info-text);color:#fff;padding:2px 9px;border-radius:var(--radius-pill)}
+.mi-owned-body{padding:12px 16px}
+.mi-owned-empty{font-size:12px;color:var(--text3);text-align:center;padding:24px 0;display:flex;flex-direction:column;gap:6px;align-items:center}
+.mi-owned-empty-icon{font-size:24px;opacity:.4}
+/* 보유 항목 */
+.mi-owned-by-cat{margin-bottom:12px}
+.mi-owned-by-cat:last-of-type{margin-bottom:0}
+.mi-owned-cat-header{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin:0 0 5px;display:flex;align-items:center;gap:6px}
+.mi-owned-cat-header::after{content:'';flex:1;height:0.5px;background:var(--border)}
+.mi-owned-item{border-radius:var(--radius);margin-bottom:4px;background:var(--bg2);border:0.5px solid var(--border);overflow:hidden;transition:border-color .12s}
 .mi-owned-item:last-child{margin-bottom:0}
-.mi-owned-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg2)}
-.mi-owned-name{font-size:12px;font-weight:500;color:var(--text)}
-.mi-owned-cat{font-size:10px;color:var(--text3);margin-left:6px}
-.mi-owned-actions{display:flex;align-items:center;gap:6px}
-.mi-memo-toggle{font-size:11px;color:var(--text3);cursor:pointer;padding:2px 7px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:#fff;transition:all .12s}
-.mi-memo-toggle:hover{border-color:var(--border2);color:var(--text)}
-.mi-memo-toggle.open{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
-.mi-remove{font-size:11px;color:var(--text3);cursor:pointer;padding:2px 6px;border-radius:var(--radius-pill);transition:all .12s}
+.mi-owned-item:hover{border-color:var(--border2)}
+.mi-owned-row{display:flex;align-items:center;justify-content:space-between;padding:6px 10px}
+.mi-owned-name{font-size:12px;font-weight:500;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi-owned-actions{display:flex;align-items:center;gap:4px;flex-shrink:0;margin-left:8px}
+.mi-memo-toggle{font-size:10px;color:var(--text3);cursor:pointer;padding:2px 7px;border-radius:20px;border:0.5px solid var(--border);background:#fff;transition:all .12s;white-space:nowrap}
+.mi-memo-toggle:hover,.mi-memo-toggle.open{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
+.mi-remove{font-size:13px;color:var(--text3);cursor:pointer;width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .12s}
 .mi-remove:hover{background:#fde8e8;color:#c0392b}
-.mi-memo-body{padding:7px 10px;background:#fff;border-top:0.5px solid var(--border)}
-.mi-memo-input{width:100%;font-size:12px;border:0.5px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-family:inherit;resize:vertical;min-height:40px;background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box}
-.mi-memo-input:focus{border-color:var(--border2)}
-.mi-owned-by-cat{margin-bottom:14px}
-.mi-owned-cat-header{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin:0 0 6px;padding:4px 8px;background:var(--bg2);border-radius:var(--radius);display:inline-block}
-/* CHANGED: 내 물품 가져오기 버튼 */
-.import-myitems-btn{font-size:11px;padding:4px 10px;border-radius:var(--radius-pill);border:0.5px solid #7ec87a;background:#e3f5e1;color:#256020;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
-.import-myitems-btn:hover{background:#c8ecbf}
-.import-myitems-btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
-/* 내 물품 직접 추가 폼 */
-.mi-add-row{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border)}
-.mi-add-input{flex:1;font-size:12px;padding:6px 10px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--bg2);color:var(--text);font-family:inherit;outline:none}
+.mi-memo-body{padding:6px 10px 8px;background:#fff;border-top:0.5px solid var(--border)}
+.mi-memo-input{width:100%;font-size:12px;border:0.5px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-family:inherit;resize:none;height:38px;background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box;transition:border-color .12s}
+.mi-memo-input:focus{border-color:var(--border2);background:#fff}
+/* 직접 추가 폼 */
+.mi-add-row{display:flex;gap:6px;padding:10px 16px;border-top:0.5px solid var(--border);background:var(--bg2)}
+.mi-add-input{flex:1;font-size:12px;padding:7px 10px;border:0.5px solid var(--border);border-radius:var(--radius);background:#fff;color:var(--text);font-family:inherit;outline:none;transition:border-color .12s}
 .mi-add-input:focus{border-color:var(--border2)}
-.mi-add-btn{font-size:12px;padding:6px 12px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
-.mi-add-btn:hover{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
+.mi-add-btn{font-size:12px;padding:7px 13px;border-radius:var(--radius);border:none;background:var(--info-text);color:#fff;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .15s;font-weight:500}
+.mi-add-btn:hover{opacity:.85}
+/* 내 물품 가져오기 버튼 */
+.import-myitems-btn{font-size:11px;padding:4px 10px;border-radius:var(--radius-pill);border:0.5px solid #7ec87a;background:#eaf6e8;color:#1e6b1b;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;font-weight:500}
+.import-myitems-btn:hover{background:#d0edcc}
+.import-myitems-btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
 /* CHANGED: PDF 미리보기 */
 .pdf-preview-btn{width:100%;margin-top:8px;font-size:12px;padding:8px 0;border-radius:var(--radius);border:0.5px solid var(--info-border);background:var(--info-bg);color:var(--info-text);cursor:pointer;font-family:inherit;transition:all .15s}
 .pdf-preview-btn:hover{background:#cde4f7}
@@ -682,10 +690,15 @@ const db=firebase.firestore();
     <div class="mi-source-panel" id="mi-source-panel"></div>
     <div class="mi-owned-panel">
       <div class="mi-owned-header">
-        내 보유 물품
-        <span class="mi-owned-count" id="mi-count">0</span>
+        <span class="mi-owned-title">내 보유 물품</span>
+        <span class="mi-owned-count" id="mi-count">0개</span>
       </div>
-      <div id="mi-owned-list"><div class="mi-owned-empty">좌측에서 보유 중인 물품을 선택하세요</div></div>
+      <div id="mi-owned-list"><div class="mi-owned-body"><div class="mi-owned-empty"><span class="mi-owned-empty-icon">📦</span>좌측에서 물품을 선택하거나<br>아래에서 직접 추가하세요</div></div></div>
+      <!-- CHANGED: 직접 추가 폼 (정적 HTML, 중복 생성 버그 수정) -->
+      <div class="mi-add-row">
+        <input class="mi-add-input" id="mi-add-input" type="text" placeholder="직접 추가할 물품명...">
+        <button class="mi-add-btn" onclick="doMiAdd()">추가</button>
+      </div>
     </div>
   </div>
 </div>
@@ -903,39 +916,29 @@ function renderMyItems(){
 
   // — 우측: 보유 목록 —
   const owned=Object.entries(myItems).filter(([,v])=>v.owned);
-  countEl.textContent=owned.length;
+  countEl.textContent=owned.length+'개';
   if(!owned.length){
-    ownedList.innerHTML='<div class="mi-owned-empty">좌측에서 보유 중인 물품을 선택하세요</div>';
+    ownedList.innerHTML='<div class="mi-owned-body"><div class="mi-owned-empty"><span class="mi-owned-empty-icon">📦</span>좌측에서 물품을 선택하거나<br>아래에서 직접 추가하세요</div></div>';
     return;
   }
-
-  // 카테고리별 그룹
   const grouped={};
   owned.forEach(([name,v])=>{
-    const cat=v.cat||'기타';
+    const cat=(v.cat&&ALL_CATS.includes(v.cat))?v.cat:'기타';
     if(!grouped[cat])grouped[cat]=[];
     grouped[cat].push(name);
   });
-
-  let ownedHtml='';
-  ALL_CATS.filter(c=>grouped[c]).forEach(cat=>{
-    ownedHtml+=`<div class="mi-owned-by-cat"><span class="mi-owned-cat-header">${CAT_LABELS[cat]||cat}</span>`;
+  const allCatKeys=[...ALL_CATS,'기타'];
+  let ownedHtml='<div class="mi-owned-body">';
+  allCatKeys.filter(c=>grouped[c]).forEach(cat=>{
+    ownedHtml+=`<div class="mi-owned-by-cat"><div class="mi-owned-cat-header">${CAT_LABELS[cat]||cat}</div>`;
     grouped[cat].forEach(name=>{
       const memo=myItems[name]&&myItems[name].memo||'';
       const memoOpen=miMemoOpen.has(name);
-      ownedHtml+=`<div class="mi-owned-item">
-        <div class="mi-owned-row">
-          <span class="mi-owned-name">${name}</span>
-          <div class="mi-owned-actions">
-            <span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">메모${memoOpen?' ▲':' ▼'}</span>
-            <span class="mi-remove" data-removename="${name}">✕</span>
-          </div>
-        </div>
-        ${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="메모 (구매처, 상태, 수량 등)">${memo}</textarea></div>`:''}
-      </div>`;
+      ownedHtml+=`<div class="mi-owned-item"><div class="mi-owned-row"><span class="mi-owned-name">${name}</span><div class="mi-owned-actions"><span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">${memoOpen?'메모 ▲':'메모'}</span><span class="mi-remove" data-removename="${name}">✕</span></div></div>${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="메모 (구매처, 상태, 수량 등)">${memo}</textarea></div>`:''}</div>`;
     });
     ownedHtml+=`</div>`;
   });
+  ownedHtml+='</div>';
   ownedList.innerHTML=ownedHtml;
 
   // 이벤트 위임 (owned list)
@@ -949,21 +952,17 @@ function renderMyItems(){
     ta.addEventListener('input',()=>setMyMemo(ta.dataset.meminput,ta.value));
   });
 
-  // CHANGED: 직접 추가 폼 (owned panel 하단)
-  const addRow=document.createElement('div');
-  addRow.className='mi-add-row';
-  addRow.innerHTML=`<input class="mi-add-input" id="mi-add-input" type="text" placeholder="직접 추가할 물품명 입력..."><button class="mi-add-btn" id="mi-add-btn">+ 추가</button>`;
-  document.querySelector('.mi-owned-panel').appendChild(addRow);
+  // 직접 추가 Enter 키
   const miInput=document.getElementById('mi-add-input');
-  const miBtn=document.getElementById('mi-add-btn');
-  function doMiAdd(){
-    const val=miInput.value.trim();if(!val)return;
-    myItems[val]={owned:true,memo:'',cat:'기타'};
-    miInput.value='';save();renderMyItems();
-    document.getElementById('mi-add-input')?.focus();
-  }
-  miBtn.onclick=doMiAdd;
-  miInput.addEventListener('keydown',e=>{if(e.key==='Enter')doMiAdd();});
+  if(miInput)miInput.onkeydown=e=>{if(e.key==='Enter')doMiAdd();};
+}
+function doMiAdd(){
+  const inp=document.getElementById('mi-add-input');
+  if(!inp)return;
+  const val=inp.value.trim();if(!val)return;
+  myItems[val]={owned:true,memo:'',cat:'기타'};
+  inp.value='';save();renderMyItems();
+  document.getElementById('mi-add-input')?.focus();
 }
 
 // CHANGED: 내 물품 가져오기 모달
