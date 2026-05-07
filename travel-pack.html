@@ -90,7 +90,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .item-chip.used2{background:#ddd;border-color:var(--border2);color:var(--text3);opacity:.5}
 
 /* 동행자 선택 */
-.companion-tabs{display:flex;gap:5px;flex-wrap:wrap;padding:0 16px 14px}
+.companion-tabs{display:flex;gap:5px;flex-wrap:wrap}
 .companion-tab{font-size:12px;padding:4px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;user-select:none;transition:all .15s}
 .companion-tab:hover{border-color:var(--border2)}
 .companion-tab.active{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
@@ -531,6 +531,36 @@ const db=firebase.firestore();
         <div class="item-chip" draggable="true" data-name="에너지바/행동식" data-cat="트레킹·등산">에너지바/행동식</div>
         <div class="item-chip" draggable="true" data-name="보온 물병" data-cat="트레킹·등산">보온 물병</div>
       </div></div>
+      <!-- CHANGED: 더위 대비 / 추위 대비 카테고리 추가 -->
+      <div class="category"><div class="cat-label">더위 대비</div><div class="items-grid">
+        <div class="item-chip" draggable="true" data-name="손선풍기" data-cat="더위대비">손선풍기</div>
+        <div class="item-chip" draggable="true" data-name="휴대용 선풍기" data-cat="더위대비">휴대용 선풍기</div>
+        <div class="item-chip" draggable="true" data-name="쿨링 스프레이" data-cat="더위대비">쿨링 스프레이</div>
+        <div class="item-chip" draggable="true" data-name="쿨토시" data-cat="더위대비">쿨토시</div>
+        <div class="item-chip" draggable="true" data-name="아이스팩" data-cat="더위대비">아이스팩</div>
+        <div class="item-chip" draggable="true" data-name="선크림" data-cat="더위대비">선크림</div>
+        <div class="item-chip" draggable="true" data-name="선글라스" data-cat="더위대비">선글라스</div>
+        <div class="item-chip" draggable="true" data-name="모자" data-cat="더위대비">모자</div>
+        <div class="item-chip" draggable="true" data-name="냉감 의류" data-cat="더위대비">냉감 의류</div>
+        <div class="item-chip" draggable="true" data-name="물통" data-cat="더위대비">물통</div>
+        <div class="item-chip" draggable="true" data-name="전해질 보충제" data-cat="더위대비">전해질 보충제</div>
+      </div></div>
+      <div class="category"><div class="cat-label">추위 대비</div><div class="items-grid">
+        <div class="item-chip" draggable="true" data-name="핫팩" data-cat="추위대비">핫팩</div>
+        <div class="item-chip" draggable="true" data-name="발 핫팩" data-cat="추위대비">발 핫팩</div>
+        <div class="item-chip" draggable="true" data-name="목도리" data-cat="추위대비">목도리</div>
+        <div class="item-chip" draggable="true" data-name="장갑" data-cat="추위대비">장갑</div>
+        <div class="item-chip" draggable="true" data-name="귀마개" data-cat="추위대비">귀마개</div>
+        <div class="item-chip" draggable="true" data-name="모자(방한)" data-cat="추위대비">모자(방한)</div>
+        <div class="item-chip" draggable="true" data-name="내복" data-cat="추위대비">내복</div>
+        <div class="item-chip" draggable="true" data-name="패딩" data-cat="추위대비">패딩</div>
+        <div class="item-chip" draggable="true" data-name="방풍 재킷" data-cat="추위대비">방풍 재킷</div>
+        <div class="item-chip" draggable="true" data-name="히트텍" data-cat="추위대비">히트텍</div>
+        <div class="item-chip" draggable="true" data-name="보온 양말" data-cat="추위대비">보온 양말</div>
+        <div class="item-chip" draggable="true" data-name="방한 부츠" data-cat="추위대비">방한 부츠</div>
+        <div class="item-chip" draggable="true" data-name="립밤" data-cat="추위대비">립밤</div>
+        <div class="item-chip" draggable="true" data-name="핸드크림" data-cat="추위대비">핸드크림</div>
+      </div></div>
     </div>
   </div>
 
@@ -648,9 +678,9 @@ const db=firebase.firestore();
 <script>
 const SK='travel-pack-v1';
 const BOOKING_CATS=['예약-항공','예약-숙소','예약-서류','예약-금융'];
-const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','수영·해변','트레킹·등산','기타'];
+const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','수영·해변','트레킹·등산','더위대비','추위대비','기타'];
 const ALL_CATS=[...BOOKING_CATS,...ITEM_CATS];
-const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서류':'입국 서류','예약-금융':'금융·보험','전자기기':'전자기기','세면·위생':'세면·위생','의류·잡화':'의류·잡화','의약품':'의약품','금융·현금':'금융·현금','숙소·이동':'숙소·이동','수영·해변':'수영·해변','트레킹·등산':'트레킹·등산','기타':'기타'};
+const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서류':'입국 서류','예약-금융':'금융·보험','전자기기':'전자기기','세면·위생':'세면·위생','의류·잡화':'의류·잡화','의약품':'의약품','금융·현금':'금융·현금','숙소·이동':'숙소·이동','수영·해변':'수영·해변','트레킹·등산':'트레킹·등산','더위대비':'더위 대비','추위대비':'추위 대비','기타':'기타'};
 // CHANGED: 캄보디아 제거, 마카오·유럽 추가
 const REGIONS={'동북아':[{c:'japan',n:'일본',f:'🇯🇵'},{c:'china',n:'중국',f:'🇨🇳'},{c:'taiwan',n:'대만',f:'🇹🇼'},{c:'hongkong',n:'홍콩',f:'🇭🇰'},{c:'macau',n:'마카오',f:'🇲🇴'},{c:'mongolia',n:'몽골',f:'🇲🇳'}],'동남아':[{c:'vietnam',n:'베트남',f:'🇻🇳'},{c:'thailand',n:'태국',f:'🇹🇭'},{c:'singapore',n:'싱가포르',f:'🇸🇬'},{c:'malaysia',n:'말레이시아',f:'🇲🇾'},{c:'indonesia',n:'인도네시아',f:'🇮🇩'},{c:'philippines',n:'필리핀',f:'🇵🇭'},{c:'laos',n:'라오스',f:'🇱🇦'},{c:'myanmar',n:'미얀마',f:'🇲🇲'}],'남아시아':[{c:'india',n:'인도',f:'🇮🇳'},{c:'nepal',n:'네팔',f:'🇳🇵'},{c:'srilanka',n:'스리랑카',f:'🇱🇰'},{c:'maldives',n:'몰디브',f:'🇲🇻'}],'중앙아시아':[{c:'kazakhstan',n:'카자흐스탄',f:'🇰🇿'},{c:'uzbekistan',n:'우즈베키스탄',f:'🇺🇿'},{c:'kyrgyzstan',n:'키르기스스탄',f:'🇰🇬'}],'유럽':[{c:'france',n:'프랑스',f:'🇫🇷'},{c:'spain',n:'스페인',f:'🇪🇸'},{c:'italy',n:'이탈리아',f:'🇮🇹'},{c:'uk',n:'영국',f:'🇬🇧'},{c:'germany',n:'독일',f:'🇩🇪'},{c:'switzerland',n:'스위스',f:'🇨🇭'},{c:'czech',n:'체코',f:'🇨🇿'},{c:'netherlands',n:'네덜란드',f:'🇳🇱'},{c:'greece',n:'그리스',f:'🇬🇷'},{c:'croatia',n:'크로아티아',f:'🇭🇷'}]};
 // CHANGED: 전 국가 준비물 개선, 유럽·마카오 추가, 캄보디아 제거
