@@ -358,6 +358,7 @@ const db=firebase.firestore();
 <div class="main-grid">
   <div class="left-col">
     <div class="panel">
+      <!-- CHANGED: 준비물 목록 전면 확장 -->
       <div id="country-essentials-area"></div>
       <div class="panel-section-title">예약 관리</div>
       <div class="category"><div class="cat-label">항공</div><div class="items-grid">
@@ -372,15 +373,20 @@ const db=firebase.firestore();
         <div class="item-chip" draggable="true" data-name="픽업 서비스" data-cat="예약-숙소">픽업 서비스</div>
       </div></div>
       <div class="category"><div class="cat-label">입국 서류</div><div class="items-grid">
+        <div class="item-chip" draggable="true" data-name="여권사본" data-cat="예약-서류">여권사본</div>
         <div class="item-chip" draggable="true" data-name="비자 신청" data-cat="예약-서류">비자 신청</div>
         <div class="item-chip" draggable="true" data-name="여권 유효기간 확인" data-cat="예약-서류">여권 유효기간 확인</div>
+        <div class="item-chip" draggable="true" data-name="각종바우처" data-cat="예약-서류">각종바우처</div>
         <div class="item-chip" draggable="true" data-name="국제운전면허증" data-cat="예약-서류">국제운전면허증</div>
         <div class="item-chip" draggable="true" data-name="입국신고서" data-cat="예약-서류">입국신고서</div>
+        <div class="item-chip" draggable="true" data-name="비상연락망(대사관)" data-cat="예약-서류">비상연락망(대사관)</div>
       </div></div>
       <div class="category"><div class="cat-label">금융 · 보험</div><div class="items-grid">
         <div class="item-chip" draggable="true" data-name="여행자보험" data-cat="예약-금융">여행자보험</div>
         <div class="item-chip" draggable="true" data-name="환전" data-cat="예약-금융">환전</div>
-        <div class="item-chip" draggable="true" data-name="트래블카드 발급" data-cat="예약-금융">트래블카드 발급</div>
+        <div class="item-chip" draggable="true" data-name="트래블로그" data-cat="예약-금융">트래블로그</div>
+        <div class="item-chip" draggable="true" data-name="트래블월렛" data-cat="예약-금융">트래블월렛</div>
+        <div class="item-chip" draggable="true" data-name="비상용 카드" data-cat="예약-금융">비상용 카드</div>
         <div class="item-chip" draggable="true" data-name="로밍 신청" data-cat="예약-금융">로밍 신청</div>
       </div></div>
       <div class="panel-divider"></div>
@@ -390,40 +396,71 @@ const db=firebase.firestore();
         <div class="item-chip" draggable="true" data-name="보조배터리" data-cat="전자기기">보조배터리</div>
         <div class="item-chip" draggable="true" data-name="이어폰" data-cat="전자기기">이어폰</div>
         <div class="item-chip" draggable="true" data-name="카메라" data-cat="전자기기">카메라</div>
+        <div class="item-chip" draggable="true" data-name="여분 케이블" data-cat="전자기기">여분 케이블</div>
         <div class="item-chip" draggable="true" data-name="멀티어댑터" data-cat="전자기기">멀티어댑터</div>
+        <div class="item-chip" draggable="true" data-name="멀티탭" data-cat="전자기기">멀티탭</div>
         <div class="item-chip" draggable="true" data-name="노트북" data-cat="전자기기">노트북</div>
         <div class="item-chip" draggable="true" data-name="SD카드" data-cat="전자기기">SD카드</div>
         <div class="item-chip" draggable="true" data-name="유심칩" data-cat="전자기기">유심칩</div>
+        <div class="item-chip" draggable="true" data-name="셀카봉/삼각대" data-cat="전자기기">셀카봉/삼각대</div>
+        <div class="item-chip" draggable="true" data-name="헤어드라이기" data-cat="전자기기">헤어드라이기</div>
+        <div class="item-chip" draggable="true" data-name="고데기" data-cat="전자기기">고데기</div>
+        <div class="item-chip" draggable="true" data-name="휴대용 선풍기" data-cat="전자기기">휴대용 선풍기</div>
       </div></div>
       <div class="category"><div class="cat-label">세면 · 위생</div><div class="items-grid">
-        <div class="item-chip" draggable="true" data-name="칫솔·치약" data-cat="세면·위생">칫솔·치약</div>
-        <div class="item-chip" draggable="true" data-name="샴푸·린스" data-cat="세면·위생">샴푸·린스</div>
+        <div class="item-chip" draggable="true" data-name="용기 소분" data-cat="세면·위생">용기 소분</div>
+        <div class="item-chip" draggable="true" data-name="칫솔" data-cat="세면·위생">칫솔</div>
+        <div class="item-chip" draggable="true" data-name="치약" data-cat="세면·위생">치약</div>
+        <div class="item-chip" draggable="true" data-name="가글" data-cat="세면·위생">가글</div>
+        <div class="item-chip" draggable="true" data-name="샴푸" data-cat="세면·위생">샴푸</div>
+        <div class="item-chip" draggable="true" data-name="린스" data-cat="세면·위생">린스</div>
+        <div class="item-chip" draggable="true" data-name="바디워시" data-cat="세면·위생">바디워시</div>
+        <div class="item-chip" draggable="true" data-name="폼클렌징" data-cat="세면·위생">폼클렌징</div>
+        <div class="item-chip" draggable="true" data-name="스킨" data-cat="세면·위생">스킨</div>
+        <div class="item-chip" draggable="true" data-name="로션" data-cat="세면·위생">로션</div>
         <div class="item-chip" draggable="true" data-name="선크림" data-cat="세면·위생">선크림</div>
+        <div class="item-chip" draggable="true" data-name="메이크업 화장품" data-cat="세면·위생">메이크업 화장품</div>
+        <div class="item-chip" draggable="true" data-name="면도기" data-cat="세면·위생">면도기</div>
+        <div class="item-chip" draggable="true" data-name="인공눈물" data-cat="세면·위생">인공눈물</div>
+        <div class="item-chip" draggable="true" data-name="빗" data-cat="세면·위생">빗</div>
+        <div class="item-chip" draggable="true" data-name="머리끈" data-cat="세면·위생">머리끈</div>
+        <div class="item-chip" draggable="true" data-name="면봉" data-cat="세면·위생">면봉</div>
+        <div class="item-chip" draggable="true" data-name="화장솜" data-cat="세면·위생">화장솜</div>
+        <div class="item-chip" draggable="true" data-name="손톱깎이" data-cat="세면·위생">손톱깎이</div>
         <div class="item-chip" draggable="true" data-name="마스크" data-cat="세면·위생">마스크</div>
         <div class="item-chip" draggable="true" data-name="손소독제" data-cat="세면·위생">손소독제</div>
-        <div class="item-chip" draggable="true" data-name="화장품" data-cat="세면·위생">화장품</div>
-        <div class="item-chip" draggable="true" data-name="면도기" data-cat="세면·위생">면도기</div>
       </div></div>
       <div class="category"><div class="cat-label">의류 · 잡화</div><div class="items-grid">
+        <div class="item-chip" draggable="true" data-name="여벌옷" data-cat="의류·잡화">여벌옷</div>
+        <div class="item-chip" draggable="true" data-name="잠옷" data-cat="의류·잡화">잠옷</div>
         <div class="item-chip" draggable="true" data-name="속옷" data-cat="의류·잡화">속옷</div>
         <div class="item-chip" draggable="true" data-name="양말" data-cat="의류·잡화">양말</div>
         <div class="item-chip" draggable="true" data-name="수영복" data-cat="의류·잡화">수영복</div>
         <div class="item-chip" draggable="true" data-name="가디건" data-cat="의류·잡화">가디건</div>
-        <div class="item-chip" draggable="true" data-name="우산·우비" data-cat="의류·잡화">우산·우비</div>
+        <div class="item-chip" draggable="true" data-name="담요" data-cat="의류·잡화">담요</div>
+        <div class="item-chip" draggable="true" data-name="스카프" data-cat="의류·잡화">스카프</div>
+        <div class="item-chip" draggable="true" data-name="우산" data-cat="의류·잡화">우산</div>
+        <div class="item-chip" draggable="true" data-name="우비" data-cat="의류·잡화">우비</div>
         <div class="item-chip" draggable="true" data-name="선글라스" data-cat="의류·잡화">선글라스</div>
         <div class="item-chip" draggable="true" data-name="모자" data-cat="의류·잡화">모자</div>
         <div class="item-chip" draggable="true" data-name="슬리퍼" data-cat="의류·잡화">슬리퍼</div>
         <div class="item-chip" draggable="true" data-name="운동화" data-cat="의류·잡화">운동화</div>
         <div class="item-chip" draggable="true" data-name="자물쇠" data-cat="의류·잡화">자물쇠</div>
+        <div class="item-chip" draggable="true" data-name="비닐봉지" data-cat="의류·잡화">비닐봉지</div>
+        <div class="item-chip" draggable="true" data-name="지퍼백" data-cat="의류·잡화">지퍼백</div>
       </div></div>
       <div class="category"><div class="cat-label">의약품</div><div class="items-grid">
-        <div class="item-chip" draggable="true" data-name="상비약" data-cat="의약품">상비약</div>
+        <div class="item-chip" draggable="true" data-name="종합감기약" data-cat="의약품">종합감기약</div>
         <div class="item-chip" draggable="true" data-name="소화제" data-cat="의약품">소화제</div>
+        <div class="item-chip" draggable="true" data-name="소염제" data-cat="의약품">소염제</div>
+        <div class="item-chip" draggable="true" data-name="진통제" data-cat="의약품">진통제</div>
         <div class="item-chip" draggable="true" data-name="지사제" data-cat="의약품">지사제</div>
-        <div class="item-chip" draggable="true" data-name="두통약" data-cat="의약품">두통약</div>
-        <div class="item-chip" draggable="true" data-name="밴드·거즈" data-cat="의약품">밴드·거즈</div>
+        <div class="item-chip" draggable="true" data-name="밴드" data-cat="의약품">밴드</div>
+        <div class="item-chip" draggable="true" data-name="연고" data-cat="의약품">연고</div>
+        <div class="item-chip" draggable="true" data-name="파스" data-cat="의약품">파스</div>
         <div class="item-chip" draggable="true" data-name="멀미약" data-cat="의약품">멀미약</div>
         <div class="item-chip" draggable="true" data-name="모기기피제" data-cat="의약품">모기기피제</div>
+        <div class="item-chip" draggable="true" data-name="여성위생용품" data-cat="의약품">여성위생용품</div>
         <div class="item-chip" draggable="true" data-name="처방약" data-cat="의약품">처방약</div>
       </div></div>
       <div class="category"><div class="cat-label">금융 · 현금</div><div class="items-grid">
@@ -437,6 +474,38 @@ const db=firebase.firestore();
         <div class="item-chip" draggable="true" data-name="목베개" data-cat="숙소·이동">목베개</div>
         <div class="item-chip" draggable="true" data-name="귀마개" data-cat="숙소·이동">귀마개</div>
         <div class="item-chip" draggable="true" data-name="수건" data-cat="숙소·이동">수건</div>
+        <div class="item-chip" draggable="true" data-name="필기구" data-cat="숙소·이동">필기구</div>
+        <div class="item-chip" draggable="true" data-name="보조가방" data-cat="숙소·이동">보조가방</div>
+        <div class="item-chip" draggable="true" data-name="샤워기 필터" data-cat="숙소·이동">샤워기 필터</div>
+        <div class="item-chip" draggable="true" data-name="나무젓가락" data-cat="숙소·이동">나무젓가락</div>
+        <div class="item-chip" draggable="true" data-name="간식" data-cat="숙소·이동">간식</div>
+      </div></div>
+      <div class="panel-divider"></div>
+      <div class="panel-section-title">상황별 준비물</div>
+      <div class="category"><div class="cat-label">수영 · 해변</div><div class="items-grid">
+        <div class="item-chip" draggable="true" data-name="스노클링 마스크" data-cat="수영·해변">스노클링 마스크</div>
+        <div class="item-chip" draggable="true" data-name="수경" data-cat="수영·해변">수경</div>
+        <div class="item-chip" draggable="true" data-name="수영 핀" data-cat="수영·해변">수영 핀</div>
+        <div class="item-chip" draggable="true" data-name="비치타올" data-cat="수영·해변">비치타올</div>
+        <div class="item-chip" draggable="true" data-name="방수가방" data-cat="수영·해변">방수가방</div>
+        <div class="item-chip" draggable="true" data-name="아쿠아슈즈" data-cat="수영·해변">아쿠아슈즈</div>
+        <div class="item-chip" draggable="true" data-name="방수 파우치" data-cat="수영·해변">방수 파우치</div>
+        <div class="item-chip" draggable="true" data-name="래시가드" data-cat="수영·해변">래시가드</div>
+        <div class="item-chip" draggable="true" data-name="구명조끼" data-cat="수영·해변">구명조끼</div>
+        <div class="item-chip" draggable="true" data-name="방수 폰케이스" data-cat="수영·해변">방수 폰케이스</div>
+        <div class="item-chip" draggable="true" data-name="비치매트" data-cat="수영·해변">비치매트</div>
+      </div></div>
+      <div class="category"><div class="cat-label">트레킹 · 등산</div><div class="items-grid">
+        <div class="item-chip" draggable="true" data-name="트레킹화" data-cat="트레킹·등산">트레킹화</div>
+        <div class="item-chip" draggable="true" data-name="등산 스틱" data-cat="트레킹·등산">등산 스틱</div>
+        <div class="item-chip" draggable="true" data-name="등산 배낭" data-cat="트레킹·등산">등산 배낭</div>
+        <div class="item-chip" draggable="true" data-name="방수 재킷" data-cat="트레킹·등산">방수 재킷</div>
+        <div class="item-chip" draggable="true" data-name="등산 양말" data-cat="트레킹·등산">등산 양말</div>
+        <div class="item-chip" draggable="true" data-name="무릎 보호대" data-cat="트레킹·등산">무릎 보호대</div>
+        <div class="item-chip" draggable="true" data-name="헤드랜턴" data-cat="트레킹·등산">헤드랜턴</div>
+        <div class="item-chip" draggable="true" data-name="트레킹 스패츠" data-cat="트레킹·등산">트레킹 스패츠</div>
+        <div class="item-chip" draggable="true" data-name="에너지바/행동식" data-cat="트레킹·등산">에너지바/행동식</div>
+        <div class="item-chip" draggable="true" data-name="보온 물병" data-cat="트레킹·등산">보온 물병</div>
       </div></div>
     </div>
   </div>
@@ -555,9 +624,9 @@ const db=firebase.firestore();
 <script>
 const SK='travel-pack-v1';
 const BOOKING_CATS=['예약-항공','예약-숙소','예약-서류','예약-금융'];
-const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','기타'];
+const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','수영·해변','트레킹·등산','기타'];
 const ALL_CATS=[...BOOKING_CATS,...ITEM_CATS];
-const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서류':'입국 서류','예약-금융':'금융·보험','전자기기':'전자기기','세면·위생':'세면·위생','의류·잡화':'의류·잡화','의약품':'의약품','금융·현금':'금융·현금','숙소·이동':'숙소·이동','기타':'기타'};
+const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서류':'입국 서류','예약-금융':'금융·보험','전자기기':'전자기기','세면·위생':'세면·위생','의류·잡화':'의류·잡화','의약품':'의약품','금융·현금':'금융·현금','숙소·이동':'숙소·이동','수영·해변':'수영·해변','트레킹·등산':'트레킹·등산','기타':'기타'};
 // CHANGED: 캄보디아 제거, 마카오·유럽 추가
 const REGIONS={'동북아':[{c:'japan',n:'일본',f:'🇯🇵'},{c:'china',n:'중국',f:'🇨🇳'},{c:'taiwan',n:'대만',f:'🇹🇼'},{c:'hongkong',n:'홍콩',f:'🇭🇰'},{c:'macau',n:'마카오',f:'🇲🇴'},{c:'mongolia',n:'몽골',f:'🇲🇳'}],'동남아':[{c:'vietnam',n:'베트남',f:'🇻🇳'},{c:'thailand',n:'태국',f:'🇹🇭'},{c:'singapore',n:'싱가포르',f:'🇸🇬'},{c:'malaysia',n:'말레이시아',f:'🇲🇾'},{c:'indonesia',n:'인도네시아',f:'🇮🇩'},{c:'philippines',n:'필리핀',f:'🇵🇭'},{c:'laos',n:'라오스',f:'🇱🇦'},{c:'myanmar',n:'미얀마',f:'🇲🇲'}],'남아시아':[{c:'india',n:'인도',f:'🇮🇳'},{c:'nepal',n:'네팔',f:'🇳🇵'},{c:'srilanka',n:'스리랑카',f:'🇱🇰'},{c:'maldives',n:'몰디브',f:'🇲🇻'}],'중앙아시아':[{c:'kazakhstan',n:'카자흐스탄',f:'🇰🇿'},{c:'uzbekistan',n:'우즈베키스탄',f:'🇺🇿'},{c:'kyrgyzstan',n:'키르기스스탄',f:'🇰🇬'}],'유럽':[{c:'france',n:'프랑스',f:'🇫🇷'},{c:'spain',n:'스페인',f:'🇪🇸'},{c:'italy',n:'이탈리아',f:'🇮🇹'},{c:'uk',n:'영국',f:'🇬🇧'},{c:'germany',n:'독일',f:'🇩🇪'},{c:'switzerland',n:'스위스',f:'🇨🇭'},{c:'czech',n:'체코',f:'🇨🇿'},{c:'netherlands',n:'네덜란드',f:'🇳🇱'},{c:'greece',n:'그리스',f:'🇬🇷'},{c:'croatia',n:'크로아티아',f:'🇭🇷'}]};
 // CHANGED: 전 국가 준비물 개선, 유럽·마카오 추가, 캄보디아 제거
