@@ -465,6 +465,7 @@ const db=firebase.firestore();
       <div class="category"><div class="cat-label">금융 · 현금</div><div class="items-grid">
         <div class="item-chip" draggable="true" data-name="신용카드" data-cat="금융·현금">신용카드</div>
         <div class="item-chip" draggable="true" data-name="현지화폐" data-cat="금융·현금">현지화폐</div>
+        <div class="item-chip" draggable="true" data-name="트래블로그" data-cat="금융·현금">트래블로그</div>
         <div class="item-chip" draggable="true" data-name="트래블월렛" data-cat="금융·현금">트래블월렛</div>
         <div class="item-chip" draggable="true" data-name="비상금" data-cat="금융·현금">비상금</div>
       </div></div>
@@ -505,6 +506,35 @@ const db=firebase.firestore();
         <div class="item-chip" draggable="true" data-name="트레킹 스패츠" data-cat="트레킹·등산">트레킹 스패츠</div>
         <div class="item-chip" draggable="true" data-name="에너지바/행동식" data-cat="트레킹·등산">에너지바/행동식</div>
         <div class="item-chip" draggable="true" data-name="보온 물병" data-cat="트레킹·등산">보온 물병</div>
+      </div></div>
+      <!-- CHANGED: 가족 카테고리 추가 -->
+      <div class="category"><div class="cat-label">가족</div><div class="items-grid">
+        <div class="item-chip" draggable="true" data-name="이유식" data-cat="가족">이유식</div>
+        <div class="item-chip" draggable="true" data-name="분유" data-cat="가족">분유</div>
+        <div class="item-chip" draggable="true" data-name="분유통" data-cat="가족">분유통</div>
+        <div class="item-chip" draggable="true" data-name="젖병" data-cat="가족">젖병</div>
+        <div class="item-chip" draggable="true" data-name="젖병 세정제" data-cat="가족">젖병 세정제</div>
+        <div class="item-chip" draggable="true" data-name="기저귀" data-cat="가족">기저귀</div>
+        <div class="item-chip" draggable="true" data-name="물티슈" data-cat="가족">물티슈</div>
+        <div class="item-chip" draggable="true" data-name="아기 로션" data-cat="가족">아기 로션</div>
+        <div class="item-chip" draggable="true" data-name="아기 선크림" data-cat="가족">아기 선크림</div>
+        <div class="item-chip" draggable="true" data-name="아기 모기 패치" data-cat="가족">아기 모기 패치</div>
+        <div class="item-chip" draggable="true" data-name="체온계" data-cat="가족">체온계</div>
+        <div class="item-chip" draggable="true" data-name="어린이 해열제" data-cat="가족">어린이 해열제</div>
+        <div class="item-chip" draggable="true" data-name="어린이 소화제" data-cat="가족">어린이 소화제</div>
+        <div class="item-chip" draggable="true" data-name="멀미약(아동용)" data-cat="가족">멀미약(아동용)</div>
+        <div class="item-chip" draggable="true" data-name="유아용 식기" data-cat="가족">유아용 식기</div>
+        <div class="item-chip" draggable="true" data-name="유아 캐리어" data-cat="가족">유아 캐리어</div>
+        <div class="item-chip" draggable="true" data-name="휴대용 유모차" data-cat="가족">휴대용 유모차</div>
+        <div class="item-chip" draggable="true" data-name="아기 장난감" data-cat="가족">아기 장난감</div>
+        <div class="item-chip" draggable="true" data-name="어린이 선글라스" data-cat="가족">어린이 선글라스</div>
+        <div class="item-chip" draggable="true" data-name="파스" data-cat="가족">파스</div>
+        <div class="item-chip" draggable="true" data-name="노인 혈압약" data-cat="가족">노인 혈압약</div>
+        <div class="item-chip" draggable="true" data-name="당뇨약" data-cat="가족">당뇨약</div>
+        <div class="item-chip" draggable="true" data-name="관절 보호대" data-cat="가족">관절 보호대</div>
+        <div class="item-chip" draggable="true" data-name="지팡이" data-cat="가족">지팡이</div>
+        <div class="item-chip" draggable="true" data-name="돋보기" data-cat="가족">돋보기</div>
+        <div class="item-chip" draggable="true" data-name="보청기 배터리" data-cat="가족">보청기 배터리</div>
       </div></div>
     </div>
   </div>
@@ -623,9 +653,9 @@ const db=firebase.firestore();
 <script>
 const SK='travel-pack-v1';
 const BOOKING_CATS=['예약-항공','예약-숙소','예약-서류','예약-금융'];
-const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','수영·해변','트레킹·등산','기타'];
+const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','수영·해변','트레킹·등산','가족','기타'];
 const ALL_CATS=[...BOOKING_CATS,...ITEM_CATS];
-const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서류':'입국 서류','예약-금융':'금융·보험','전자기기':'전자기기','세면·위생':'세면·위생','의류·잡화':'의류·잡화','의약품':'의약품','금융·현금':'금융·현금','숙소·이동':'숙소·이동','수영·해변':'수영·해변','트레킹·등산':'트레킹·등산','기타':'기타'};
+const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서류':'입국 서류','예약-금융':'금융·보험','전자기기':'전자기기','세면·위생':'세면·위생','의류·잡화':'의류·잡화','의약품':'의약품','금융·현금':'금융·현금','숙소·이동':'숙소·이동','수영·해변':'수영·해변','트레킹·등산':'트레킹·등산','가족':'가족','기타':'기타'};
 // CHANGED: 캄보디아 제거, 마카오·유럽 추가
 const REGIONS={'동북아':[{c:'japan',n:'일본',f:'🇯🇵'},{c:'china',n:'중국',f:'🇨🇳'},{c:'taiwan',n:'대만',f:'🇹🇼'},{c:'hongkong',n:'홍콩',f:'🇭🇰'},{c:'macau',n:'마카오',f:'🇲🇴'},{c:'mongolia',n:'몽골',f:'🇲🇳'}],'동남아':[{c:'vietnam',n:'베트남',f:'🇻🇳'},{c:'thailand',n:'태국',f:'🇹🇭'},{c:'singapore',n:'싱가포르',f:'🇸🇬'},{c:'malaysia',n:'말레이시아',f:'🇲🇾'},{c:'indonesia',n:'인도네시아',f:'🇮🇩'},{c:'philippines',n:'필리핀',f:'🇵🇭'},{c:'laos',n:'라오스',f:'🇱🇦'},{c:'myanmar',n:'미얀마',f:'🇲🇲'}],'남아시아':[{c:'india',n:'인도',f:'🇮🇳'},{c:'nepal',n:'네팔',f:'🇳🇵'},{c:'srilanka',n:'스리랑카',f:'🇱🇰'},{c:'maldives',n:'몰디브',f:'🇲🇻'}],'중앙아시아':[{c:'kazakhstan',n:'카자흐스탄',f:'🇰🇿'},{c:'uzbekistan',n:'우즈베키스탄',f:'🇺🇿'},{c:'kyrgyzstan',n:'키르기스스탄',f:'🇰🇬'}],'유럽':[{c:'france',n:'프랑스',f:'🇫🇷'},{c:'spain',n:'스페인',f:'🇪🇸'},{c:'italy',n:'이탈리아',f:'🇮🇹'},{c:'uk',n:'영국',f:'🇬🇧'},{c:'germany',n:'독일',f:'🇩🇪'},{c:'switzerland',n:'스위스',f:'🇨🇭'},{c:'czech',n:'체코',f:'🇨🇿'},{c:'netherlands',n:'네덜란드',f:'🇳🇱'},{c:'greece',n:'그리스',f:'🇬🇷'},{c:'croatia',n:'크로아티아',f:'🇭🇷'}]};
 // CHANGED: 전 국가 준비물 개선, 유럽·마카오 추가, 캄보디아 제거
