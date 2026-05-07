@@ -178,13 +178,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .save-toast.show{opacity:1}
 /* CHANGED: 인증 바 */
 /* CHANGED: 로고 포함 확장 헤더 */
-#auth-bar{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-#auth-logo{display:flex;align-items:center;gap:10px}
+#auth-bar{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius-lg);padding:14px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+#auth-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
 #auth-logo-text{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-.4px;line-height:1}
 #auth-logo-text span{color:var(--info-text)}
+/* CHANGED: 내비 탭 (auth-bar 중앙) */
+#auth-nav{display:flex;gap:3px;background:var(--bg2);border-radius:var(--radius-lg);padding:3px}
+.nav-tab{font-size:13px;font-weight:500;padding:6px 20px;border-radius:var(--radius);border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{background:#fff;color:var(--info-text);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+#auth-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .auth-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
 .auth-btn:hover{background:var(--bg3)}
 .auth-btn.primary{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
+/* CHANGED: 내 물품 탭 */
+#myitems-view{display:none}
+.mi-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media(max-width:640px){.mi-grid{grid-template-columns:1fr}}
+.mi-source-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem}
+.mi-owned-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem;position:sticky;top:12px}
+.mi-owned-header{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.mi-owned-count{font-size:11px;font-weight:600;background:var(--info-bg);color:var(--info-text);border:0.5px solid var(--info-border);padding:2px 8px;border-radius:var(--radius-pill)}
+.mi-owned-empty{font-size:12px;color:var(--text3);text-align:center;padding:28px 0;border:1.5px dashed var(--border);border-radius:var(--radius)}
+.mi-chip{font-size:12px;padding:4px 11px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;user-select:none;transition:all .15s}
+.mi-chip:hover{border-color:var(--border2);background:var(--bg3)}
+.mi-chip.owned{background:#e3f5e1;border-color:#7ec87a;color:#256020;font-weight:500}
+.mi-cat-group{margin-bottom:14px}
+.mi-cat-group:last-child{margin-bottom:0}
+.mi-cat-label{font-size:11px;color:var(--text3);margin:0 0 5px}
+.mi-owned-item{border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:6px;overflow:hidden}
+.mi-owned-item:last-child{margin-bottom:0}
+.mi-owned-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg2)}
+.mi-owned-name{font-size:12px;font-weight:500;color:var(--text)}
+.mi-owned-cat{font-size:10px;color:var(--text3);margin-left:6px}
+.mi-owned-actions{display:flex;align-items:center;gap:6px}
+.mi-memo-toggle{font-size:11px;color:var(--text3);cursor:pointer;padding:2px 7px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:#fff;transition:all .12s}
+.mi-memo-toggle:hover{border-color:var(--border2);color:var(--text)}
+.mi-memo-toggle.open{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
+.mi-remove{font-size:11px;color:var(--text3);cursor:pointer;padding:2px 6px;border-radius:var(--radius-pill);transition:all .12s}
+.mi-remove:hover{background:#fde8e8;color:#c0392b}
+.mi-memo-body{padding:7px 10px;background:#fff;border-top:0.5px solid var(--border)}
+.mi-memo-input{width:100%;font-size:12px;border:0.5px solid var(--border);border-radius:var(--radius);padding:5px 8px;font-family:inherit;resize:vertical;min-height:40px;background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box}
+.mi-memo-input:focus{border-color:var(--border2)}
+.mi-owned-by-cat{margin-bottom:14px}
+.mi-owned-cat-header{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin:0 0 6px;padding:4px 8px;background:var(--bg2);border-radius:var(--radius);display:inline-block}
 /* CHANGED: PDF 미리보기 */
 .pdf-preview-btn{width:100%;margin-top:8px;font-size:12px;padding:8px 0;border-radius:var(--radius);border:0.5px solid var(--info-border);background:var(--info-bg);color:var(--info-text);cursor:pointer;font-family:inherit;transition:all .15s}
 .pdf-preview-btn:hover{background:#cde4f7}
@@ -316,25 +353,28 @@ const db=firebase.firestore();
 <div id="auth-bar">
   <div id="auth-logo">
     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- 손잡이 -->
       <path d="M11 11V8.5C11 7.67 11.67 7 12.5 7h5C18.33 7 19 7.67 19 8.5V11" stroke="#1055aa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- 본체 -->
       <rect x="4" y="11" width="22" height="15" rx="3" stroke="#1055aa" stroke-width="1.8"/>
-      <!-- 중간 구분선 -->
       <line x1="4" y1="18.5" x2="26" y2="18.5" stroke="#1055aa" stroke-width="1.2" stroke-opacity="0.3"/>
-      <!-- 잠금 장치 -->
       <rect x="13" y="14.5" width="4" height="3" rx="1" stroke="#1055aa" stroke-width="1.2" stroke-opacity="0.6"/>
     </svg>
     <span id="auth-logo-text">pack<span>-all</span></span>
   </div>
-  <div id="auth-guest" style="display:flex;align-items:center;gap:8px">
-    <span style="font-size:12px;color:var(--text3)">로그인하면 여행 데이터가 저장됩니다</span>
-    <button class="auth-btn primary" onclick="signInWithGoogle()">Google로 로그인</button>
+  <!-- CHANGED: 중앙 네비 탭 -->
+  <div id="auth-nav">
+    <button class="nav-tab active" id="nav-travel" onclick="switchOuterTab('travel')">여행 준비물</button>
+    <button class="nav-tab" id="nav-myitems" onclick="switchOuterTab('myitems')">내 물품</button>
   </div>
-  <div id="auth-user" style="display:none;align-items:center;gap:8px">
-    <img id="auth-photo" style="width:24px;height:24px;border-radius:50%;border:0.5px solid var(--border)" alt="">
-    <span id="auth-name" style="font-size:12px;color:var(--text)" title="더블클릭해서 닉네임 수정"></span>
-    <button class="auth-btn" onclick="doSignOut()">로그아웃</button>
+  <div id="auth-right">
+    <div id="auth-guest" style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:12px;color:var(--text3)">로그인하면 저장됩니다</span>
+      <button class="auth-btn primary" onclick="signInWithGoogle()">Google로 로그인</button>
+    </div>
+    <div id="auth-user" style="display:none;align-items:center;gap:8px">
+      <img id="auth-photo" style="width:24px;height:24px;border-radius:50%;border:0.5px solid var(--border)" alt="">
+      <span id="auth-name" style="font-size:12px;color:var(--text)" title="더블클릭해서 닉네임 수정"></span>
+      <button class="auth-btn" onclick="doSignOut()">로그아웃</button>
+    </div>
   </div>
 </div>
 
@@ -624,6 +664,19 @@ const db=firebase.firestore();
     <button class="pdf-preview-btn" onclick="openPrintPreview('board')" style="flex:1;width:auto;margin-top:0">일정별 PDF</button>
   </div>
 </div>
+<!-- CHANGED: 내 물품 탭 뷰 -->
+<div id="myitems-view">
+  <div class="mi-grid">
+    <div class="mi-source-panel" id="mi-source-panel"></div>
+    <div class="mi-owned-panel">
+      <div class="mi-owned-header">
+        내 보유 물품
+        <span class="mi-owned-count" id="mi-count">0</span>
+      </div>
+      <div id="mi-owned-list"><div class="mi-owned-empty">좌측에서 보유 중인 물품을 선택하세요</div></div>
+    </div>
+  </div>
+</div>
 </div><!-- /app -->
 <!-- CHANGED: 닉네임 설정 모달 (첫 로그인 강제) -->
 <div id="nickname-modal" style="display:none">
@@ -697,6 +750,10 @@ const COMPANIONS=[
   {key:'undecided',label:'🤷 미정',items:[]},
 ];
 let currentCompanion=null;
+// CHANGED: 내 물품 상태
+let myItems={};    // {name:{owned,memo,cat}}
+let miMemoOpen=new Set();
+let outerTab='travel';
 let lists=[{id:1,name:'나의 첫 번째 여행',items:[],destinations:[]}];
 let currentListId=1,nextListId=2;
 let srcDragged=null,sortDragCat=null,sortDragIdx=null,sortOverIdx=null;
@@ -741,6 +798,131 @@ function renderCountryInfoPanel(){
   el.innerHTML=`<div style="padding:12px 16px"><div class="info-toggle" onclick="toggleInfo()"><span style="font-size:13px;font-weight:500">${d.flag} ${d.name} 상세 정보</span><span>${infoOpen?'접기 ▲':'펼치기 ▼'}</span></div>${infoOpen?`<div class="info-grid" style="margin-top:10px"><div class="info-block must"><div class="info-block-title">챙겨야 할 것</div>${mi}</div><div class="info-block warn"><div class="info-block-title">주의사항</div>${wi}</div></div>`:''}</div>`;
 }
 function toggleInfo(){infoOpen=!infoOpen;renderCountryInfoPanel();}
+// CHANGED: 내 물품 탭 전환
+function switchOuterTab(tab){
+  outerTab=tab;
+  const tv=document.getElementById('travel-view-wrap'),mi=document.getElementById('myitems-view');
+  // travel-view-wrap이 없으면 기존 list-manager부터 manage-view까지를 숨기는 방식
+  document.querySelectorAll('.list-manager,.mode-tabs-row,#pack-view,#manage-view').forEach(el=>{
+    el.style.display=tab==='travel'?'':tab==='myitems'?'none':'';
+  });
+  if(mi)mi.style.display=tab==='myitems'?'block':'none';
+  document.getElementById('nav-travel').classList.toggle('active',tab==='travel');
+  document.getElementById('nav-myitems').classList.toggle('active',tab==='myitems');
+  if(tab==='myitems')renderMyItems();
+  save();
+}
+
+function getAllSourceItems(){
+  const byCat={};
+  document.querySelectorAll('.left-col .item-chip').forEach(chip=>{
+    const name=chip.dataset.name,cat=chip.dataset.cat;
+    if(!byCat[cat])byCat[cat]=[];
+    if(!byCat[cat].includes(name))byCat[cat].push(name);
+  });
+  return byCat;
+}
+
+function toggleMyItem(name,cat){
+  if(!myItems[name])myItems[name]={owned:false,memo:'',cat};
+  myItems[name].owned=!myItems[name].owned;
+  if(!myItems[name].owned)miMemoOpen.delete(name);
+  save();renderMyItems();
+}
+
+function setMyMemo(name,val){
+  if(myItems[name])myItems[name].memo=val;
+  save();
+}
+
+function renderMyItems(){
+  const src=document.getElementById('mi-source-panel');
+  const ownedList=document.getElementById('mi-owned-list');
+  const countEl=document.getElementById('mi-count');
+  if(!src)return;
+
+  const byCat=getAllSourceItems();
+  const SITUATION_CATS=['수영·해변','트레킹·등산','더위대비','추위대비'];
+  const basicCats=ALL_CATS.filter(c=>!SITUATION_CATS.includes(c));
+
+  // — 좌측: 소스 칩 패널 —
+  let srcHtml='';
+  function renderSrcSection(title,cats){
+    const rows=cats.map(cat=>{
+      const items=byCat[cat];if(!items||!items.length)return'';
+      return `<div class="mi-cat-group"><div class="mi-cat-label">${CAT_LABELS[cat]||cat}</div><div class="items-grid">`+
+        items.map(name=>{
+          const owned=!!(myItems[name]&&myItems[name].owned);
+          return `<span class="mi-chip${owned?' owned':''}" data-miname="${name}" data-micat="${cat}">${name}</span>`;
+        }).join('')+
+        `</div></div>`;
+    }).join('');
+    if(!rows.trim())return'';
+    return `<div class="panel-section-title">${title}</div>${rows}`;
+  }
+  srcHtml+=renderSrcSection('기본 준비물',basicCats);
+  const hasSit=SITUATION_CATS.some(c=>byCat[c]&&byCat[c].length);
+  if(hasSit){
+    srcHtml+=`<div class="panel-divider"></div>`;
+    srcHtml+=renderSrcSection('상황별 준비물',SITUATION_CATS);
+  }
+  src.innerHTML=srcHtml;
+
+  // 이벤트 위임 (chips)
+  src.onclick=e=>{
+    const chip=e.target.closest('.mi-chip');
+    if(chip)toggleMyItem(chip.dataset.miname,chip.dataset.micat);
+  };
+
+  // — 우측: 보유 목록 —
+  const owned=Object.entries(myItems).filter(([,v])=>v.owned);
+  countEl.textContent=owned.length;
+  if(!owned.length){
+    ownedList.innerHTML='<div class="mi-owned-empty">좌측에서 보유 중인 물품을 선택하세요</div>';
+    return;
+  }
+
+  // 카테고리별 그룹
+  const grouped={};
+  owned.forEach(([name,v])=>{
+    const cat=v.cat||'기타';
+    if(!grouped[cat])grouped[cat]=[];
+    grouped[cat].push(name);
+  });
+
+  let ownedHtml='';
+  ALL_CATS.filter(c=>grouped[c]).forEach(cat=>{
+    ownedHtml+=`<div class="mi-owned-by-cat"><span class="mi-owned-cat-header">${CAT_LABELS[cat]||cat}</span>`;
+    grouped[cat].forEach(name=>{
+      const memo=myItems[name]&&myItems[name].memo||'';
+      const memoOpen=miMemoOpen.has(name);
+      ownedHtml+=`<div class="mi-owned-item">
+        <div class="mi-owned-row">
+          <span class="mi-owned-name">${name}</span>
+          <div class="mi-owned-actions">
+            <span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">메모${memoOpen?' ▲':' ▼'}</span>
+            <span class="mi-remove" data-removename="${name}">✕</span>
+          </div>
+        </div>
+        ${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="메모 (구매처, 상태, 수량 등)">${memo}</textarea></div>`:''}
+      </div>`;
+    });
+    ownedHtml+=`</div>`;
+  });
+  ownedList.innerHTML=ownedHtml;
+
+  // 이벤트 위임 (owned list)
+  ownedList.onclick=e=>{
+    const memoBtn=e.target.closest('[data-memoname]');
+    const removeBtn=e.target.closest('[data-removename]');
+    if(memoBtn){miMemoOpen.has(memoBtn.dataset.memoname)?miMemoOpen.delete(memoBtn.dataset.memoname):miMemoOpen.add(memoBtn.dataset.memoname);renderMyItems();}
+    if(removeBtn){const n=removeBtn.dataset.removename;if(myItems[n])myItems[n].owned=false;miMemoOpen.delete(n);save();renderMyItems();}
+  };
+  ownedList.querySelectorAll('[data-meminput]').forEach(ta=>{
+    ta.addEventListener('input',()=>setMyMemo(ta.dataset.meminput,ta.value));
+  });
+}
+
 function toggleTripCard(){tripOpen=!tripOpen;document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
 function toggleCompanion(){companionOpen=!companionOpen;document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';}
 
@@ -1070,15 +1252,15 @@ function showToast(){if(toastTimer)clearTimeout(toastTimer);const t=document.get
 // CHANGED: Firebase 동기화
 let currentUser=null;
 // CHANGED: save/load 포함 manageSub
-function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
-async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
-async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
+function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion,myItems,outerTab}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
+async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion,myItems,outerTab,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
+async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;if(d.myItems)myItems=d.myItems;if(d.outerTab)outerTab=d.outerTab;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
 // CHANGED: 도메인 등록 후 popup 방식으로 복구
 function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
 function doSignOut(){auth.signOut();}
-function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;}}catch(e){}}
+function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;if(d.myItems)myItems=d.myItems;if(d.outerTab)outerTab=d.outerTab;}}catch(e){}}
 // CHANGED: renderAll 업데이트
-function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';}
+function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';switchOuterTab(outerTab);}
 load();renderAll();
 // CHANGED: 모드 전환
 function switchMode(mode){
