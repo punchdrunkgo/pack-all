@@ -88,6 +88,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .item-chip.used1{background:var(--bg3);border-color:var(--border);color:var(--text3)}
 .item-chip.used2{background:#ddd;border-color:var(--border2);color:var(--text3);opacity:.5}
 
+/* 동행자 선택 */
+.companion-section{padding:10px 16px 12px;border-top:0.5px solid var(--border);display:flex;align-items:center;gap:10px}
+.companion-label{font-size:11px;color:var(--text3);font-weight:500;white-space:nowrap;letter-spacing:.04em}
+.companion-tabs{display:flex;gap:5px;flex-wrap:wrap}
+.companion-tab{font-size:12px;padding:4px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;user-select:none;transition:all .15s}
+.companion-tab:hover{border-color:var(--border2)}
+.companion-tab.active{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
 /* 나라 필수품 */
 .country-essentials{border-radius:var(--radius);padding:10px 12px;background:var(--info-bg);border:0.5px solid var(--info-border);margin-bottom:12px}
 .ce-title{font-size:11px;font-weight:500;color:var(--info-text);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
@@ -95,6 +102,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .ce-chip{font-size:11px;padding:3px 9px;border-radius:var(--radius-pill);background:#fff;border:0.5px solid var(--info-border);color:var(--info-text);cursor:pointer;transition:all .15s}
 .ce-chip:hover{background:var(--info-bg)}
 .ce-chip.added{opacity:.4;text-decoration:line-through;cursor:default;pointer-events:none}
+/* 동행자 필수품 */
+.companion-essentials{border-radius:var(--radius);padding:10px 12px;background:#f0f7ee;border:0.5px solid #a8d5a2;margin-bottom:12px}
+.companion-ess-title{font-size:11px;font-weight:500;color:#2d7a27;letter-spacing:.05em;margin-bottom:6px}
+.companion-ess-chips{display:flex;flex-wrap:wrap;gap:5px}
+.companion-ess-chip{font-size:11px;padding:3px 9px;border-radius:var(--radius-pill);background:#fff;border:0.5px solid #a8d5a2;color:#2d7a27;cursor:pointer;transition:all .15s}
+.companion-ess-chip:hover{background:#e3f2e1}
+.companion-ess-chip.added{opacity:.4;text-decoration:line-through;cursor:default;pointer-events:none}
 
 /* 우측 */
 .right-col{position:relative;display:flex;flex-direction:column;gap:14px}
@@ -346,6 +360,11 @@ const db=firebase.firestore();
     <div class="country-regions open" id="country-regions"><div id="regions-body"></div></div>
     <div id="country-info-panel"></div>
   </div>
+  <!-- CHANGED: 동행자 선택 -->
+  <div class="companion-section">
+    <div class="companion-label">동행자</div>
+    <div class="companion-tabs" id="companion-tabs"></div>
+  </div>
 </div>
 
 <!-- CHANGED: 모드 탭 -->
@@ -359,6 +378,7 @@ const db=firebase.firestore();
     <div class="panel">
       <!-- CHANGED: 준비물 목록 전면 확장 -->
       <div id="country-essentials-area"></div>
+      <div id="companion-essentials-area"></div>
       <div class="panel-section-title">예약 관리</div>
       <div class="category"><div class="cat-label">항공</div><div class="items-grid">
         <div class="item-chip" draggable="true" data-name="항공권 예약" data-cat="예약-항공">항공권 예약</div>
@@ -507,35 +527,6 @@ const db=firebase.firestore();
         <div class="item-chip" draggable="true" data-name="에너지바/행동식" data-cat="트레킹·등산">에너지바/행동식</div>
         <div class="item-chip" draggable="true" data-name="보온 물병" data-cat="트레킹·등산">보온 물병</div>
       </div></div>
-      <!-- CHANGED: 가족 카테고리 추가 -->
-      <div class="category"><div class="cat-label">가족</div><div class="items-grid">
-        <div class="item-chip" draggable="true" data-name="이유식" data-cat="가족">이유식</div>
-        <div class="item-chip" draggable="true" data-name="분유" data-cat="가족">분유</div>
-        <div class="item-chip" draggable="true" data-name="분유통" data-cat="가족">분유통</div>
-        <div class="item-chip" draggable="true" data-name="젖병" data-cat="가족">젖병</div>
-        <div class="item-chip" draggable="true" data-name="젖병 세정제" data-cat="가족">젖병 세정제</div>
-        <div class="item-chip" draggable="true" data-name="기저귀" data-cat="가족">기저귀</div>
-        <div class="item-chip" draggable="true" data-name="물티슈" data-cat="가족">물티슈</div>
-        <div class="item-chip" draggable="true" data-name="아기 로션" data-cat="가족">아기 로션</div>
-        <div class="item-chip" draggable="true" data-name="아기 선크림" data-cat="가족">아기 선크림</div>
-        <div class="item-chip" draggable="true" data-name="아기 모기 패치" data-cat="가족">아기 모기 패치</div>
-        <div class="item-chip" draggable="true" data-name="체온계" data-cat="가족">체온계</div>
-        <div class="item-chip" draggable="true" data-name="어린이 해열제" data-cat="가족">어린이 해열제</div>
-        <div class="item-chip" draggable="true" data-name="어린이 소화제" data-cat="가족">어린이 소화제</div>
-        <div class="item-chip" draggable="true" data-name="멀미약(아동용)" data-cat="가족">멀미약(아동용)</div>
-        <div class="item-chip" draggable="true" data-name="유아용 식기" data-cat="가족">유아용 식기</div>
-        <div class="item-chip" draggable="true" data-name="유아 캐리어" data-cat="가족">유아 캐리어</div>
-        <div class="item-chip" draggable="true" data-name="휴대용 유모차" data-cat="가족">휴대용 유모차</div>
-        <div class="item-chip" draggable="true" data-name="아기 장난감" data-cat="가족">아기 장난감</div>
-        <div class="item-chip" draggable="true" data-name="어린이 선글라스" data-cat="가족">어린이 선글라스</div>
-        <div class="item-chip" draggable="true" data-name="파스" data-cat="가족">파스</div>
-        <div class="item-chip" draggable="true" data-name="노인 혈압약" data-cat="가족">노인 혈압약</div>
-        <div class="item-chip" draggable="true" data-name="당뇨약" data-cat="가족">당뇨약</div>
-        <div class="item-chip" draggable="true" data-name="관절 보호대" data-cat="가족">관절 보호대</div>
-        <div class="item-chip" draggable="true" data-name="지팡이" data-cat="가족">지팡이</div>
-        <div class="item-chip" draggable="true" data-name="돋보기" data-cat="가족">돋보기</div>
-        <div class="item-chip" draggable="true" data-name="보청기 배터리" data-cat="가족">보청기 배터리</div>
-      </div></div>
     </div>
   </div>
 
@@ -653,14 +644,25 @@ const db=firebase.firestore();
 <script>
 const SK='travel-pack-v1';
 const BOOKING_CATS=['예약-항공','예약-숙소','예약-서류','예약-금융'];
-const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','수영·해변','트레킹·등산','가족','기타'];
+const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','수영·해변','트레킹·등산','기타'];
 const ALL_CATS=[...BOOKING_CATS,...ITEM_CATS];
-const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서류':'입국 서류','예약-금융':'금융·보험','전자기기':'전자기기','세면·위생':'세면·위생','의류·잡화':'의류·잡화','의약품':'의약품','금융·현금':'금융·현금','숙소·이동':'숙소·이동','수영·해변':'수영·해변','트레킹·등산':'트레킹·등산','가족':'가족','기타':'기타'};
+const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서류':'입국 서류','예약-금융':'금융·보험','전자기기':'전자기기','세면·위생':'세면·위생','의류·잡화':'의류·잡화','의약품':'의약품','금융·현금':'금융·현금','숙소·이동':'숙소·이동','수영·해변':'수영·해변','트레킹·등산':'트레킹·등산','기타':'기타'};
 // CHANGED: 캄보디아 제거, 마카오·유럽 추가
 const REGIONS={'동북아':[{c:'japan',n:'일본',f:'🇯🇵'},{c:'china',n:'중국',f:'🇨🇳'},{c:'taiwan',n:'대만',f:'🇹🇼'},{c:'hongkong',n:'홍콩',f:'🇭🇰'},{c:'macau',n:'마카오',f:'🇲🇴'},{c:'mongolia',n:'몽골',f:'🇲🇳'}],'동남아':[{c:'vietnam',n:'베트남',f:'🇻🇳'},{c:'thailand',n:'태국',f:'🇹🇭'},{c:'singapore',n:'싱가포르',f:'🇸🇬'},{c:'malaysia',n:'말레이시아',f:'🇲🇾'},{c:'indonesia',n:'인도네시아',f:'🇮🇩'},{c:'philippines',n:'필리핀',f:'🇵🇭'},{c:'laos',n:'라오스',f:'🇱🇦'},{c:'myanmar',n:'미얀마',f:'🇲🇲'}],'남아시아':[{c:'india',n:'인도',f:'🇮🇳'},{c:'nepal',n:'네팔',f:'🇳🇵'},{c:'srilanka',n:'스리랑카',f:'🇱🇰'},{c:'maldives',n:'몰디브',f:'🇲🇻'}],'중앙아시아':[{c:'kazakhstan',n:'카자흐스탄',f:'🇰🇿'},{c:'uzbekistan',n:'우즈베키스탄',f:'🇺🇿'},{c:'kyrgyzstan',n:'키르기스스탄',f:'🇰🇬'}],'유럽':[{c:'france',n:'프랑스',f:'🇫🇷'},{c:'spain',n:'스페인',f:'🇪🇸'},{c:'italy',n:'이탈리아',f:'🇮🇹'},{c:'uk',n:'영국',f:'🇬🇧'},{c:'germany',n:'독일',f:'🇩🇪'},{c:'switzerland',n:'스위스',f:'🇨🇭'},{c:'czech',n:'체코',f:'🇨🇿'},{c:'netherlands',n:'네덜란드',f:'🇳🇱'},{c:'greece',n:'그리스',f:'🇬🇷'},{c:'croatia',n:'크로아티아',f:'🇭🇷'}]};
 // CHANGED: 전 국가 준비물 개선, 유럽·마카오 추가, 캄보디아 제거
 const CI={japan:{name:'일본',flag:'🇯🇵',must:['90일 무비자','IC카드(Suica/PASMO) 필수','패스 사전 구매 유리','현금 병행 필요'],warn:['지진 행동요령 숙지','문신 노출 온천 불가','큰 소리·쓰레기 주의'],essentials:['엔화·IC카드(Suica)','변환어댑터(A타입)','우비·우산(지역별 강수)','에코백','온천용 위생파우치','보조배터리']},china:{name:'중국',flag:'🇨🇳',must:['비자 사전 발급 필수','위챗페이·알리페이 사전 설정','VPN 출국 전 설치'],warn:['SNS·Google 전면 차단','정치 발언 주의','국경 지역 촬영 금지'],essentials:['위안화(CNY) 현금','VPN 앱(출국 전 설치)','위챗페이·알리페이','마스크·공기청정 용품','변환어댑터(C타입)','멀티탭']},taiwan:{name:'대만',flag:'🇹🇼',must:['90일 무비자','이지카드 교통·편의점 통용','우산 상시 필요'],warn:['스쿠터 접촉사고 주의','태풍 시즌(7~9월) 확인'],essentials:['대만달러(TWD) 현금','이지카드(Easy Card)','우비·우산(아열대 소나기)','선크림·냉감 의류','변환어댑터(A타입)','멀미약(산악 도로)']},hongkong:{name:'홍콩',flag:'🇭🇰',must:['90일 무비자','옥토퍼스카드 교통·편의점 통용','카드 주 사용'],warn:['여름 고온다습','택시 미터기 확인','인파 속 소매치기'],essentials:['홍콩달러(HKD) 현금','옥토퍼스카드','우비·우산(빈번한 소나기)','선크림·냉감 의류','변환어댑터(BF 3핀)','냉방용 얇은 재킷']},macau:{name:'마카오',flag:'🇲🇴',must:['90일 무비자','HKD 병행 통용','페리·버스로 홍콩 연결','카지노 드레스코드 확인'],warn:['카지노 도박 과몰입 주의','여름 고온다습·태풍'],essentials:['파타카(MOP)/홍콩달러 현금','변환어댑터(BF 3핀)','선크림·냉감 의류','우비·우산(태풍 시즌)','카지노용 세미포멀 의류','편안한 워킹화']},mongolia:{name:'몽골',flag:'🇲🇳',must:['30일 무비자','ATM 제한·현금 필수','방한 레이어링 필수'],warn:['식수 정수 필수','비포장 도로 주의','의료시설 매우 부족'],essentials:['투그릭(MNT)/USD 현금','방한 레이어링(일교차 20℃)','고원 자외선차단제','방충제(초원 모기)','정수 필터·정제','비상 의약품 풀세트']},vietnam:{name:'베트남',flag:'🇻🇳',must:['전자비자(e-Visa) 사전 신청','VND 환전 필수','오토바이 교통 주의'],warn:['전자담배 반입 금지','군사시설 촬영 금지','바가지 주의'],essentials:['동(VND) 현금','모기기피제(뎅기열 주의)','선크림·냉감 의류','우비·우산(우기 집중 강수)','위장약·지사제','변환어댑터(A/C타입)']},thailand:{name:'태국',flag:'🇹🇭',must:['30일 무비자','왕실 복장 규범 존중','밧(THB) 현금 필수'],warn:['왕실 모독죄 엄격·징역','마약 사형','오토바이 사고 주의'],essentials:['밧(THB) 현금','선크림·냉감 의류','모기기피제(뎅기열)','사원 복장 커버(어깨·무릎)','우비·우산(스콜)','위장약·지사제']},singapore:{name:'싱가포르',flag:'🇸🇬',must:['90일 무비자','EZ-Link 교통 필수','법규 엄격·벌금 항목 多'],warn:['껌 반입 금지','공공 흡연 금지','음주 규제 구역'],essentials:['싱가포르달러(SGD) 현금','EZ-Link카드','선크림·냉감 의류','우비·우산(오후 스콜)','냉방용 얇은 재킷','변환어댑터(BF 3핀)']},malaysia:{name:'말레이시아',flag:'🇲🇾',must:['90일 무비자','Touch\'n Go 교통카드','다민족 문화 배려'],warn:['마약 소지 극형','공공 음주 구역 제한','할랄 문화 존중'],essentials:['링깃(MYR) 현금','Touch\'n Go카드','모기기피제(뎅기열)','우비·우산(열대 집중 강수)','복장 커버(이슬람 사원)','변환어댑터(BF 3핀)']},indonesia:{name:'인도네시아',flag:'🇮🇩',must:['30일 무비자·VOA 가능','루피아 현금 필수','화산·기상 활동 사전 확인'],warn:['마약 소지 사형','종교적 복장 규범','이안류·화산 주의'],essentials:['루피아(IDR) 현금','모기기피제(뎅기·말라리아)','선크림·래시가드','우비·우산(우기)','복장 커버(힌두 사원)','위장약·지사제']},philippines:{name:'필리핀',flag:'🇵🇭',must:['30일 무비자','페소 현금 준비','치안 지역별 격차 큼'],warn:['치안 취약 지역 회피','태풍 시즌(6~12월)','이안류·조류 주의'],essentials:['페소(PHP) 현금','선크림·냉감 의류','모기기피제(뎅기열)','우비·방수 백팩(태풍 시즌)','멀미약(선박·방카 이동)','위장약·지사제']},laos:{name:'라오스',flag:'🇱🇦',must:['VOA·전자비자 가능','낍/USD 병행 통용','교통 인프라 제한'],warn:['마약 소지 엄격','UXO 표지판 철저 준수','야간 이동 자제'],essentials:['낍(LAK)/USD 현금','모기기피제(뎅기·말라리아)','선크림','우비·우산(우기)','복장 커버(사원)','위장약·지사제']},myanmar:{name:'미얀마',flag:'🇲🇲',must:['외교부 안전 공지 필수 확인','짯/USD 현금 필수','의료 인프라 매우 취약'],warn:['정치적 불안 지속','군사시설 촬영 금지','야간 외출 자제'],essentials:['짯(MMK)/USD 현금','여행자보험(의료 취약)','방충제·말라리아 예방약','복장 커버(사원·문화)','보조배터리(정전 빈번)','비상 의약품 풀세트']},india:{name:'인도',flag:'🇮🇳',must:['e-Visa 사전 발급 필수','루피 현금 준비','지역별 기후·문화 차 큼'],warn:['도난·소매치기 주의','야간 외출 자제','음식 적응 필요'],essentials:['루피(INR) 현금','위장약·지사제(음식 적응)','모기기피제(말라리아·뎅기)','복장 커버(사원·여성 안전)','선크림','변환어댑터(C/D타입)']},nepal:{name:'네팔',flag:'🇳🇵',must:['도착비자·e-Visa 가능','트레킹 허가증 사전 발급','고산병 예방 필수'],warn:['고산병 증세 무시 절대 금지','의료시설 제한적','지진 위험'],essentials:['루피(NPR)/USD 현금','고산병약(아세타졸아미드)','방한 레이어링(일교차 큼)','트레킹화·방수 양말','고원 자외선차단제','정수 필터·알약']},srilanka:{name:'스리랑카',flag:'🇱🇰',must:['ETA 온라인 사전 신청','루피 현금 준비','우기 일정 사전 확인'],warn:['이안류 주의','사원 복장 규정 엄격','경제 상황 모니터링'],essentials:['루피(LKR) 현금','선크림·냉감 의류','모기기피제(뎅기)','복장 커버(사원)','우비·우산(몬순)','위장약·지사제']},maldives:{name:'몰디브',flag:'🇲🇻',must:['30일 무비자','USD 주 사용','리조트 사전 예약 필수'],warn:['주류 리조트 외 반입 금지','산호 훼손 처벌 엄격','이슬람 문화 존중'],essentials:['USD 현금(리조트 외)','친환경 선크림(산호 보호 의무)','래시가드·수중 카메라','방수 파우치·백팩','멀미약(스피드보트)','모기기피제(저녁)']},kazakhstan:{name:'카자흐스탄',flag:'🇰🇿',must:['30일 무비자','텡게 현금 필수','겨울 극한 방한 필수'],warn:['군사시설 촬영 금지','카드 가맹점 제한','광활한 이동 거리'],essentials:['텡게(KZT) 현금','방한·방풍 의류(혹한 대비)','선크림(여름 강한 자외선)','현지 SIM카드','위장약','변환어댑터(C타입)']},uzbekistan:{name:'우즈베키스탄',flag:'🇺🇿',must:['30일 무비자','숨 현금 필수·카드 제한','이슬람 문화 배려'],warn:['촬영 허가 장소 多','카드 사용 매우 제한적','주류 구매 어려움'],essentials:['숨(UZS) 현금(카드 제한)','선크림·냉감 의류(사막 자외선)','복장 커버(이슬람 사원)','방풍재킷(일교차 큰 사막 기후)','위장약·지사제','변환어댑터(C타입)']},kyrgyzstan:{name:'키르기스스탄',flag:'🇰🇬',must:['30일 무비자','솜 현금 필수·ATM 제한','고산병 예방 필수'],warn:['고산병 위험','의료 인프라 극히 부족','카드 거의 불가'],essentials:['솜(KGS) 현금','방한 레이어링(고산 일교차)','고산병약(아세타졸아미드)','트레킹화·방수 장비','고원 자외선차단제','정수 필터·알약']},france:{name:'프랑스',flag:'🇫🇷',must:['90일 무비자(솅겐)','카드 주 사용','주요 미술관 사전 예약 필수'],warn:['소매치기 극성(파리 관광지)','파업·시위 잦음','일부 식당 예약제'],essentials:['유로(EUR) 현금','소매치기 방지 크로스백','편안한 워킹화','방수 재킷·레이어링','주요 미술관 사전 예약증(루브르 등)','변환어댑터(C타입)']},spain:{name:'스페인',flag:'🇪🇸',must:['90일 무비자(솅겐)','낮잠 시에스타 문화','카드 주 사용'],warn:['소매치기 주의(바르셀로나·마드리드)','여름 열사병 주의(40℃+)','폭죽·축제 소음'],essentials:['유로(EUR) 현금','소매치기 방지 크로스백','선크림·냉감 의류(지중해)','편안한 워킹화(언덕 지형)','방수 재킷(지역 기온 차)','변환어댑터(C타입)']},italy:{name:'이탈리아',flag:'🇮🇹',must:['90일 무비자(솅겐)','성당·바티칸 복장 규정 엄격','카드·현금 혼용'],warn:['소매치기 주의(로마·피렌체)','택시 미터기 확인','가짜 가이드 주의'],essentials:['유로(EUR) 현금','소매치기 방지 크로스백','복장 커버(성당·바티칸)','편안한 워킹화(돌바닥)','선크림(여름 강한 자외선)','변환어댑터(C/L타입)']},uk:{name:'영국',flag:'🇬🇧',must:['6개월 무비자(솅겐과 별도)','파운드 사용·카드 주 결제','오이스터 카드 필수'],warn:['물가 매우 높음','소매치기 주의(런던)','날씨 급변·체감온도 주의'],essentials:['파운드(GBP) 현금','오이스터 카드(교통)','우비·우산·방풍재킷(연중 잦은 비)','편안한 워킹화','여행자보험','변환어댑터(G 3핀)']},germany:{name:'독일',flag:'🇩🇪',must:['90일 무비자(솅겐)','현금 필수 상점 多','대중교통 무검표 시 벌금'],warn:['일요일 상점 대부분 휴무','옥토버페스트 숙소 1년 전 예약','음주·고성 규제'],essentials:['유로(EUR) 현금(소상점 필수)','방풍·방한 재킷','편안한 워킹화','우비·우산(북부 강수)','DB·MVV 앱(교통 사전 설치)','변환어댑터(C/F타입)']},switzerland:{name:'스위스',flag:'🇨🇭',must:['90일 무비자(솅겐 별도 협정)','스위스프랑(CHF) 사용','물가 유럽 최고 수준'],warn:['의료비 극고가','알프스 산악 날씨 급변','환전 수수료 높음'],essentials:['스위스프랑(CHF) 현금','방한·방풍 의류(알프스 급변 날씨)','트레킹화(산악 관광)','고원 자외선차단제','Swiss Pass(기차·교통)','변환어댑터(J타입)']},czech:{name:'체코',flag:'🇨🇿',must:['90일 무비자(솅겐)','코루나(CZK) 사용·유로 불리','카드·현금 혼용'],warn:['공항 환전소 수수료 높음','소매치기(프라하 구시가)','택시 미터기 확인'],essentials:['코루나(CZK) 현금(유로 환율 불리)','소매치기 방지 크로스백','편안한 워킹화(돌바닥)','방수 재킷·레이어링(변덕 날씨)','변환어댑터(C/E타입)']},netherlands:{name:'네덜란드',flag:'🇳🇱',must:['90일 무비자(솅겐)','카드 주 사용','자전거 문화 발달'],warn:['자전거 전용도로 진입 금지','연중 비·강풍','환각 버섯 합법화 주의'],essentials:['유로(EUR) 현금·OV카드','우비·방풍재킷(연중 비·강풍)','편안한 워킹화','자전거 이용 시 안전 헬멧','변환어댑터(C/F타입)']},greece:{name:'그리스',flag:'🇬🇷',must:['90일 무비자(솅겐)','섬 간 페리 이동 필수','현금 필요 장소 多'],warn:['여름 폭염(40℃ 이상)','파업·교통 혼잡 잦음','유적지 복장 규정'],essentials:['유로(EUR) 현금(섬·소도시)','선크림·냉감 의류(지중해 자외선)','편안한 샌들·워킹화(돌바닥·계단)','멀미약(페리 이동)','방수 카메라·방수 가방','변환어댑터(C/F타입)']},croatia:{name:'크로아티아',flag:'🇭🇷',must:['90일 무비자(솅겐)','2023년 유로 도입','아드리아해 보트 투어 인기'],warn:['두브로브니크 여름 극심한 인파','해파리 주의(아드리아해)','성수기 숙소 조기 매진'],essentials:['유로(EUR) 현금','선크림·냉감 의류(아드리아해)','편안한 워킹화·샌들(자갈·돌바닥)','방수 가방(보트 투어)','멀미약(선박 이동)','변환어댑터(C/F타입)']}};
 
+// CHANGED: 동행자 선택 데이터
+const COMPANIONS=[
+  {key:'solo',label:'🧳 혼자',items:['이어폰','여행용 잠금장치','1인용 숙소 예약확인서','소지품 보안 파우치','여행 일정 메모','비상 연락처 카드']},
+  {key:'friends',label:'👯 친구와',items:['공동 경비 정산 앱','유심·포켓와이파이(인원수)','스피커','술·간식','단체 사진용 삼각대','그룹 단체복']},
+  {key:'couple',label:'💑 연인과',items:['커플 여권 케이스','로맨틱 레스토랑 예약','방향제·캔들','셀카봉','커플 여행 다이어리','선물·이벤트 소품']},
+  {key:'infant',label:'👶 유아와',items:['이유식','분유','분유통','젖병','젖병 세정제','기저귀','물티슈','아기 로션','아기 선크림','아기 모기 패치','체온계','어린이 해열제','유아용 식기','유아 캐리어','휴대용 유모차','아기 장난감','수유 쿠션']},
+  {key:'child',label:'🧒 아이와',items:['어린이 여권','멀미약(아동용)','어린이 소화제','어린이 선글라스','어린이 자외선차단제','간식·사탕','어린이 구명조끼','완충 헬멧(자전거 투어)','보조 배낭','게임·태블릿','이어폰(아동용)','어린이 우비']},
+  {key:'parents',label:'👴 부모님과',items:['혈압약','당뇨약','관절 보호대','파스','소화제','진통제','무릎 패드','지팡이·보행 보조','돋보기','보청기 배터리','편안한 신발','접이식 지팡이 의자','의료보험 카드','처방전 사본']},
+  {key:'undecided',label:'🤷 미정',items:[]},
+];
+let currentCompanion=null;
 let lists=[{id:1,name:'나의 첫 번째 여행',items:[],destinations:[]}];
 let currentListId=1,nextListId=2;
 let srcDragged=null,sortDragCat=null,sortDragIdx=null,sortOverIdx=null;
@@ -687,7 +689,7 @@ function renderRegions(){
         const idx=CL().destinations.indexOf(c);
         if(idx>=0)CL().destinations.splice(idx,1);else CL().destinations.push(c);
         if(infoCountry===c&&idx>=0)infoCountry=null;
-        save();renderRegions();renderListMeta();renderCountryInfoPanel();renderEssentials();
+        save();renderRegions();renderListMeta();renderCountryInfoPanel();renderEssentials();renderCompanionEssentials();
       });
       tab.addEventListener('dblclick',e=>{e.stopPropagation();infoCountry=c;infoOpen=true;renderCountryInfoPanel();});
       tabs.appendChild(tab);
@@ -717,6 +719,32 @@ function renderEssentials(){
   const destLabels=dests.map(c=>{const i=allFlat().find(x=>x.c===c);return i?i.f:'';}).join(' ');
   area.innerHTML=`<div class="country-essentials"><div class="ce-title">${destLabels} 필수 준비물</div><div class="ce-chips">${allEss.map(e=>`<span class="ce-chip${addedNames.has(e)?' added':''}" data-ename="${e}">${e}</span>`).join('')}</div></div>`;
   area.querySelectorAll('.ce-chip:not(.added)').forEach(chip=>{chip.addEventListener('click',()=>addItem(chip.dataset.ename,'기타'));});
+}
+
+// CHANGED: 동행자 탭 렌더
+function renderCompanionTabs(){
+  const wrap=document.getElementById('companion-tabs');
+  wrap.innerHTML='';
+  COMPANIONS.forEach(({key,label})=>{
+    const tab=document.createElement('span');
+    tab.className='companion-tab'+(currentCompanion===key?' active':'');
+    tab.textContent=label;
+    tab.addEventListener('click',()=>{
+      currentCompanion=currentCompanion===key?null:key;
+      save();renderCompanionTabs();renderCompanionEssentials();
+    });
+    wrap.appendChild(tab);
+  });
+}
+
+function renderCompanionEssentials(){
+  const area=document.getElementById('companion-essentials-area');
+  if(!currentCompanion){area.innerHTML='';return;}
+  const comp=COMPANIONS.find(c=>c.key===currentCompanion);
+  if(!comp||!comp.items.length){area.innerHTML='';return;}
+  const addedNames=new Set((CL().items||[]).map(i=>i.name));
+  area.innerHTML=`<div class="companion-essentials"><div class="companion-ess-title">${comp.label} 추천 준비물</div><div class="companion-ess-chips">${comp.items.map(e=>`<span class="companion-ess-chip${addedNames.has(e)?' added':''}" data-ename="${e}">${e}</span>`).join('')}</div></div>`;
+  area.querySelectorAll('.companion-ess-chip:not(.added)').forEach(chip=>{chip.addEventListener('click',()=>addItem(chip.dataset.ename,'기타'));});
 }
 
 function renderListMeta(){
@@ -788,7 +816,7 @@ function renderCatDropZones(){
       pb.addEventListener('click',e=>{e.stopPropagation();openQtyIdx=openQtyIdx===gi?null:gi;renderCatDropZones();});
       tag.appendChild(pb);
       const rb=document.createElement('span');rb.className='tag-remove';rb.textContent='✕';rb.draggable=false;
-      rb.addEventListener('click',e=>{e.stopPropagation();CL().items.splice(gi,1);openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();});
+      rb.addEventListener('click',e=>{e.stopPropagation();CL().items.splice(gi,1);openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();});
       tag.appendChild(rb);
       row.appendChild(tag);pi.appendChild(row);
       if(openQtyIdx===gi){
@@ -973,10 +1001,10 @@ function renderManageTab(){
 function addItem(name,cat){
   if(!CL().items)CL().items=[];
   CL().items.push({name,cat:cat||'기타',qty:1,checked:false,memo:'',period:null});
-  save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();
+  save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();
 }
 function addCustom(){const input=document.getElementById('custom-input');const val=input.value.trim();if(!val)return;addItem(val,'기타');input.value='';}
-function clearAll(){if(!(CL().items||[]).length)return;CL().items=[];openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();}
+function clearAll(){if(!(CL().items||[]).length)return;CL().items=[];openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();}
 function uncheckAll(){(CL().items||[]).forEach(i=>i.checked=false);save();renderCatDropZones();renderManageTab();}
 
 document.querySelectorAll('.item-chip').forEach(chip=>{
@@ -1004,15 +1032,15 @@ function showToast(){if(toastTimer)clearTimeout(toastTimer);const t=document.get
 // CHANGED: Firebase 동기화
 let currentUser=null;
 // CHANGED: save/load 포함 manageSub
-function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,manageSub}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
-async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,manageSub,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
-async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.manageSub)manageSub=d.manageSub;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
+function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,manageSub,currentCompanion}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
+async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,manageSub,currentCompanion,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
+async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
 // CHANGED: 도메인 등록 후 popup 방식으로 복구
 function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
 function doSignOut(){auth.signOut();}
-function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.manageSub)manageSub=d.manageSub;}}catch(e){}}
+function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;}}catch(e){}}
 // CHANGED: renderAll 업데이트
-function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCatDropZones();renderManageTab();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
+function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
 load();renderAll();
 // CHANGED: 모드 전환
 function switchMode(mode){
