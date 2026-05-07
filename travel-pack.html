@@ -914,6 +914,10 @@ function renderMyItems(){
     if(chip)toggleMyItem(chip.dataset.miname,chip.dataset.micat);
   };
 
+  // Enter 키 핸들러 — early return 전에 등록
+  const miInput=document.getElementById('mi-add-input');
+  if(miInput)miInput.onkeydown=e=>{if(e.key==='Enter')doMiAdd();};
+
   // — 우측: 보유 목록 —
   const owned=Object.entries(myItems).filter(([,v])=>v.owned);
   countEl.textContent=owned.length+'개';
@@ -923,13 +927,13 @@ function renderMyItems(){
   }
   const grouped={};
   owned.forEach(([name,v])=>{
+    // '기타'는 ALL_CATS에 이미 포함 — 별도 추가 불필요
     const cat=(v.cat&&ALL_CATS.includes(v.cat))?v.cat:'기타';
     if(!grouped[cat])grouped[cat]=[];
     grouped[cat].push(name);
   });
-  const allCatKeys=[...ALL_CATS,'기타'];
   let ownedHtml='<div class="mi-owned-body">';
-  allCatKeys.filter(c=>grouped[c]).forEach(cat=>{
+  ALL_CATS.filter(c=>grouped[c]).forEach(cat=>{
     ownedHtml+=`<div class="mi-owned-by-cat"><div class="mi-owned-cat-header">${CAT_LABELS[cat]||cat}</div>`;
     grouped[cat].forEach(name=>{
       const memo=myItems[name]&&myItems[name].memo||'';
@@ -951,10 +955,6 @@ function renderMyItems(){
   ownedList.querySelectorAll('[data-meminput]').forEach(ta=>{
     ta.addEventListener('input',()=>setMyMemo(ta.dataset.meminput,ta.value));
   });
-
-  // 직접 추가 Enter 키
-  const miInput=document.getElementById('mi-add-input');
-  if(miInput)miInput.onkeydown=e=>{if(e.key==='Enter')doMiAdd();};
 }
 function doMiAdd(){
   const inp=document.getElementById('mi-add-input');
