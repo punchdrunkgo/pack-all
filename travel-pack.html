@@ -39,6 +39,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .list-name-input{font-size:16px;font-weight:500;color:var(--text);border:none;border-bottom:1.5px solid var(--info-text);background:transparent;outline:none;width:100%;padding:1px 0;font-family:inherit}
 .list-meta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap}
 .dest-tag{font-size:11px;padding:2px 8px;border-radius:var(--radius-pill);background:var(--info-bg);color:var(--info-text);border:0.5px solid var(--info-border)}
+.companion-tag{font-size:11px;padding:2px 8px;border-radius:var(--radius-pill);background:#ede9f8;color:#6040b0;border:0.5px solid #b8a8e0}
 .list-delete-btn{font-size:11px;color:var(--text3);cursor:pointer;padding:3px 6px;border-radius:var(--radius)}
 .list-delete-btn:hover{background:var(--danger-bg);color:var(--danger-text)}
 .edit-hint{font-size:11px;color:var(--text3);margin-top:2px}
@@ -89,9 +90,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .item-chip.used2{background:#ddd;border-color:var(--border2);color:var(--text3);opacity:.5}
 
 /* 동행자 선택 */
-.companion-section{padding:10px 16px 12px;border-top:0.5px solid var(--border);display:flex;align-items:center;gap:10px}
-.companion-label{font-size:11px;color:var(--text3);font-weight:500;white-space:nowrap;letter-spacing:.04em}
-.companion-tabs{display:flex;gap:5px;flex-wrap:wrap}
+.companion-tabs{display:flex;gap:5px;flex-wrap:wrap;padding:0 16px 14px}
 .companion-tab{font-size:12px;padding:4px 10px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;user-select:none;transition:all .15s}
 .companion-tab:hover{border-color:var(--border2)}
 .companion-tab.active{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
@@ -354,16 +353,21 @@ const db=firebase.firestore();
   <!-- CHANGED: 여행지 선택 섹션 (trip-card 통합) -->
   <div class="trip-section">
     <div class="trip-section-header" onclick="toggleTripCard()">
-      <span class="trip-section-label">여행지 선택</span>
+      <span class="trip-section-label">여행지</span>
       <span class="trip-toggle" id="trip-toggle">접기 ▲</span>
     </div>
     <div class="country-regions open" id="country-regions"><div id="regions-body"></div></div>
     <div id="country-info-panel"></div>
   </div>
-  <!-- CHANGED: 동행자 선택 -->
-  <div class="companion-section">
-    <div class="companion-label">동행자</div>
-    <div class="companion-tabs" id="companion-tabs"></div>
+  <!-- CHANGED: 동행자 선택 - 접기/펼치기 -->
+  <div class="trip-section">
+    <div class="trip-section-header" onclick="toggleCompanion()">
+      <span class="trip-section-label">동행자</span>
+      <span class="trip-toggle" id="companion-toggle">접기 ▲</span>
+    </div>
+    <div class="country-regions open" id="companion-regions">
+      <div class="companion-tabs" id="companion-tabs"></div>
+    </div>
   </div>
 </div>
 
@@ -666,7 +670,7 @@ let currentCompanion=null;
 let lists=[{id:1,name:'나의 첫 번째 여행',items:[],destinations:[]}];
 let currentListId=1,nextListId=2;
 let srcDragged=null,sortDragCat=null,sortDragIdx=null,sortOverIdx=null;
-let toastTimer=null,tripOpen=true,infoCountry=null,infoOpen=true,openQtyIdx=null;
+let toastTimer=null,tripOpen=true,companionOpen=true,infoCountry=null,infoOpen=true,openQtyIdx=null;
 // CHANGED: 관리하기 탭 + 닉네임 상태
 let detailMode=false,currentPeriod='all',currentMode='pack',userNickname=null;
 let manageSub='all',boardDragIdx=null,openMemoSet=new Set();
@@ -708,6 +712,7 @@ function renderCountryInfoPanel(){
 }
 function toggleInfo(){infoOpen=!infoOpen;renderCountryInfoPanel();}
 function toggleTripCard(){tripOpen=!tripOpen;document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
+function toggleCompanion(){companionOpen=!companionOpen;document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';}
 
 function renderEssentials(){
   const area=document.getElementById('country-essentials-area');
@@ -731,7 +736,7 @@ function renderCompanionTabs(){
     tab.textContent=label;
     tab.addEventListener('click',()=>{
       currentCompanion=currentCompanion===key?null:key;
-      save();renderCompanionTabs();renderCompanionEssentials();
+      save();renderCompanionTabs();renderCompanionEssentials();renderListMeta();
     });
     wrap.appendChild(tab);
   });
@@ -750,8 +755,11 @@ function renderCompanionEssentials(){
 function renderListMeta(){
   const meta=document.getElementById('list-meta');
   const dests=(CL().destinations||[]);
-  if(!dests.length){meta.innerHTML='<span style="font-size:11px;color:var(--text3)">여행지를 선택해 주세요</span>';return;}
-  meta.innerHTML=dests.map(c=>{const i=allFlat().find(x=>x.c===c);return i?`<span class="dest-tag">${i.f} ${i.n}</span>`:''}).join('');
+  const compTag=currentCompanion?COMPANIONS.find(c=>c.key===currentCompanion):null;
+  const destHtml=dests.map(c=>{const i=allFlat().find(x=>x.c===c);return i?`<span class="dest-tag">${i.f} ${i.n}</span>`:''}).join('');
+  const compHtml=compTag?`<span class="companion-tag">${compTag.label}</span>`:'';
+  if(!dests.length&&!compTag){meta.innerHTML='<span style="font-size:11px;color:var(--text3)">여행지를 선택해 주세요</span>';return;}
+  meta.innerHTML=destHtml+compHtml;
 }
 
 function renderListTabs(){
@@ -1032,15 +1040,15 @@ function showToast(){if(toastTimer)clearTimeout(toastTimer);const t=document.get
 // CHANGED: Firebase 동기화
 let currentUser=null;
 // CHANGED: save/load 포함 manageSub
-function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,manageSub,currentCompanion}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
-async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,manageSub,currentCompanion,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
-async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
+function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
+async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
+async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
 // CHANGED: 도메인 등록 후 popup 방식으로 복구
 function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
 function doSignOut(){auth.signOut();}
-function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;}}catch(e){}}
+function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;}}catch(e){}}
 // CHANGED: renderAll 업데이트
-function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
+function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';}
 load();renderAll();
 // CHANGED: 모드 전환
 function switchMode(mode){
