@@ -222,6 +222,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .mi-memo-input:focus{border-color:var(--border2)}
 .mi-owned-by-cat{margin-bottom:14px}
 .mi-owned-cat-header{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin:0 0 6px;padding:4px 8px;background:var(--bg2);border-radius:var(--radius);display:inline-block}
+/* CHANGED: 내 물품 가져오기 버튼 */
+.import-myitems-btn{font-size:11px;padding:4px 10px;border-radius:var(--radius-pill);border:0.5px solid #7ec87a;background:#e3f5e1;color:#256020;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
+.import-myitems-btn:hover{background:#c8ecbf}
+.import-myitems-btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+/* 내 물품 직접 추가 폼 */
+.mi-add-row{display:flex;gap:6px;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border)}
+.mi-add-input{flex:1;font-size:12px;padding:6px 10px;border:0.5px solid var(--border);border-radius:var(--radius);background:var(--bg2);color:var(--text);font-family:inherit;outline:none}
+.mi-add-input:focus{border-color:var(--border2)}
+.mi-add-btn{font-size:12px;padding:6px 12px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg3);color:var(--text);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}
+.mi-add-btn:hover{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
 /* CHANGED: PDF 미리보기 */
 .pdf-preview-btn{width:100%;margin-top:8px;font-size:12px;padding:8px 0;border-radius:var(--radius);border:0.5px solid var(--info-border);background:var(--info-bg);color:var(--info-text);cursor:pointer;font-family:inherit;transition:all .15s}
 .pdf-preview-btn:hover{background:#cde4f7}
@@ -263,7 +273,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
   .pc-item,.pc-checkbox,.pc-progress-fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 /* CHANGED: 모달 position fix + 모드 탭 + 관리 뷰 */
-#delete-list-modal,#nickname-modal{position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center}
+#delete-list-modal,#nickname-modal,#import-myitems-modal{position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center}
 /* CHANGED: 메인 탭 강조 */
 .mode-tabs-row{display:flex;background:var(--bg3);border-radius:var(--radius-lg);padding:5px;gap:4px;border:1px solid var(--border2)}
 .mode-tab{flex:1;font-size:13px;font-weight:500;padding:11px 0;border-radius:var(--radius);border:none;background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .18s;text-align:center;letter-spacing:-.01em}
@@ -610,6 +620,8 @@ const db=firebase.firestore();
       <div class="top-row">
         <span class="section-title">내 준비물</span>
         <div style="display:flex;align-items:center;gap:6px">
+          <!-- CHANGED: 내 물품 가져오기 버튼 -->
+          <button class="import-myitems-btn" id="import-myitems-btn" onclick="openImportMyItemsModal()">📦 내 물품 가져오기</button>
           <span class="count-badge" id="count-badge">0개</span>
           <button class="clear-all-btn" onclick="clearAll()">전체 삭제</button>
         </div>
@@ -705,6 +717,21 @@ const db=firebase.firestore();
     <div class="pm-footer">
       <button class="pm-btn" onclick="closeDeleteListModal()">취소</button>
       <button class="pm-btn" style="background:var(--danger-bg);border-color:#e0b0b0;color:var(--danger-text)" onclick="confirmDeleteList()">삭제</button>
+    </div>
+  </div>
+</div>
+<!-- CHANGED: 내 물품 가져오기 모달 -->
+<div id="import-myitems-modal" style="display:none">
+  <div class="pm-overlay" onclick="closeImportModal()"></div>
+  <div class="pm-box" style="width:min(380px,88vw);max-height:none">
+    <div class="pm-header">
+      <span class="pm-header-title">📦 내 물품 가져오기</span>
+      <button class="pm-close" onclick="closeImportModal()">✕</button>
+    </div>
+    <div style="padding:20px 18px;font-size:13px;color:var(--text2);line-height:1.8" id="import-modal-msg"></div>
+    <div class="pm-footer">
+      <button class="pm-btn" onclick="closeImportModal()">취소</button>
+      <button class="pm-btn pm-btn-primary" onclick="confirmImportMyItems()">가져오기</button>
     </div>
   </div>
 </div>
@@ -921,6 +948,49 @@ function renderMyItems(){
   ownedList.querySelectorAll('[data-meminput]').forEach(ta=>{
     ta.addEventListener('input',()=>setMyMemo(ta.dataset.meminput,ta.value));
   });
+
+  // CHANGED: 직접 추가 폼 (owned panel 하단)
+  const addRow=document.createElement('div');
+  addRow.className='mi-add-row';
+  addRow.innerHTML=`<input class="mi-add-input" id="mi-add-input" type="text" placeholder="직접 추가할 물품명 입력..."><button class="mi-add-btn" id="mi-add-btn">+ 추가</button>`;
+  document.querySelector('.mi-owned-panel').appendChild(addRow);
+  const miInput=document.getElementById('mi-add-input');
+  const miBtn=document.getElementById('mi-add-btn');
+  function doMiAdd(){
+    const val=miInput.value.trim();if(!val)return;
+    myItems[val]={owned:true,memo:'',cat:'기타'};
+    miInput.value='';save();renderMyItems();
+    document.getElementById('mi-add-input')?.focus();
+  }
+  miBtn.onclick=doMiAdd;
+  miInput.addEventListener('keydown',e=>{if(e.key==='Enter')doMiAdd();});
+}
+
+// CHANGED: 내 물품 가져오기 모달
+function openImportMyItemsModal(){
+  const ownedItems=Object.entries(myItems).filter(([,v])=>v.owned);
+  if(!ownedItems.length){alert('내 물품에 저장된 물품이 없습니다.\n내 물품 탭에서 먼저 물품을 선택해 주세요.');return;}
+  const curCount=(CL().items||[]).length;
+  const msg=curCount===0
+    ?'내 물품 전체를 가져올까요?<br><span style="font-size:11px;color:var(--text3)">보유 중인 물품 '+ownedItems.length+'개가 현재 리스트에 추가됩니다.</span>'
+    :'선택된 준비물과 기존 내 물품이 섞일 수 있습니다.<br>그래도 내 물품 전체를 가져올까요?<br><span style="font-size:11px;color:var(--text3)">보유 중인 물품 '+ownedItems.length+'개를 가져와 덮어씁니다.</span>';
+  document.getElementById('import-modal-msg').innerHTML=msg;
+  document.getElementById('import-myitems-modal').style.display='flex';
+}
+function closeImportModal(){document.getElementById('import-myitems-modal').style.display='none';}
+function confirmImportMyItems(){
+  const ownedItems=Object.entries(myItems).filter(([,v])=>v.owned);
+  CL().items=ownedItems.map(([name,v])=>({name,cat:v.cat||'기타',qty:1,checked:false,memo:v.memo||'',period:null}));
+  CL().myItemsImported=true;
+  closeImportModal();save();
+  renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();updateImportBtn();
+}
+function updateImportBtn(){
+  const btn=document.getElementById('import-myitems-btn');
+  if(!btn)return;
+  const imported=!!(CL().myItemsImported);
+  btn.disabled=imported;
+  btn.title=imported?'이미 내 물품을 가져왔습니다':'내 물품 전체를 현재 리스트에 가져옵니다';
 }
 
 function toggleTripCard(){tripOpen=!tripOpen;document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
@@ -1260,7 +1330,7 @@ function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthPro
 function doSignOut(){auth.signOut();}
 function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;if(d.myItems)myItems=d.myItems;if(d.outerTab)outerTab=d.outerTab;}}catch(e){}}
 // CHANGED: renderAll 업데이트
-function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';switchOuterTab(outerTab);}
+function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();updateImportBtn();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';switchOuterTab(outerTab);}
 load();renderAll();
 // CHANGED: 모드 전환
 function switchMode(mode){
