@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(grep -n \"^</div><!-- /manage-view\\\\|manage-view.*display:none\\\\|^</div>$\" /Users/choi/pack-all/travel-pack.html)",
+      "Bash(git reset *)",
+      "Bash(git commit *)"
+    ]
+  }
+}

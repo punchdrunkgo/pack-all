@@ -843,10 +843,15 @@ function switchOuterTab(tab){
   outerTab=tab;
   const tv=document.getElementById('travel-view-wrap'),mi=document.getElementById('myitems-view');
   // travel-view-wrap이 없으면 기존 list-manager부터 manage-view까지를 숨기는 방식
-  document.querySelectorAll('.list-manager,.mode-tabs-row,#pack-view,#manage-view').forEach(el=>{
-    el.style.display=tab==='travel'?'':tab==='myitems'?'none':'';
+  const isTravel=tab==='travel';
+  document.querySelectorAll('.list-manager,.mode-tabs-row').forEach(el=>{
+    el.style.display=isTravel?'':'none';
   });
-  if(mi)mi.style.display=tab==='myitems'?'block':'none';
+  // CHANGED: 모드 상태 유지하며 pack/manage-view 전환 (CSS display:flex 노출 버그 방지)
+  const packView=document.getElementById('pack-view'),manageView=document.getElementById('manage-view');
+  if(packView)packView.style.display=isTravel?(currentMode==='pack'?'':'none'):'none';
+  if(manageView)manageView.style.display=isTravel?(currentMode==='manage'?'flex':'none'):'none';
+  if(mi)mi.style.display=isTravel?'none':'block';
   document.getElementById('nav-travel').classList.toggle('active',tab==='travel');
   document.getElementById('nav-myitems').classList.toggle('active',tab==='myitems');
   if(tab==='myitems')renderMyItems();
