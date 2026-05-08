@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pack-all.vercel.app/sitemap.xml
