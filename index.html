@@ -210,6 +210,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .auth-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius-pill);border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
 .auth-btn:hover{background:var(--bg3)}
 .auth-btn.primary{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
+/* CHANGED: 언어 전환 버튼 */
+.lang-btn{font-size:11px;padding:4px 9px;border-radius:var(--radius-pill);border:0.5px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s;font-weight:500}
+.lang-btn.active{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
+.lang-btn:hover:not(.active){background:var(--bg2);color:var(--text)}
 /* CHANGED: 내 물품 탭 — 디자인 전면 개선 */
 #myitems-view{display:none}
 .mi-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:start}
@@ -403,14 +407,19 @@ const db=firebase.firestore();
     <button class="nav-tab" id="nav-myitems" onclick="switchOuterTab('myitems')">내 물품</button>
   </div>
   <div id="auth-right">
+    <!-- CHANGED: 언어 전환 버튼 -->
+    <div style="display:flex;gap:2px">
+      <button class="lang-btn active" data-lang="ko" onclick="setLang('ko')">KO</button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+    </div>
     <div id="auth-guest" style="display:flex;align-items:center;gap:8px">
-      <span style="font-size:12px;color:var(--text3)">로그인하면 저장됩니다</span>
-      <button class="auth-btn primary" onclick="signInWithGoogle()">Google로 로그인</button>
+      <span id="auth-guest-hint" style="font-size:12px;color:var(--text3)">로그인하면 저장됩니다</span>
+      <button class="auth-btn primary" id="auth-signin-btn" onclick="signInWithGoogle()">Google로 로그인</button>
     </div>
     <div id="auth-user" style="display:none;align-items:center;gap:8px">
       <img id="auth-photo" style="width:24px;height:24px;border-radius:50%;border:0.5px solid var(--border)" alt="">
       <span id="auth-name" style="font-size:12px;color:var(--text)" title="더블클릭해서 닉네임 수정"></span>
-      <button class="auth-btn" onclick="doSignOut()">로그아웃</button>
+      <button class="auth-btn" id="auth-signout-btn" onclick="doSignOut()">로그아웃</button>
     </div>
   </div>
 </div>
@@ -693,7 +702,7 @@ const db=firebase.firestore();
         <div class="progress-bar"><div class="progress-fill" id="board-progress" style="width:0%"></div></div>
         <span class="progress-text" id="board-progress-text">0%</span>
       </div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">카드를 드래그해서 일정을 배정하세요</div>
+      <div id="board-drag-hint" style="font-size:11px;color:var(--text3);margin-bottom:8px">카드를 드래그해서 일정을 배정하세요</div>
       <div class="manage-board" id="manage-board"></div>
     </div>
   </div>
@@ -728,7 +737,7 @@ const db=firebase.firestore();
   <div class="pm-box" style="width:min(380px,88vw);max-height:none">
     <div class="pm-header"><span class="pm-header-title">✈️ 환영합니다</span></div>
     <div style="padding:20px 18px">
-      <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">pack-all에서 사용할 닉네임을 입력해주세요.</p>
+      <p id="nickname-hint-text" style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.6">pack-all에서 사용할 닉네임을 입력해주세요.</p>
       <input id="nickname-input" type="text" maxlength="20" placeholder="닉네임 (최대 20자)" style="width:100%;font-size:13px;padding:9px 12px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);color:var(--text);outline:none;font-family:inherit;display:block">
     </div>
     <div class="pm-footer"><button class="pm-btn pm-btn-primary" onclick="saveNickname()">시작하기</button></div>
@@ -788,6 +797,11 @@ const db=firebase.firestore();
 <div class="save-toast" id="toast">저장됨 ✓</div>
 
 <script>
+// CHANGED: 언어 상태 (가장 먼저 초기화)
+let lang=localStorage.getItem('pack-all-lang')||'ko';
+function t(k){return(UI_TEXT[lang]||UI_TEXT.ko)[k]||UI_TEXT.ko[k]||k;}
+function iname(n){return lang==='en'?(ITEM_EN[n]||n):n;}
+function clabel(c){return lang==='en'?(CAT_LABELS_EN[c]||CAT_LABELS[c]||c):(CAT_LABELS[c]||c);}
 const SK='travel-pack-v1';
 const BOOKING_CATS=['예약-항공','예약-숙소','예약-서류','예약-금융'];
 const ITEM_CATS=['전자기기','세면·위생','의류·잡화','의약품','금융·현금','숙소·이동','수영·해변','트레킹·등산','더위대비','추위대비','기타'];
@@ -797,6 +811,247 @@ const CAT_LABELS={'예약-항공':'항공','예약-숙소':'숙소','예약-서�
 const REGIONS={'동북아':[{c:'japan',n:'일본',f:'🇯🇵'},{c:'china',n:'중국',f:'🇨🇳'},{c:'taiwan',n:'대만',f:'🇹🇼'},{c:'hongkong',n:'홍콩',f:'🇭🇰'},{c:'macau',n:'마카오',f:'🇲🇴'},{c:'mongolia',n:'몽골',f:'🇲🇳'}],'동남아':[{c:'vietnam',n:'베트남',f:'🇻🇳'},{c:'thailand',n:'태국',f:'🇹🇭'},{c:'singapore',n:'싱가포르',f:'🇸🇬'},{c:'malaysia',n:'말레이시아',f:'🇲🇾'},{c:'indonesia',n:'인도네시아',f:'🇮🇩'},{c:'philippines',n:'필리핀',f:'🇵🇭'},{c:'laos',n:'라오스',f:'🇱🇦'},{c:'myanmar',n:'미얀마',f:'🇲🇲'}],'남아시아':[{c:'india',n:'인도',f:'🇮🇳'},{c:'nepal',n:'네팔',f:'🇳🇵'},{c:'srilanka',n:'스리랑카',f:'🇱🇰'},{c:'maldives',n:'몰디브',f:'🇲🇻'}],'중앙아시아':[{c:'kazakhstan',n:'카자흐스탄',f:'🇰🇿'},{c:'uzbekistan',n:'우즈베키스탄',f:'🇺🇿'},{c:'kyrgyzstan',n:'키르기스스탄',f:'🇰🇬'}],'유럽':[{c:'france',n:'프랑스',f:'🇫🇷'},{c:'spain',n:'스페인',f:'🇪🇸'},{c:'italy',n:'이탈리아',f:'🇮🇹'},{c:'uk',n:'영국',f:'🇬🇧'},{c:'germany',n:'독일',f:'🇩🇪'},{c:'switzerland',n:'스위스',f:'🇨🇭'},{c:'czech',n:'체코',f:'🇨🇿'},{c:'netherlands',n:'네덜란드',f:'🇳🇱'},{c:'greece',n:'그리스',f:'🇬🇷'},{c:'croatia',n:'크로아티아',f:'🇭🇷'}]};
 // CHANGED: 전 국가 준비물 개선, 유럽·마카오 추가, 캄보디아 제거
 const CI={japan:{name:'일본',flag:'🇯🇵',must:['90일 무비자','IC카드(Suica/PASMO) 필수','패스 사전 구매 유리','현금 병행 필요'],warn:['지진 행동요령 숙지','문신 노출 온천 불가','큰 소리·쓰레기 주의'],essentials:['엔화·IC카드(Suica)','변환어댑터(A타입)','우비·우산(지역별 강수)','에코백','온천용 위생파우치','보조배터리']},china:{name:'중국',flag:'🇨🇳',must:['비자 사전 발급 필수','위챗페이·알리페이 사전 설정','VPN 출국 전 설치'],warn:['SNS·Google 전면 차단','정치 발언 주의','국경 지역 촬영 금지'],essentials:['위안화(CNY) 현금','VPN 앱(출국 전 설치)','위챗페이·알리페이','마스크·공기청정 용품','변환어댑터(C타입)','멀티탭']},taiwan:{name:'대만',flag:'🇹🇼',must:['90일 무비자','이지카드 교통·편의점 통용','우산 상시 필요'],warn:['스쿠터 접촉사고 주의','태풍 시즌(7~9월) 확인'],essentials:['대만달러(TWD) 현금','이지카드(Easy Card)','우비·우산(아열대 소나기)','선크림·냉감 의류','변환어댑터(A타입)','멀미약(산악 도로)']},hongkong:{name:'홍콩',flag:'🇭🇰',must:['90일 무비자','옥토퍼스카드 교통·편의점 통용','카드 주 사용'],warn:['여름 고온다습','택시 미터기 확인','인파 속 소매치기'],essentials:['홍콩달러(HKD) 현금','옥토퍼스카드','우비·우산(빈번한 소나기)','선크림·냉감 의류','변환어댑터(BF 3핀)','냉방용 얇은 재킷']},macau:{name:'마카오',flag:'🇲🇴',must:['90일 무비자','HKD 병행 통용','페리·버스로 홍콩 연결','카지노 드레스코드 확인'],warn:['카지노 도박 과몰입 주의','여름 고온다습·태풍'],essentials:['파타카(MOP)/홍콩달러 현금','변환어댑터(BF 3핀)','선크림·냉감 의류','우비·우산(태풍 시즌)','카지노용 세미포멀 의류','편안한 워킹화']},mongolia:{name:'몽골',flag:'🇲🇳',must:['30일 무비자','ATM 제한·현금 필수','방한 레이어링 필수'],warn:['식수 정수 필수','비포장 도로 주의','의료시설 매우 부족'],essentials:['투그릭(MNT)/USD 현금','방한 레이어링(일교차 20℃)','고원 자외선차단제','방충제(초원 모기)','정수 필터·정제','비상 의약품 풀세트']},vietnam:{name:'베트남',flag:'🇻🇳',must:['전자비자(e-Visa) 사전 신청','VND 환전 필수','오토바이 교통 주의'],warn:['전자담배 반입 금지','군사시설 촬영 금지','바가지 주의'],essentials:['동(VND) 현금','모기기피제(뎅기열 주의)','선크림·냉감 의류','우비·우산(우기 집중 강수)','위장약·지사제','변환어댑터(A/C타입)']},thailand:{name:'태국',flag:'🇹🇭',must:['30일 무비자','왕실 복장 규범 존중','밧(THB) 현금 필수'],warn:['왕실 모독죄 엄격·징역','마약 사형','오토바이 사고 주의'],essentials:['밧(THB) 현금','선크림·냉감 의류','모기기피제(뎅기열)','사원 복장 커버(어깨·무릎)','우비·우산(스콜)','위장약·지사제']},singapore:{name:'싱가포르',flag:'🇸🇬',must:['90일 무비자','EZ-Link 교통 필수','법규 엄격·벌금 항목 多'],warn:['껌 반입 금지','공공 흡연 금지','음주 규제 구역'],essentials:['싱가포르달러(SGD) 현금','EZ-Link카드','선크림·냉감 의류','우비·우산(오후 스콜)','냉방용 얇은 재킷','변환어댑터(BF 3핀)']},malaysia:{name:'말레이시아',flag:'🇲🇾',must:['90일 무비자','Touch\'n Go 교통카드','다민족 문화 배려'],warn:['마약 소지 극형','공공 음주 구역 제한','할랄 문화 존중'],essentials:['링깃(MYR) 현금','Touch\'n Go카드','모기기피제(뎅기열)','우비·우산(열대 집중 강수)','복장 커버(이슬람 사원)','변환어댑터(BF 3핀)']},indonesia:{name:'인도네시아',flag:'🇮🇩',must:['30일 무비자·VOA 가능','루피아 현금 필수','화산·기상 활동 사전 확인'],warn:['마약 소지 사형','종교적 복장 규범','이안류·화산 주의'],essentials:['루피아(IDR) 현금','모기기피제(뎅기·말라리아)','선크림·래시가드','우비·우산(우기)','복장 커버(힌두 사원)','위장약·지사제']},philippines:{name:'필리핀',flag:'🇵🇭',must:['30일 무비자','페소 현금 준비','치안 지역별 격차 큼'],warn:['치안 취약 지역 회피','태풍 시즌(6~12월)','이안류·조류 주의'],essentials:['페소(PHP) 현금','선크림·냉감 의류','모기기피제(뎅기열)','우비·방수 백팩(태풍 시즌)','멀미약(선박·방카 이동)','위장약·지사제']},laos:{name:'라오스',flag:'🇱🇦',must:['VOA·전자비자 가능','낍/USD 병행 통용','교통 인프라 제한'],warn:['마약 소지 엄격','UXO 표지판 철저 준수','야간 이동 자제'],essentials:['낍(LAK)/USD 현금','모기기피제(뎅기·말라리아)','선크림','우비·우산(우기)','복장 커버(사원)','위장약·지사제']},myanmar:{name:'미얀마',flag:'🇲🇲',must:['외교부 안전 공지 필수 확인','짯/USD 현금 필수','의료 인프라 매우 취약'],warn:['정치적 불안 지속','군사시설 촬영 금지','야간 외출 자제'],essentials:['짯(MMK)/USD 현금','여행자보험(의료 취약)','방충제·말라리아 예방약','복장 커버(사원·문화)','보조배터리(정전 빈번)','비상 의약품 풀세트']},india:{name:'인도',flag:'🇮🇳',must:['e-Visa 사전 발급 필수','루피 현금 준비','지역별 기후·문화 차 큼'],warn:['도난·소매치기 주의','야간 외출 자제','음식 적응 필요'],essentials:['루피(INR) 현금','위장약·지사제(음식 적응)','모기기피제(말라리아·뎅기)','복장 커버(사원·여성 안전)','선크림','변환어댑터(C/D타입)']},nepal:{name:'네팔',flag:'🇳🇵',must:['도착비자·e-Visa 가능','트레킹 허가증 사전 발급','고산병 예방 필수'],warn:['고산병 증세 무시 절대 금지','의료시설 제한적','지진 위험'],essentials:['루피(NPR)/USD 현금','고산병약(아세타졸아미드)','방한 레이어링(일교차 큼)','트레킹화·방수 양말','고원 자외선차단제','정수 필터·알약']},srilanka:{name:'스리랑카',flag:'🇱🇰',must:['ETA 온라인 사전 신청','루피 현금 준비','우기 일정 사전 확인'],warn:['이안류 주의','사원 복장 규정 엄격','경제 상황 모니터링'],essentials:['루피(LKR) 현금','선크림·냉감 의류','모기기피제(뎅기)','복장 커버(사원)','우비·우산(몬순)','위장약·지사제']},maldives:{name:'몰디브',flag:'🇲🇻',must:['30일 무비자','USD 주 사용','리조트 사전 예약 필수'],warn:['주류 리조트 외 반입 금지','산호 훼손 처벌 엄격','이슬람 문화 존중'],essentials:['USD 현금(리조트 외)','친환경 선크림(산호 보호 의무)','래시가드·수중 카메라','방수 파우치·백팩','멀미약(스피드보트)','모기기피제(저녁)']},kazakhstan:{name:'카자흐스탄',flag:'🇰🇿',must:['30일 무비자','텡게 현금 필수','겨울 극한 방한 필수'],warn:['군사시설 촬영 금지','카드 가맹점 제한','광활한 이동 거리'],essentials:['텡게(KZT) 현금','방한·방풍 의류(혹한 대비)','선크림(여름 강한 자외선)','현지 SIM카드','위장약','변환어댑터(C타입)']},uzbekistan:{name:'우즈베키스탄',flag:'🇺🇿',must:['30일 무비자','숨 현금 필수·카드 제한','이슬람 문화 배려'],warn:['촬영 허가 장소 多','카드 사용 매우 제한적','주류 구매 어려움'],essentials:['숨(UZS) 현금(카드 제한)','선크림·냉감 의류(사막 자외선)','복장 커버(이슬람 사원)','방풍재킷(일교차 큰 사막 기후)','위장약·지사제','변환어댑터(C타입)']},kyrgyzstan:{name:'키르기스스탄',flag:'🇰🇬',must:['30일 무비자','솜 현금 필수·ATM 제한','고산병 예방 필수'],warn:['고산병 위험','의료 인프라 극히 부족','카드 거의 불가'],essentials:['솜(KGS) 현금','방한 레이어링(고산 일교차)','고산병약(아세타졸아미드)','트레킹화·방수 장비','고원 자외선차단제','정수 필터·알약']},france:{name:'프랑스',flag:'🇫🇷',must:['90일 무비자(솅겐)','카드 주 사용','주요 미술관 사전 예약 필수'],warn:['소매치기 극성(파리 관광지)','파업·시위 잦음','일부 식당 예약제'],essentials:['유로(EUR) 현금','소매치기 방지 크로스백','편안한 워킹화','방수 재킷·레이어링','주요 미술관 사전 예약증(루브르 등)','변환어댑터(C타입)']},spain:{name:'스페인',flag:'🇪🇸',must:['90일 무비자(솅겐)','낮잠 시에스타 문화','카드 주 사용'],warn:['소매치기 주의(바르셀로나·마드리드)','여름 열사병 주의(40℃+)','폭죽·축제 소음'],essentials:['유로(EUR) 현금','소매치기 방지 크로스백','선크림·냉감 의류(지중해)','편안한 워킹화(언덕 지형)','방수 재킷(지역 기온 차)','변환어댑터(C타입)']},italy:{name:'이탈리아',flag:'🇮🇹',must:['90일 무비자(솅겐)','성당·바티칸 복장 규정 엄격','카드·현금 혼용'],warn:['소매치기 주의(로마·피렌체)','택시 미터기 확인','가짜 가이드 주의'],essentials:['유로(EUR) 현금','소매치기 방지 크로스백','복장 커버(성당·바티칸)','편안한 워킹화(돌바닥)','선크림(여름 강한 자외선)','변환어댑터(C/L타입)']},uk:{name:'영국',flag:'🇬🇧',must:['6개월 무비자(솅겐과 별도)','파운드 사용·카드 주 결제','오이스터 카드 필수'],warn:['물가 매우 높음','소매치기 주의(런던)','날씨 급변·체감온도 주의'],essentials:['파운드(GBP) 현금','오이스터 카드(교통)','우비·우산·방풍재킷(연중 잦은 비)','편안한 워킹화','여행자보험','변환어댑터(G 3핀)']},germany:{name:'독일',flag:'🇩🇪',must:['90일 무비자(솅겐)','현금 필수 상점 多','대중교통 무검표 시 벌금'],warn:['일요일 상점 대부분 휴무','옥토버페스트 숙소 1년 전 예약','음주·고성 규제'],essentials:['유로(EUR) 현금(소상점 필수)','방풍·방한 재킷','편안한 워킹화','우비·우산(북부 강수)','DB·MVV 앱(교통 사전 설치)','변환어댑터(C/F타입)']},switzerland:{name:'스위스',flag:'🇨🇭',must:['90일 무비자(솅겐 별도 협정)','스위스프랑(CHF) 사용','물가 유럽 최고 수준'],warn:['의료비 극고가','알프스 산악 날씨 급변','환전 수수료 높음'],essentials:['스위스프랑(CHF) 현금','방한·방풍 의류(알프스 급변 날씨)','트레킹화(산악 관광)','고원 자외선차단제','Swiss Pass(기차·교통)','변환어댑터(J타입)']},czech:{name:'체코',flag:'🇨🇿',must:['90일 무비자(솅겐)','코루나(CZK) 사용·유로 불리','카드·현금 혼용'],warn:['공항 환전소 수수료 높음','소매치기(프라하 구시가)','택시 미터기 확인'],essentials:['코루나(CZK) 현금(유로 환율 불리)','소매치기 방지 크로스백','편안한 워킹화(돌바닥)','방수 재킷·레이어링(변덕 날씨)','변환어댑터(C/E타입)']},netherlands:{name:'네덜란드',flag:'🇳🇱',must:['90일 무비자(솅겐)','카드 주 사용','자전거 문화 발달'],warn:['자전거 전용도로 진입 금지','연중 비·강풍','환각 버섯 합법화 주의'],essentials:['유로(EUR) 현금·OV카드','우비·방풍재킷(연중 비·강풍)','편안한 워킹화','자전거 이용 시 안전 헬멧','변환어댑터(C/F타입)']},greece:{name:'그리스',flag:'🇬🇷',must:['90일 무비자(솅겐)','섬 간 페리 이동 필수','현금 필요 장소 多'],warn:['여름 폭염(40℃ 이상)','파업·교통 혼잡 잦음','유적지 복장 규정'],essentials:['유로(EUR) 현금(섬·소도시)','선크림·냉감 의류(지중해 자외선)','편안한 샌들·워킹화(돌바닥·계단)','멀미약(페리 이동)','방수 카메라·방수 가방','변환어댑터(C/F타입)']},croatia:{name:'크로아티아',flag:'🇭🇷',must:['90일 무비자(솅겐)','2023년 유로 도입','아드리아해 보트 투어 인기'],warn:['두브로브니크 여름 극심한 인파','해파리 주의(아드리아해)','성수기 숙소 조기 매진'],essentials:['유로(EUR) 현금','선크림·냉감 의류(아드리아해)','편안한 워킹화·샌들(자갈·돌바닥)','방수 가방(보트 투어)','멀미약(선박 이동)','변환어댑터(C/F타입)']}};
+
+// CHANGED: 영어 번역 데이터
+const ITEM_EN={
+  '항공권 예약':'Flight Booking','좌석 선택':'Seat Selection','수하물 추가':'Add Baggage','기내식 신청':'In-flight Meal',
+  '숙소 예약':'Hotel Booking','체크인 확인':'Check-in Confirm','픽업 서비스':'Pickup Service',
+  '여권사본':'Passport Copy','비자 신청':'Visa Application','여권 유효기간 확인':'Passport Validity Check',
+  '각종바우처':'Vouchers','국제운전면허증':"Intl Driver's License",'입국신고서':'Entry/Departure Card','비상연락망(대사관)':'Embassy Contact',
+  '여행자보험':'Travel Insurance','환전':'Currency Exchange','트래블로그':'Travelog Card','트래블월렛':'Travel Wallet',
+  '비상용 카드':'Emergency Card','로밍 신청':'Roaming Plan',
+  '스마트폰 충전기':'Phone Charger','보조배터리':'Power Bank','이어폰':'Earphones','카메라':'Camera',
+  '여분 케이블':'Extra Cable','멀티어댑터':'Multi Adapter','멀티탭':'Power Strip','노트북':'Laptop',
+  'SD카드':'SD Card','유심칩':'SIM Card','셀카봉/삼각대':'Selfie Stick / Tripod','헤어드라이기':'Hair Dryer',
+  '고데기':'Hair Straightener','휴대용 선풍기':'Portable Fan',
+  '용기 소분':'Travel Containers','칫솔':'Toothbrush','치약':'Toothpaste','가글':'Mouthwash',
+  '샴푸':'Shampoo','린스':'Conditioner','바디워시':'Body Wash','폼클렌징':'Foam Cleanser',
+  '스킨':'Toner','로션':'Lotion','선크림':'Sunscreen','메이크업 화장품':'Makeup','면도기':'Razor',
+  '인공눈물':'Eye Drops','빗':'Comb','머리끈':'Hair Tie','면봉':'Cotton Swab','화장솜':'Cotton Pad',
+  '손톱깎이':'Nail Clipper','마스크':'Face Mask','손소독제':'Hand Sanitizer',
+  '여벌옷':'Extra Clothes','잠옷':'Pajamas','속옷':'Underwear','양말':'Socks','수영복':'Swimsuit',
+  '가디건':'Cardigan','담요':'Blanket','스카프':'Scarf','우산':'Umbrella','우비':'Raincoat',
+  '선글라스':'Sunglasses','모자':'Hat','슬리퍼':'Slippers','운동화':'Sneakers','자물쇠':'Lock',
+  '비닐봉지':'Plastic Bag','지퍼백':'Ziplock Bag',
+  '종합감기약':'Cold Medicine','소화제':'Digestive Aid','소염제':'Anti-inflammatory','진통제':'Painkiller',
+  '지사제':'Anti-diarrheal','밴드':'Band-aid','연고':'Ointment','파스':'Pain Patch','멀미약':'Motion Sickness Med',
+  '모기기피제':'Mosquito Repellent','여성위생용품':'Feminine Hygiene','처방약':'Prescription Meds',
+  '신용카드':'Credit Card','현지화폐':'Local Currency','비상금':'Emergency Cash',
+  '수면안대':'Eye Mask','목베개':'Neck Pillow','귀마개':'Earplugs','수건':'Towel','필기구':'Stationery',
+  '보조가방':'Day Bag','샤워기 필터':'Shower Filter','나무젓가락':'Disposable Chopsticks','간식':'Snacks',
+  '스노클링 마스크':'Snorkel Mask','수경':'Swim Goggles','수영 핀':'Swim Fins','비치타올':'Beach Towel',
+  '방수가방':'Waterproof Bag','아쿠아슈즈':'Water Shoes','방수 파우치':'Waterproof Pouch','래시가드':'Rash Guard',
+  '구명조끼':'Life Jacket','방수 폰케이스':'Waterproof Phone Case','비치매트':'Beach Mat',
+  '트레킹화':'Trekking Shoes','등산 스틱':'Trekking Poles','등산 배낭':'Hiking Backpack','방수 재킷':'Waterproof Jacket',
+  '등산 양말':'Hiking Socks','무릎 보호대':'Knee Brace','헤드랜턴':'Headlamp','트레킹 스패츠':'Gaiters',
+  '에너지바/행동식':'Energy Bars','보온 물병':'Insulated Bottle',
+  '손선풍기':'Handheld Fan','쿨링 스프레이':'Cooling Spray','쿨토시':'Cooling Arm Sleeves','아이스팩':'Ice Pack',
+  '냉감 의류':'Cooling Clothes','물통':'Water Bottle','전해질 보충제':'Electrolyte Supplement',
+  '핫팩':'Hand Warmers','발 핫팩':'Foot Warmers','목도리':'Muffler','장갑':'Gloves','모자(방한)':'Winter Hat',
+  '내복':'Thermal Underwear','패딩':'Puffer Jacket','방풍 재킷':'Windbreaker','히트텍':'Heattech',
+  '보온 양말':'Thermal Socks','방한 부츠':'Winter Boots','립밤':'Lip Balm','핸드크림':'Hand Cream',
+  // 동행자 전용
+  '이유식':'Baby Food','분유':'Baby Formula','분유통':'Formula Container','젖병':'Baby Bottle',
+  '젖병 세정제':'Bottle Cleaner','기저귀':'Diapers','물티슈':'Baby Wipes','아기 로션':'Baby Lotion',
+  '아기 선크림':'Baby Sunscreen','아기 모기 패치':'Baby Mosquito Patch','체온계':'Thermometer',
+  '어린이 해열제':"Children's Fever Med",'유아용 식기':'Baby Utensils','유아 캐리어':'Baby Carrier',
+  '휴대용 유모차':'Portable Stroller','아기 장난감':'Baby Toys','수유 쿠션':'Nursing Pillow',
+  '어린이 여권':"Child's Passport",'어린이 소화제':"Children's Digestive Aid",
+  '어린이 선글라스':"Kids' Sunglasses",'어린이 자외선차단제':"Kids' Sunscreen",'간식·사탕':'Snacks & Candy',
+  '어린이 구명조끼':"Kids' Life Jacket",'완충 헬멧(자전거 투어)':'Bike Helmet','보조 배낭':'Kids Backpack',
+  '게임·태블릿':'Games & Tablet','이어폰(아동용)':"Kids' Earphones",'어린이 우비':"Kids' Raincoat",
+  '혈압약':'Blood Pressure Meds','당뇨약':'Diabetes Meds','관절 보호대':'Joint Support Brace',
+  '무릎 패드':'Knee Pads','지팡이·보행 보조':'Walking Aid','돋보기':'Reading Glasses',
+  '보청기 배터리':'Hearing Aid Battery','편안한 신발':'Comfortable Shoes','접이식 지팡이 의자':'Folding Cane Seat',
+  '의료보험 카드':'Health Insurance Card','처방전 사본':'Prescription Copy',
+  '공동 경비 정산 앱':'Expense Splitting App','유심·포켓와이파이(인원수)':'SIM/Wi-Fi (per person)',
+  '스피커':'Portable Speaker','술·간식':'Drinks & Snacks','단체 사진용 삼각대':'Group Photo Tripod',
+  '그룹 단체복':'Matching Outfits','커플 여권 케이스':'Couple Passport Holder',
+  '로맨틱 레스토랑 예약':'Romantic Dinner Reservation','방향제·캔들':'Candles & Fragrance',
+  '셀카봉':'Selfie Stick','커플 여행 다이어리':'Couple Travel Journal','선물·이벤트 소품':'Gift & Event Props',
+  // CI 필수품 전용
+  '엔화·IC카드(Suica)':'Yen & IC Card (Suica)','변환어댑터(A타입)':'Adapter (Type A)',
+  '우비·우산(지역별 강수)':'Raincoat & Umbrella','온천용 위생파우치':'Onsen Toiletry Pouch',
+  '변환어댑터(C타입)':'Adapter (Type C)','마스크·공기청정 용품':'Mask & Air Quality Items',
+  '이지카드(Easy Card)':'EasyCard','우비·우산(아열대 소나기)':'Raincoat (Tropical Showers)',
+  '냉방용 얇은 재킷':'Light Jacket (A/C)','홍콩달러(HKD) 현금':'HKD Cash',
+  '옥토퍼스카드':'Octopus Card','변환어댑터(BF 3핀)':'Adapter (BF 3-pin)',
+  '파타카(MOP)/홍콩달러 현금':'MOP/HKD Cash','카지노용 세미포멀 의류':'Smart Casual (Casino)',
+  '편안한 워킹화':'Comfortable Walking Shoes','투그릭(MNT)/USD 현금':'MNT/USD Cash',
+  '방한 레이어링(일교차 20℃)':'Layered Clothing (20°C swing)','고원 자외선차단제':'High-Altitude Sunscreen',
+  '방충제(초원 모기)':'Insect Repellent (Steppe)','정수 필터·정제':'Water Filter/Tablets',
+  '비상 의약품 풀세트':'Full Emergency Medical Kit','동(VND) 현금':'VND Cash',
+  '우비·우산(우기 집중 강수)':'Raincoat (Monsoon)','밧(THB) 현금':'THB Cash',
+  '사원 복장 커버(어깨·무릎)':'Temple Cover-up (Shoulders & Knees)',
+  '우비·우산(스콜)':'Raincoat (Squalls)','EZ-Link카드':'EZ-Link Card',
+  '우비·우산(오후 스콜)':'Raincoat (Afternoon Showers)',"Touch'n Go카드":"Touch'n Go Card",
+  '링깃(MYR) 현금':'MYR Cash','복장 커버(이슬람 사원)':'Modest Cover-up (Mosque)',
+  '루피아(IDR) 현금':'IDR Cash','선크림·래시가드':'Sunscreen & Rash Guard',
+  '우비·우산(우기)':'Raincoat (Wet Season)','복장 커버(힌두 사원)':'Cover-up (Hindu Temple)',
+  '페소(PHP) 현금':'PHP Cash','우비·방수 백팩(태풍 시즌)':'Raincoat & Waterproof Bag',
+  '낍(LAK)/USD 현금':'LAK/USD Cash','복장 커버(사원)':'Temple Cover-up',
+  '짯(MMK)/USD 현금':'MMK/USD Cash','여행자보험(의료 취약)':'Travel Insurance (Medical)',
+  '방충제·말라리아 예방약':'Insect Repellent & Malaria Meds',
+  '복장 커버(사원·문화)':'Cover-up (Temples & Culture)','루피(INR) 현금':'INR Cash',
+  '위장약·지사제(음식 적응)':'Stomach Meds (Food Adjustment)',
+  '복장 커버(사원·여성 안전)':'Cover-up (Temple & Safety)','변환어댑터(C/D타입)':'Adapter (Type C/D)',
+  '루피(NPR)/USD 현금':'NPR/USD Cash','고산병약(아세타졸아미드)':'Altitude Meds (Acetazolamide)',
+  '방한 레이어링(일교차 큼)':'Layered Clothing (Large Temp Swing)','루피(LKR) 현금':'LKR Cash',
+  '몬순':'Monsoon','USD 현금(리조트 외)':'USD Cash (Outside Resorts)',
+  '친환경 선크림(산호 보호 의무)':'Reef-Safe Sunscreen (Mandatory)',
+  '래시가드·수중 카메라':'Rash Guard & Underwater Camera','방수 파우치·백팩':'Waterproof Pouch & Bag',
+  '텡게(KZT) 현금':'KZT Cash','방한·방풍 의류(혹한 대비)':'Warm & Windproof Gear',
+  '선크림(여름 강한 자외선)':'Sunscreen (Strong Summer UV)','숨(UZS) 현금(카드 제한)':'UZS Cash (Cards Limited)',
+  '선크림·냉감 의류(사막 자외선)':'Sunscreen & Cooling Clothes','방풍재킷(일교차 큰 사막 기후)':'Windbreaker (Desert)',
+  '솜(KGS) 현금':'KGS Cash','방한 레이어링(고산 일교차)':'Layered Clothing (High-Altitude)',
+  '유로(EUR) 현금':'EUR Cash','소매치기 방지 크로스백':'Anti-Theft Crossbody Bag',
+  '주요 미술관 사전 예약증(루브르 등)':'Museum Tickets Pre-booked',
+  '선크림·냉감 의류(지중해)':'Sunscreen & Cooling Clothes','편안한 워킹화(언덕 지형)':'Walking Shoes (Hilly)',
+  '방수 재킷(지역 기온 차)':'Waterproof Jacket','스위스프랑(CHF) 현금':'CHF Cash',
+  '방한·방풍 의류(알프스 급변 날씨)':'Warm & Windproof Gear (Alps)','트레킹화(산악 관광)':'Trekking Shoes',
+  'Swiss Pass(기차·교통)':'Swiss Pass','변환어댑터(J타입)':'Adapter (Type J)',
+  '코루나(CZK) 현금(유로 환율 불리)':'CZK Cash (Euros Unfavorable)',
+  '방수 재킷·레이어링(변덕 날씨)':'Waterproof Jacket & Layers','변환어댑터(C/E타입)':'Adapter (Type C/E)',
+  '유로(EUR) 현금·OV카드':'EUR Cash & OV-chipkaart','우비·방풍재킷(연중 비·강풍)':'Raincoat & Windbreaker',
+  '변환어댑터(C/F타입)':'Adapter (Type C/F)','선크림·냉감 의류(아드리아해)':'Sunscreen & Cooling Clothes',
+  '파운드(GBP) 현금':'GBP Cash','오이스터 카드(교통)':'Oyster Card',
+  '우비·우산·방풍재킷(연중 잦은 비)':'Raincoat & Windbreaker','변환어댑터(G 3핀)':'Adapter (Type G)',
+  '유로(EUR) 현금(소상점 필수)':'EUR Cash (Cash-Only Shops)','방풍·방한 재킷':'Wind & Warm Jacket',
+  '우비·우산(북부 강수)':'Raincoat (Northern Rain)','DB·MVV 앱(교통 사전 설치)':'DB/MVV Transit App',
+  '방수 카메라·방수 가방':'Waterproof Camera & Bag',
+  '편안한 샌들·워킹화(돌바닥·계단)':'Sandals & Walking Shoes','편안한 워킹화·샌들(자갈·돌바닥)':'Walking Shoes & Sandals',
+  '변환어댑터(C/L타입)':'Adapter (Type C/L)'
+};
+const CAT_LABELS_EN={
+  '예약-항공':'Flight','예약-숙소':'Accommodation','예약-서류':'Entry Docs','예약-금융':'Finance & Insurance',
+  '전자기기':'Electronics','세면·위생':'Toiletries','의류·잡화':'Clothing','의약품':'Medicine',
+  '금융·현금':'Finance & Cash','숙소·이동':'Stay & Transit','수영·해변':'Beach & Swim','트레킹·등산':'Hiking',
+  '더위대비':'Heat Prep','추위대비':'Cold Prep','기타':'Other'
+};
+const REGION_EN={'동북아':'NE Asia','동남아':'SE Asia','남아시아':'South Asia','중앙아시아':'Central Asia','유럽':'Europe'};
+const COUNTRY_NAME_EN={
+  japan:'Japan',china:'China',taiwan:'Taiwan',hongkong:'Hong Kong',macau:'Macau',mongolia:'Mongolia',
+  vietnam:'Vietnam',thailand:'Thailand',singapore:'Singapore',malaysia:'Malaysia',indonesia:'Indonesia',
+  philippines:'Philippines',laos:'Laos',myanmar:'Myanmar',india:'India',nepal:'Nepal',
+  srilanka:'Sri Lanka',maldives:'Maldives',kazakhstan:'Kazakhstan',uzbekistan:'Uzbekistan',
+  kyrgyzstan:'Kyrgyzstan',france:'France',spain:'Spain',italy:'Italy',uk:'United Kingdom',
+  germany:'Germany',switzerland:'Switzerland',czech:'Czech Republic',netherlands:'Netherlands',
+  greece:'Greece',croatia:'Croatia'
+};
+const COMPANION_LABEL_EN={solo:'🧳 Solo',friends:'👯 With Friends',couple:'💑 With Partner',infant:'👶 With Infant',child:'🧒 With Child',parents:'👴 With Parents',undecided:'🤷 Undecided'};
+const CI_EN={
+  japan:{must:['90-day visa-free','IC card (Suica/PASMO) essential','Buy rail passes in advance','Cash still needed alongside cards'],warn:['Know earthquake emergency procedures','Tattoos may bar you from onsens','Keep noise down, no littering']},
+  china:{must:['Visa required in advance','Set up WeChat Pay / Alipay beforehand','Install VPN before departure'],warn:['Google/SNS fully blocked','Avoid political speech','No photos near military sites']},
+  taiwan:{must:['90-day visa-free','EasyCard works for transit & shops','Umbrella always needed'],warn:['Watch for scooter accidents','Check typhoon season (Jul–Sep)']},
+  hongkong:{must:['90-day visa-free','Octopus card for transit & shops','Cards widely accepted'],warn:['Very hot & humid in summer','Check taxi meters','Pickpocket risk in crowds']},
+  macau:{must:['90-day visa-free','HKD also accepted','Ferry/bus to HK available','Check casino dress codes'],warn:['Gambling addiction risk','Hot & humid in summer, typhoon risk']},
+  mongolia:{must:['30-day visa-free','Limited ATMs — cash essential','Layer up for temperature swings'],warn:['Purify all drinking water','Beware of unpaved roads','Very limited medical facilities']},
+  vietnam:{must:['e-Visa required in advance','VND cash essential','Watch out for motorbike traffic'],warn:['E-cigarettes prohibited','No photos of military sites','Watch for price gouging']},
+  thailand:{must:['30-day visa-free','Respect royal dress codes','THB cash essential'],warn:['Lèse-majesté law strictly enforced','Drugs carry death penalty','Motorbike accident risk']},
+  singapore:{must:['90-day visa-free','EZ-Link card for transit','Strict laws & heavy fines'],warn:['Gum import banned','No public smoking','Drinking restrictions in some areas']},
+  malaysia:{must:['90-day visa-free','Touch\'n Go transit card','Respect multi-ethnic culture'],warn:['Drug possession carries death penalty','Public alcohol restrictions','Respect halal culture']},
+  indonesia:{must:['30-day visa-free or VoA','IDR cash essential','Check volcanic/weather activity'],warn:['Drug possession carries death penalty','Respect religious dress codes','Rip currents & volcanic risk']},
+  philippines:{must:['30-day visa-free','PHP cash handy','Safety varies greatly by region'],warn:['Avoid high-risk areas','Typhoon season Jun–Dec','Watch for rip currents']},
+  laos:{must:['VoA / e-Visa available','LAK / USD accepted','Limited transport infrastructure'],warn:['Strict drug laws','Follow UXO warning signs carefully','Avoid night travel']},
+  myanmar:{must:['Check MOFA travel advisory first','MMK / USD cash essential','Very limited medical infrastructure'],warn:['Ongoing political instability','No photos near military sites','Avoid going out at night']},
+  india:{must:['e-Visa required in advance','INR cash needed','Climate & culture varies by region'],warn:['Watch for theft & pickpockets','Avoid going out alone at night','Allow time to adjust to food']},
+  nepal:{must:['Visa on arrival / e-Visa','Obtain trekking permits in advance','Altitude sickness prevention essential'],warn:["Never ignore altitude sickness symptoms",'Limited medical facilities','Earthquake risk']},
+  srilanka:{must:['ETA required online in advance','LKR cash needed','Check monsoon schedule'],warn:['Watch for rip currents','Strict temple dress codes','Monitor economic situation']},
+  maldives:{must:['30-day visa-free','USD mainly used','Book resorts well in advance'],warn:['Alcohol outside resorts is illegal','Damage to coral is punishable','Respect Islamic culture']},
+  kazakhstan:{must:['30-day visa-free','KZT cash essential','Extreme cold-weather gear in winter'],warn:['No photos near military sites','Card acceptance limited outside cities','Vast distances between sights']},
+  uzbekistan:{must:['30-day visa-free','UZS cash essential; cards very limited','Respect Islamic customs'],warn:['Many sites require photography permits','Card payments very rare','Alcohol hard to find']},
+  kyrgyzstan:{must:['30-day visa-free','KGS cash essential; ATMs limited','Altitude sickness prevention essential'],warn:['Altitude sickness risk','Extremely limited medical facilities','Cards almost unusable']},
+  france:{must:['90-day visa-free (Schengen)','Cards widely accepted','Book major museums in advance'],warn:['Pickpockets rampant in tourist spots','Strikes & protests common','Some restaurants require reservations']},
+  spain:{must:['90-day visa-free (Schengen)','Siesta culture affects business hours','Cards widely accepted'],warn:['Pickpockets in Barcelona & Madrid','Heat stroke risk in summer (40°C+)','Fiesta noise & fireworks']},
+  italy:{must:['90-day visa-free (Schengen)','Strict dress codes at churches & Vatican','Mix of cards and cash'],warn:['Pickpockets in Rome & Florence','Check taxi meters','Watch for fake tour guides']},
+  uk:{must:['6-month visa-free (separate from Schengen)','GBP used; cards dominate','Oyster card essential'],warn:['Very high cost of living','Pickpockets in London','Dress for sudden weather changes']},
+  germany:{must:['90-day visa-free (Schengen)','Many shops require cash','Fare inspections on public transit'],warn:['Most shops closed on Sundays','Oktoberfest accommodation books up 1 year ahead','Alcohol & noise regulations enforced']},
+  switzerland:{must:['90-day visa-free (Schengen special agreement)','Swiss Franc (CHF) used','Among the most expensive countries in Europe'],warn:['Medical costs extremely high','Alpine weather changes rapidly','High currency exchange fees']},
+  czech:{must:['90-day visa-free (Schengen)','Czech Koruna (CZK) used — euros disadvantageous','Mix of cards and cash'],warn:['High exchange fees at airport','Pickpockets in Prague Old Town','Check taxi meters']},
+  netherlands:{must:['90-day visa-free (Schengen)','Cards widely accepted','Cycling culture dominant'],warn:['Stay off bike lanes','Rain & strong wind year-round','Magic mushrooms — use with caution']},
+  greece:{must:['90-day visa-free (Schengen)','Island-hopping by ferry is a must','Cash needed in many places'],warn:['Extreme summer heat (40°C+)','Strikes & transport disruptions common','Dress codes at ancient sites']},
+  croatia:{must:['90-day visa-free (Schengen)','Euro adopted in 2023','Adriatic boat tours are a highlight'],warn:['Dubrovnik overwhelmed with tourists in summer','Jellyfish in the Adriatic','Accommodation books out early in peak season']}
+};
+const UI_TEXT={
+  ko:{
+    nav_travel:'여행 준비물',nav_myitems:'내 물품',
+    login_hint:'로그인하면 저장됩니다',sign_in:'Google로 로그인',sign_out:'로그아웃',
+    dest_label:'여행지',companion_label:'동행자',
+    collapse:'접기 ▲',expand:'펼치기 ▼',
+    tab_pack:'준비물 챙기기',tab_manage:'관리하기',
+    sec_reservation:'예약 관리',sec_essentials:'기본 준비물',sec_situational:'상황별 준비물',
+    my_pack:'내 준비물',import_btn:'📦 내 물품 가져오기',clear_all:'전체 삭제',
+    custom_placeholder:'직접 추가...',add_btn:'+ 추가',
+    msub_cat:'카테고리별',msub_board:'일정별',
+    pdf_cat:'카테고리별 PDF',pdf_board:'일정별 PDF',
+    mi_owned_title:'내 보유 물품',
+    mi_empty:'좌측에서 물품을 선택하거나<br>아래에서 직접 추가하세요',
+    mi_add_placeholder:'직접 추가할 물품명...',mi_add_btn:'추가',
+    mi_basic:'기본 준비물',mi_situation:'상황별 준비물',
+    empty_pack:'좌측 태그를 클릭하거나<br>드래그해서 추가하세요',
+    empty_manage:'준비물을 추가하면 여기서 체크할 수 있어요',
+    board_empty:'없음',board_hint:'카드를 드래그해서 일정을 배정하세요',board_click_hint:'클릭하면 기본으로 이동',
+    must_label:'챙겨야 할 것',warn_label:'주의사항',
+    ess_title:'필수 준비물',comp_ess_title:'추천 준비물',
+    detail_label:'상세 정보',select_dest:'여행지를 선택해 주세요',
+    toast:'저장됨 ✓',
+    import_title:'📦 내 물품 가져오기',import_cancel:'취소',import_confirm:'가져오기',
+    import_disabled:'이미 내 물품을 가져왔습니다',import_tooltip:'내 물품 전체를 현재 리스트에 가져옵니다',
+    delete_title:'리스트 삭제',delete_cancel:'취소',delete_delete:'삭제',
+    delete_suffix:'을(를) 삭제할까요?',delete_warn:'삭제 후 복구할 수 없습니다.',
+    nickname_title:'✈️ 환영합니다',nickname_hint:'pack-all에서 사용할 닉네임을 입력해주세요.',
+    nickname_placeholder:'닉네임 (최대 20자)',nickname_start:'시작하기',
+    pdf_title:'PDF 미리보기',pdf_print:'🖨 인쇄하기',pdf_save:'📄 저장하기 (PDF)',
+    pdf_empty:'준비물이 없습니다',packed:'챙김',
+    memo:'메모',memo_has:'메모 ✎',memo_add:'메모 추가...',
+    edit_hint:'더블클릭해서 이름 수정',edit_enter:'Enter로 저장, Esc로 취소',
+    list_delete:'삭제',
+    period_null:'기본',period_before:'여행 전',period_dayBefore:'하루 전',
+    period_day:'당일',period_airport:'공항',period_during:'여행 중',
+    rsec_booking:'예약 관리',rsec_essentials:'기본 준비물',
+    new_list:'새 리스트 ',first_trip:'나의 첫 번째 여행',
+    items_count:'개',drop_hint:'클릭 또는 드래그해서 추가',
+  },
+  en:{
+    nav_travel:'Travel Packing',nav_myitems:'My Items',
+    login_hint:'Login to save your data',sign_in:'Sign in with Google',sign_out:'Sign out',
+    dest_label:'Destination',companion_label:'Companion',
+    collapse:'Collapse ▲',expand:'Expand ▼',
+    tab_pack:'Pack Items',tab_manage:'Manage',
+    sec_reservation:'Reservations',sec_essentials:'Essentials',sec_situational:'Situational Items',
+    my_pack:'My Pack List',import_btn:'📦 Import My Items',clear_all:'Clear All',
+    custom_placeholder:'Add custom item...',add_btn:'+ Add',
+    msub_cat:'By Category',msub_board:'By Schedule',
+    pdf_cat:'Category PDF',pdf_board:'Schedule PDF',
+    mi_owned_title:'My Owned Items',
+    mi_empty:'Select items from the left<br>or add one below',
+    mi_add_placeholder:'Item name to add...',mi_add_btn:'Add',
+    mi_basic:'Essentials',mi_situation:'Situational Items',
+    empty_pack:'Click or drag items<br>from the left panel',
+    empty_manage:'Add items to check them off here',
+    board_empty:'Empty',board_hint:'Drag cards to assign a schedule',board_click_hint:'Click to move back to default',
+    must_label:'Must Bring',warn_label:'Caution',
+    ess_title:'Must-Have Items',comp_ess_title:'Recommended Items',
+    detail_label:'Details',select_dest:'Please select a destination',
+    toast:'Saved ✓',
+    import_title:'📦 Import My Items',import_cancel:'Cancel',import_confirm:'Import',
+    import_disabled:'Already imported My Items',import_tooltip:'Import all My Items to this list',
+    delete_title:'Delete List',delete_cancel:'Cancel',delete_delete:'Delete',
+    delete_suffix:' — delete this list?',delete_warn:'This action cannot be undone.',
+    nickname_title:'✈️ Welcome',nickname_hint:'Enter a nickname for your pack-all account.',
+    nickname_placeholder:'Nickname (max 20 chars)',nickname_start:'Get Started',
+    pdf_title:'PDF Preview',pdf_print:'🖨 Print',pdf_save:'📄 Save as PDF',
+    pdf_empty:'No items found',packed:'packed',
+    memo:'Memo',memo_has:'Memo ✎',memo_add:'Add memo...',
+    edit_hint:'Double-click to edit name',edit_enter:'Enter to save, Esc to cancel',
+    list_delete:'Delete',
+    period_null:'Default',period_before:'Pre-trip',period_dayBefore:'Day Before',
+    period_day:'Departure Day',period_airport:'At Airport',period_during:'During Trip',
+    rsec_booking:'Reservations',rsec_essentials:'Essentials',
+    new_list:'New List ',first_trip:'My First Trip',
+    items_count:' items',drop_hint:'Click or drag to add',
+  }
+};
 
 // CHANGED: 동행자 선택 데이터
 const COMPANIONS=[
@@ -813,7 +1068,7 @@ let currentCompanion=null;
 let myItems={};    // {name:{owned,memo,cat}}
 let miMemoOpen=new Set();
 let outerTab='travel';
-let lists=[{id:1,name:'나의 첫 번째 여행',items:[],destinations:[]}];
+let lists=[{id:1,name:t('first_trip'),items:[],destinations:[]}];
 let currentListId=1,nextListId=2;
 let srcDragged=null,sortDragCat=null,sortDragIdx=null,sortOverIdx=null;
 let toastTimer=null,tripOpen=true,companionOpen=true,infoCountry=null,infoOpen=true,openQtyIdx=null;
@@ -828,12 +1083,14 @@ function renderRegions(){
   const body=document.getElementById('regions-body');body.innerHTML='';
   Object.entries(REGIONS).forEach(([region,countries])=>{
     const div=document.createElement('div');div.className='country-region';
-    div.innerHTML=`<div class="region-label">${region}</div>`;
+    const regionLabel=lang==='en'?(REGION_EN[region]||region):region;
+    div.innerHTML=`<div class="region-label">${regionLabel}</div>`;
     const tabs=document.createElement('div');tabs.className='country-tabs';
     countries.forEach(({c,n,f})=>{
       const tab=document.createElement('div');
       tab.className='country-tab'+((CL().destinations||[]).includes(c)?' active':'');
-      tab.innerHTML=`${f} ${n}`;
+      const displayName=lang==='en'?(COUNTRY_NAME_EN[c]||n):n;
+      tab.innerHTML=`${f} ${displayName}`;
       tab.addEventListener('click',()=>{
         if(!CL().destinations)CL().destinations=[];
         const idx=CL().destinations.indexOf(c);
@@ -852,9 +1109,12 @@ function renderCountryInfoPanel(){
   const el=document.getElementById('country-info-panel');
   if(!infoCountry||!CI[infoCountry]){el.innerHTML='';return;}
   const d=CI[infoCountry];
-  const mi=d.must.map(t=>`<div class="info-item"><span class="info-dot"></span><span>${t}</span></div>`).join('');
-  const wi=d.warn.map(t=>`<div class="info-item"><span class="info-dot"></span><span>${t}</span></div>`).join('');
-  el.innerHTML=`<div style="padding:12px 16px"><div class="info-toggle" onclick="toggleInfo()"><span style="font-size:13px;font-weight:500">${d.flag} ${d.name} 상세 정보</span><span>${infoOpen?'접기 ▲':'펼치기 ▼'}</span></div>${infoOpen?`<div class="info-grid" style="margin-top:10px"><div class="info-block must"><div class="info-block-title">챙겨야 할 것</div>${mi}</div><div class="info-block warn"><div class="info-block-title">주의사항</div>${wi}</div></div>`:''}</div>`;
+  const mustArr=(lang==='en'&&CI_EN[infoCountry]?.must)||d.must;
+  const warnArr=(lang==='en'&&CI_EN[infoCountry]?.warn)||d.warn;
+  const countryName=lang==='en'?(COUNTRY_NAME_EN[infoCountry]||d.name):d.name;
+  const mi=mustArr.map(s=>`<div class="info-item"><span class="info-dot"></span><span>${s}</span></div>`).join('');
+  const wi=warnArr.map(s=>`<div class="info-item"><span class="info-dot"></span><span>${s}</span></div>`).join('');
+  el.innerHTML=`<div style="padding:12px 16px"><div class="info-toggle" onclick="toggleInfo()"><span style="font-size:13px;font-weight:500">${d.flag} ${countryName} ${t('detail_label')}</span><span>${infoOpen?t('collapse'):t('expand')}</span></div>${infoOpen?`<div class="info-grid" style="margin-top:10px"><div class="info-block must"><div class="info-block-title">${t('must_label')}</div>${mi}</div><div class="info-block warn"><div class="info-block-title">${t('warn_label')}</div>${wi}</div></div>`:''}</div>`;
 }
 function toggleInfo(){infoOpen=!infoOpen;renderCountryInfoPanel();}
 // CHANGED: 내 물품 탭 전환
@@ -917,18 +1177,18 @@ function renderMyItems(){
       return `<div class="mi-cat-group"><div class="mi-cat-label">${CAT_LABELS[cat]||cat}</div><div class="items-grid">`+
         items.map(name=>{
           const owned=!!(myItems[name]&&myItems[name].owned);
-          return `<span class="mi-chip${owned?' owned':''}" data-miname="${name}" data-micat="${cat}">${name}</span>`;
+          return `<span class="mi-chip${owned?' owned':''}" data-miname="${name}" data-micat="${cat}">${iname(name)}</span>`;
         }).join('')+
         `</div></div>`;
     }).join('');
     if(!rows.trim())return'';
     return `<div class="panel-section-title">${title}</div>${rows}`;
   }
-  srcHtml+=renderSrcSection('기본 준비물',basicCats);
+  srcHtml+=renderSrcSection(t('mi_basic'),basicCats);
   const hasSit=SITUATION_CATS.some(c=>byCat[c]&&byCat[c].length);
   if(hasSit){
     srcHtml+=`<div class="panel-divider"></div>`;
-    srcHtml+=renderSrcSection('상황별 준비물',SITUATION_CATS);
+    srcHtml+=renderSrcSection(t('mi_situation'),SITUATION_CATS);
   }
   src.innerHTML=srcHtml;
 
@@ -944,9 +1204,9 @@ function renderMyItems(){
 
   // — 우측: 보유 목록 —
   const owned=Object.entries(myItems).filter(([,v])=>v.owned);
-  countEl.textContent=owned.length+'개';
+  countEl.textContent=owned.length+(lang==='en'?' items':'개');
   if(!owned.length){
-    ownedList.innerHTML='<div class="mi-owned-body"><div class="mi-owned-empty"><span class="mi-owned-empty-icon">📦</span>좌측에서 물품을 선택하거나<br>아래에서 직접 추가하세요</div></div>';
+    ownedList.innerHTML=`<div class="mi-owned-body"><div class="mi-owned-empty"><span class="mi-owned-empty-icon">📦</span>${t('mi_empty')}</div></div>`;
     return;
   }
   const grouped={};
@@ -958,11 +1218,11 @@ function renderMyItems(){
   });
   let ownedHtml='<div class="mi-owned-body">';
   ALL_CATS.filter(c=>grouped[c]).forEach(cat=>{
-    ownedHtml+=`<div class="mi-owned-by-cat"><div class="mi-owned-cat-header">${CAT_LABELS[cat]||cat}</div>`;
+    ownedHtml+=`<div class="mi-owned-by-cat"><div class="mi-owned-cat-header">${clabel(cat)}</div>`;
     grouped[cat].forEach(name=>{
       const memo=myItems[name]&&myItems[name].memo||'';
       const memoOpen=miMemoOpen.has(name);
-      ownedHtml+=`<div class="mi-owned-item"><div class="mi-owned-row"><span class="mi-owned-name">${name}</span><div class="mi-owned-actions"><span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">${memoOpen?'메모 ▲':'메모'}</span><span class="mi-remove" data-removename="${name}">✕</span></div></div>${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="메모 (구매처, 상태, 수량 등)">${memo}</textarea></div>`:''}</div>`;
+      ownedHtml+=`<div class="mi-owned-item"><div class="mi-owned-row"><span class="mi-owned-name">${iname(name)}</span><div class="mi-owned-actions"><span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">${memoOpen?t('memo')+' ▲':t('memo')}</span><span class="mi-remove" data-removename="${name}">✕</span></div></div>${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="${t('memo_add')}">${memo}</textarea></div>`:''}</div>`;
     });
     ownedHtml+=`</div>`;
   });
@@ -992,11 +1252,12 @@ function doMiAdd(){
 // CHANGED: 내 물품 가져오기 모달
 function openImportMyItemsModal(){
   const ownedItems=Object.entries(myItems).filter(([,v])=>v.owned);
-  if(!ownedItems.length){alert('내 물품에 저장된 물품이 없습니다.\n내 물품 탭에서 먼저 물품을 선택해 주세요.');return;}
+  if(!ownedItems.length){alert(t('import_empty'));return;}
   const curCount=(CL().items||[]).length;
+  const cnt=ownedItems.length+(lang==='en'?' items':'개');
   const msg=curCount===0
-    ?'내 물품 전체를 가져올까요?<br><span style="font-size:11px;color:var(--text3)">보유 중인 물품 '+ownedItems.length+'개가 현재 리스트에 추가됩니다.</span>'
-    :'선택된 준비물과 기존 내 물품이 섞일 수 있습니다.<br>그래도 내 물품 전체를 가져올까요?<br><span style="font-size:11px;color:var(--text3)">보유 중인 물품 '+ownedItems.length+'개를 가져와 덮어씁니다.</span>';
+    ?(lang==='en'?`Import all My Items?<br><span style="font-size:11px;color:var(--text3)">${cnt} will be added to the current list.</span>`:'내 물품 전체를 가져올까요?<br><span style="font-size:11px;color:var(--text3)">보유 중인 물품 '+cnt+'가 현재 리스트에 추가됩니다.</span>')
+    :(lang==='en'?`Your current items may be mixed with My Items.<br>Import anyway?<br><span style="font-size:11px;color:var(--text3)">${cnt} will overwrite the current list.</span>`:'선택된 준비물과 기존 내 물품이 섞일 수 있습니다.<br>그래도 내 물품 전체를 가져올까요?<br><span style="font-size:11px;color:var(--text3)">보유 중인 물품 '+cnt+'를 가져와 덮어씁니다.</span>');
   document.getElementById('import-modal-msg').innerHTML=msg;
   document.getElementById('import-myitems-modal').style.display='flex';
 }
@@ -1013,11 +1274,11 @@ function updateImportBtn(){
   if(!btn)return;
   const imported=!!(CL().myItemsImported);
   btn.disabled=imported;
-  btn.title=imported?'이미 내 물품을 가져왔습니다':'내 물품 전체를 현재 리스트에 가져옵니다';
+  btn.title=imported?t('import_disabled'):t('import_tooltip');
 }
 
-function toggleTripCard(){tripOpen=!tripOpen;document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';}
-function toggleCompanion(){companionOpen=!companionOpen;document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';}
+function toggleTripCard(){tripOpen=!tripOpen;document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?t('collapse'):t('expand');}
+function toggleCompanion(){companionOpen=!companionOpen;document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?t('collapse'):t('expand');}
 
 function renderEssentials(){
   const area=document.getElementById('country-essentials-area');
@@ -1027,7 +1288,7 @@ function renderEssentials(){
   const allEss=[...new Set(dests.flatMap(c=>CI[c].essentials||[]))];
   if(!allEss.length){area.innerHTML='';return;}
   const destLabels=dests.map(c=>{const i=allFlat().find(x=>x.c===c);return i?i.f:'';}).join(' ');
-  area.innerHTML=`<div class="country-essentials"><div class="ce-title">${destLabels} 필수 준비물</div><div class="ce-chips">${allEss.map(e=>`<span class="ce-chip${addedNames.has(e)?' added':''}" data-ename="${e}">${e}</span>`).join('')}</div></div>`;
+  area.innerHTML=`<div class="country-essentials"><div class="ce-title">${destLabels} ${t('ess_title')}</div><div class="ce-chips">${allEss.map(e=>`<span class="ce-chip${addedNames.has(e)?' added':''}" data-ename="${e}">${iname(e)}</span>`).join('')}</div></div>`;
   area.querySelectorAll('.ce-chip:not(.added)').forEach(chip=>{chip.addEventListener('click',()=>addItem(chip.dataset.ename,'기타'));});
 }
 
@@ -1038,7 +1299,7 @@ function renderCompanionTabs(){
   COMPANIONS.forEach(({key,label})=>{
     const tab=document.createElement('span');
     tab.className='companion-tab'+(currentCompanion===key?' active':'');
-    tab.textContent=label;
+    tab.textContent=lang==='en'?(COMPANION_LABEL_EN[key]||label):label;
     tab.addEventListener('click',()=>{
       currentCompanion=currentCompanion===key?null:key;
       save();renderCompanionTabs();renderCompanionEssentials();renderListMeta();
@@ -1053,7 +1314,8 @@ function renderCompanionEssentials(){
   const comp=COMPANIONS.find(c=>c.key===currentCompanion);
   if(!comp||!comp.items.length){area.innerHTML='';return;}
   const addedNames=new Set((CL().items||[]).map(i=>i.name));
-  area.innerHTML=`<div class="companion-essentials"><div class="companion-ess-title">${comp.label} 추천 준비물</div><div class="companion-ess-chips">${comp.items.map(e=>`<span class="companion-ess-chip${addedNames.has(e)?' added':''}" data-ename="${e}">${e}</span>`).join('')}</div></div>`;
+  const compLabel=lang==='en'?(COMPANION_LABEL_EN[comp.key]||comp.label):comp.label;
+  area.innerHTML=`<div class="companion-essentials"><div class="companion-ess-title">${compLabel} ${t('comp_ess_title')}</div><div class="companion-ess-chips">${comp.items.map(e=>`<span class="companion-ess-chip${addedNames.has(e)?' added':''}" data-ename="${e}">${iname(e)}</span>`).join('')}</div></div>`;
   area.querySelectorAll('.companion-ess-chip:not(.added)').forEach(chip=>{chip.addEventListener('click',()=>addItem(chip.dataset.ename,'기타'));});
 }
 
@@ -1061,9 +1323,10 @@ function renderListMeta(){
   const meta=document.getElementById('list-meta');
   const dests=(CL().destinations||[]);
   const compTag=currentCompanion?COMPANIONS.find(c=>c.key===currentCompanion):null;
-  const destHtml=dests.map(c=>{const i=allFlat().find(x=>x.c===c);return i?`<span class="dest-tag">${i.f} ${i.n}</span>`:''}).join('');
-  const compHtml=compTag?`<span class="companion-tag">${compTag.label}</span>`:'';
-  if(!dests.length&&!compTag){meta.innerHTML='<span style="font-size:11px;color:var(--text3)">여행지를 선택해 주세요</span>';return;}
+  const destHtml=dests.map(c=>{const i=allFlat().find(x=>x.c===c);if(!i)return'';const cn=lang==='en'?(COUNTRY_NAME_EN[c]||i.n):i.n;return`<span class="dest-tag">${i.f} ${cn}</span>`;}).join('');
+  const compLabel=compTag?(lang==='en'?(COMPANION_LABEL_EN[compTag.key]||compTag.label):compTag.label):null;
+  const compHtml=compLabel?`<span class="companion-tag">${compLabel}</span>`:'';
+  if(!dests.length&&!compTag){meta.innerHTML=`<span style="font-size:11px;color:var(--text3)">${t('select_dest')}</span>`;return;}
   meta.innerHTML=destHtml+compHtml;
 }
 
@@ -1079,7 +1342,7 @@ function renderListTabs(){
   document.getElementById('list-name-display').textContent=CL().name;
   document.getElementById('list-delete-btn').style.display=lists.length>1?'inline':'none';
 }
-function addNewList(){lists.push({id:nextListId,name:'새 리스트 '+nextListId,items:[],destinations:[]});currentListId=nextListId++;renderAll();save();setTimeout(startEdit,50);}
+function addNewList(){lists.push({id:nextListId,name:t('new_list')+nextListId,items:[],destinations:[]});currentListId=nextListId++;renderAll();save();setTimeout(startEdit,50);}
 function deleteCurrentList(){if(lists.length<=1)return;lists=lists.filter(l=>l.id!==currentListId);currentListId=lists[lists.length-1].id;renderAll();save();}
 document.getElementById('add-list-btn').addEventListener('click',addNewList);
 
@@ -1099,18 +1362,18 @@ function renderCatDropZones(){
   const container=document.getElementById('cat-drop-zones');container.innerHTML='';
   const items=CL().items||[];
   const activeCats=ALL_CATS.filter(cat=>items.some(i=>i.cat===cat)||(srcDragged&&srcDragged.dataset.cat===cat));
-  if(!activeCats.length){container.innerHTML='<div class="right-empty">좌측 태그를 클릭하거나<br>드래그해서 추가하세요</div>';document.getElementById('count-badge').textContent='0개';updateSourceChips();return;}
+  if(!activeCats.length){container.innerHTML=`<div class="right-empty">${t('empty_pack')}</div>`;document.getElementById('count-badge').textContent='0'+(lang==='en'?' items':'개');updateSourceChips();return;}
   const hasBooking=activeCats.some(c=>BOOKING_CATS.includes(c));
   const hasItem=activeCats.some(c=>ITEM_CATS.includes(c));
-  if(hasBooking){const lbl=document.createElement('div');lbl.className='right-section-label';lbl.style.marginBottom='8px';lbl.textContent='예약 관리';container.appendChild(lbl);}
+  if(hasBooking){const lbl=document.createElement('div');lbl.className='right-section-label';lbl.style.marginBottom='8px';lbl.textContent=t('rsec_booking');container.appendChild(lbl);}
   activeCats.forEach((cat,ci)=>{
     if(hasBooking&&hasItem&&ITEM_CATS.includes(cat)&&(ci===0||BOOKING_CATS.includes(activeCats[ci-1]))){
       const dv=document.createElement('div');dv.className='right-section-divider';container.appendChild(dv);
-      const lbl=document.createElement('div');lbl.className='right-section-label';lbl.style.marginBottom='8px';lbl.textContent='기본 준비물';container.appendChild(lbl);
+      const lbl=document.createElement('div');lbl.className='right-section-label';lbl.style.marginBottom='8px';lbl.textContent=t('rsec_essentials');container.appendChild(lbl);
     }
     const catItems=items.filter(i=>i.cat===cat);
     const section=document.createElement('div');section.className='cat-drop-section';
-    const label=document.createElement('div');label.className='cat-drop-label';label.textContent=CAT_LABELS[cat];section.appendChild(label);
+    const label=document.createElement('div');label.className='cat-drop-label';label.textContent=clabel(cat);section.appendChild(label);
     const dz=document.createElement('div');dz.className='drop-zone'+(catItems.length===0?' empty':'');dz.dataset.cat=cat;
     catItems.forEach(item=>{
       const gi=items.indexOf(item);
@@ -1122,10 +1385,10 @@ function renderCatDropZones(){
       pi.addEventListener('dragend',()=>{pi.style.opacity='1';sortDragCat=null;sortDragIdx=null;sortOverIdx=null;renderCatDropZones();renderManageTab();});
       const row=document.createElement('div');row.className='pack-item-row';
       const tag=document.createElement('div');tag.className='pack-item-tag';
-      const tn=document.createElement('span');tn.textContent=item.name;tag.appendChild(tn);
+      const tn=document.createElement('span');tn.textContent=iname(item.name);tag.appendChild(tn);
       const qty=item.qty||1;
       if(qty>1){const qn=document.createElement('span');qn.className='qty-num';qn.textContent='×'+qty;qn.addEventListener('click',e=>{e.stopPropagation();openQtyIdx=openQtyIdx===gi?null:gi;renderCatDropZones();});tag.appendChild(qn);}
-      const pb=document.createElement('button');pb.className='qty-plus-btn';pb.textContent='+';pb.title='수량';pb.draggable=false;
+      const pb=document.createElement('button');pb.className='qty-plus-btn';pb.textContent='+';pb.title=t('qty');pb.draggable=false;
       pb.addEventListener('click',e=>{e.stopPropagation();openQtyIdx=openQtyIdx===gi?null:gi;renderCatDropZones();});
       tag.appendChild(pb);
       const rb=document.createElement('span');rb.className='tag-remove';rb.textContent='✕';rb.draggable=false;
@@ -1157,13 +1420,14 @@ function renderCatDropZones(){
     });
     section.appendChild(dz);container.appendChild(section);
   });
-  document.getElementById('count-badge').textContent=items.length+'개';
+  document.getElementById('count-badge').textContent=items.length+(lang==='en'?' items':'개');
   updateSourceChips();
 }
 
 // CHANGED: manage 서브탭 전환
 // CHANGED: 일정 분류 재정의
 const PERIOD_LABELS={'null':'기본','before':'여행 전','dayBefore':'하루 전','day':'당일','airport':'공항','during':'여행 중'};
+function plabel(p){const k=(p===null?'null':p);return t('period_'+k)||(PERIOD_LABELS[k]||k);}
 const PERIOD_KEYS=[null,'before','dayBefore','day','airport','during'];
 function switchManageSub(sub){
   manageSub=sub;
@@ -1208,7 +1472,7 @@ function renderBoard(){
   container.innerHTML='';
   PERIOD_KEYS.forEach(p=>{
     const key=p===null?'null':p;
-    const label=PERIOD_LABELS[key];
+    const label=plabel(p);
     const colItems=items.map((item,i)=>({item,i})).filter(({item})=>(item.period||null)===p);
     const col=document.createElement('div');col.className='board-col';
     const isDefault=p===null;
@@ -1218,7 +1482,7 @@ function renderBoard(){
     body.setAttribute('ondragleave','boardDragLeave(event)');
     body.setAttribute('ondrop',`boardDrop(event,'${key}')`);
     if(!colItems.length){
-      const empty=document.createElement('div');empty.className='board-empty';empty.textContent='없음';
+      const empty=document.createElement('div');empty.className='board-empty';empty.textContent=t('board_empty');
       body.appendChild(empty);
     }else{
       colItems.forEach(({item,i})=>{
@@ -1229,8 +1493,8 @@ function renderBoard(){
         card.setAttribute('ondragstart',`boardDragStart(event,${i})`);
         card.setAttribute('ondragend','boardDragEnd(event)');
         if(!isDefault)card.setAttribute('onclick',`removeBoardPeriod(${i})`);
-        if(!isDefault)card.title='클릭하면 기본으로 이동';
-        card.innerHTML=`<div class="board-card-dot"></div><span class="board-card-name">${item.name}${item.qty>1?` ×${item.qty}`:''}</span>`;
+        if(!isDefault)card.title=t('board_click_hint');
+        card.innerHTML=`<div class="board-card-dot"></div><span class="board-card-name">${iname(item.name)}${item.qty>1?` ×${item.qty}`:''}</span>`;
         body.appendChild(card);
       });
     }
@@ -1269,7 +1533,7 @@ function renderManageTab(){
   const container=document.getElementById('manage-list');
   container.innerHTML='';
   if(!items.length){
-    container.innerHTML='<div class="right-empty">준비물을 추가하면 여기서 체크할 수 있어요</div>';
+    container.innerHTML=`<div class="right-empty">${t('empty_manage')}</div>`;
     if(manageSub==='board')renderBoard();
     return;
   }
@@ -1278,20 +1542,20 @@ function renderManageTab(){
     div.className='manage-item'+(item.checked?' checked':'');
     const hasMemo=!!(item.memo&&item.memo.trim());
     const memoOpen=openMemoSet.has(i);
-    const periodLabel=item.period?(PERIOD_LABELS[item.period]||''):'';
+    const periodLabel=item.period?plabel(item.period):'';
     div.innerHTML=`
       <div class="manage-item-row">
         <div class="manage-check-box" onclick="toggleManageCheck(${i})"><span class="manage-check-mark">✓</span></div>
-        <span class="manage-item-name">${item.name}${item.qty>1?` <span style="font-size:10px;color:var(--text3)">×${item.qty}</span>`:''}</span>
+        <span class="manage-item-name">${iname(item.name)}${item.qty>1?` <span style="font-size:10px;color:var(--text3)">×${item.qty}</span>`:''}</span>
         ${periodLabel?`<span class="manage-period-badge">${periodLabel}</span>`:''}
-        <button class="manage-memo-btn${hasMemo?' has-memo':''}" onclick="toggleMemo(${i})">${hasMemo?'메모 ✎':'메모'}</button>
+        <button class="manage-memo-btn${hasMemo?' has-memo':''}" onclick="toggleMemo(${i})">${hasMemo?t('memo_has'):t('memo')}</button>
         <div class="manage-reorder">
           <button class="reorder-btn" onclick="reorderManageItem(${i},-1)">▲</button>
           <button class="reorder-btn" onclick="reorderManageItem(${i},1)">▼</button>
         </div>
       </div>
       <div class="manage-memo${memoOpen?' open':''}">
-        <input class="manage-memo-input" placeholder="메모 추가..." value="${(item.memo||'').replace(/"/g,'&quot;')}"
+        <input class="manage-memo-input" placeholder="${t('memo_add')}" value="${(item.memo||'').replace(/"/g,'&quot;')}"
           onchange="updateManageMemo(${i},this.value)">
       </div>`;
     return div;
@@ -1303,7 +1567,7 @@ function renderManageTab(){
     group.style.marginBottom='12px';
     const hdr=document.createElement('div');
     hdr.className='cat-group-header';
-    hdr.textContent=CAT_LABELS[cat]||cat;
+    hdr.textContent=clabel(cat);
     group.appendChild(hdr);
     catItems.forEach(({item,i})=>group.appendChild(makeItemEl(item,i)));
     container.appendChild(group);
@@ -1333,9 +1597,9 @@ document.getElementById('custom-input').addEventListener('keydown',e=>{if(e.key=
 const nd=document.getElementById('list-name-display'),hint=document.getElementById('edit-hint');
 function startEdit(){
   const cur=CL().name;const inp=document.createElement('input');inp.className='list-name-input';inp.value=cur;
-  nd.replaceWith(inp);hint.textContent='Enter로 저장, Esc로 취소';inp.focus();inp.select();
-  function commit(){const v=inp.value.trim()||cur;CL().name=v;const s=document.createElement('span');s.className='list-name';s.id='list-name-display';s.textContent=v;inp.replaceWith(s);hint.textContent='더블클릭해서 이름 수정';s.addEventListener('dblclick',startEdit);renderListTabs();save();}
-  function cancel(){const s=document.createElement('span');s.className='list-name';s.id='list-name-display';s.textContent=cur;inp.replaceWith(s);hint.textContent='더블클릭해서 이름 수정';s.addEventListener('dblclick',startEdit);}
+  nd.replaceWith(inp);hint.textContent=t('edit_enter');inp.focus();inp.select();
+  function commit(){const v=inp.value.trim()||cur;CL().name=v;const s=document.createElement('span');s.className='list-name';s.id='list-name-display';s.textContent=v;inp.replaceWith(s);hint.textContent=t('edit_hint');s.addEventListener('dblclick',startEdit);renderListTabs();save();}
+  function cancel(){const s=document.createElement('span');s.className='list-name';s.id='list-name-display';s.textContent=cur;inp.replaceWith(s);hint.textContent=t('edit_hint');s.addEventListener('dblclick',startEdit);}
   inp.addEventListener('keydown',e=>{if(e.key==='Enter')commit();if(e.key==='Escape')cancel();});
   inp.addEventListener('blur',commit);
 }
@@ -1346,6 +1610,86 @@ function showToast(){if(toastTimer)clearTimeout(toastTimer);const t=document.get
 let currentUser=null;
 // CHANGED: save/load 포함 manageSub
 function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion,myItems,outerTab}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
+// CHANGED: 언어 전환
+function setLang(l){
+  lang=l;
+  localStorage.setItem('pack-all-lang',l);
+  document.documentElement.lang=l==='en'?'en':'ko';
+  applyLang();
+  renderAll();
+}
+function applyLang(){
+  // nav tabs
+  const nt=document.getElementById('nav-travel');if(nt)nt.textContent=t('nav_travel');
+  const nm=document.getElementById('nav-myitems');if(nm)nm.textContent=t('nav_myitems');
+  // mode tabs
+  const tp=document.getElementById('tab-pack');if(tp)tp.textContent=t('tab_pack');
+  const tm=document.getElementById('tab-manage');if(tm)tm.textContent=t('tab_manage');
+  // auth
+  const gh=document.getElementById('auth-guest-hint');if(gh)gh.textContent=t('login_hint');
+  const si=document.getElementById('auth-signin-btn');if(si)si.textContent=t('sign_in');
+  const so=document.getElementById('auth-signout-btn');if(so)so.textContent=t('sign_out');
+  // trip/companion section labels
+  const headers=document.querySelectorAll('.trip-section-header');
+  if(headers[0]){const l=headers[0].querySelector('.trip-section-label');if(l)l.textContent=t('dest_label');}
+  if(headers[1]){const l=headers[1].querySelector('.trip-section-label');if(l)l.textContent=t('companion_label');}
+  // toggle texts (preserve arrow)
+  const tt=document.getElementById('trip-toggle');if(tt)tt.textContent=tripOpen?t('collapse'):t('expand');
+  const ct=document.getElementById('companion-toggle');if(ct)ct.textContent=companionOpen?t('collapse'):t('expand');
+  // panel section titles (left col: 예약관리, 기본준비물, 상황별준비물)
+  const pst=document.querySelectorAll('.left-col .panel-section-title');
+  const secTitles=[t('sec_reservation'),t('sec_essentials'),t('sec_situational')];
+  pst.forEach((el,i)=>{if(secTitles[i])el.textContent=secTitles[i];});
+  // chip display text
+  document.querySelectorAll('.item-chip').forEach(chip=>{chip.textContent=iname(chip.dataset.name);});
+  // cat labels in left panel
+  const catKo=['항공','숙소','입국 서류','금융 · 보험','전자기기','세면 · 위생','의류 · 잡화','의약품','금융 · 현금','숙소 · 이동','수영 · 해변','트레킹 · 등산','더위 대비','추위 대비'];
+  const catEn=['Flight','Accommodation','Entry Documents','Finance & Insurance','Electronics','Toiletries','Clothing & Accessories','Medicine','Finance & Cash','Stay & Transit','Beach & Swim','Hiking','Heat Prep','Cold Prep'];
+  document.querySelectorAll('.left-col .cat-label').forEach((el,i)=>{el.textContent=lang==='en'?catEn[i]:catKo[i];});
+  // right panel
+  const sp=document.querySelector('.right-panel .section-title');if(sp)sp.textContent=t('my_pack');
+  const ib=document.getElementById('import-myitems-btn');if(ib&&!ib.disabled){ib.textContent=t('import_btn');}
+  const ca=document.querySelector('.clear-all-btn');if(ca)ca.textContent=t('clear_all');
+  const ci=document.getElementById('custom-input');if(ci)ci.placeholder=t('custom_placeholder');
+  const ab=document.querySelector('.input-row button[onclick="addCustom()"]');if(ab)ab.textContent=t('add_btn');
+  // manage sub tabs
+  const ma=document.getElementById('msub-all');if(ma)ma.textContent=t('msub_cat');
+  const mb=document.getElementById('msub-board');if(mb)mb.textContent=t('msub_board');
+  // PDF buttons
+  const pdfs=document.querySelectorAll('.pdf-preview-btn');if(pdfs[0])pdfs[0].textContent=t('pdf_cat');if(pdfs[1])pdfs[1].textContent=t('pdf_board');
+  // my items panel
+  const mot=document.querySelector('.mi-owned-title');if(mot)mot.textContent=t('mi_owned_title');
+  const mai=document.getElementById('mi-add-input');if(mai)mai.placeholder=t('mi_add_placeholder');
+  const mab=document.querySelector('.mi-add-btn');if(mab)mab.textContent=t('mi_add_btn');
+  // board hint
+  const bh=document.getElementById('board-drag-hint');if(bh)bh.textContent=t('board_hint');
+  // edit hint
+  const eh=document.getElementById('edit-hint');if(eh)eh.textContent=t('edit_hint');
+  // toast
+  const toast=document.getElementById('toast');if(toast)toast.textContent=t('toast');
+  // list delete btn
+  const ldb=document.getElementById('list-delete-btn');if(ldb)ldb.textContent=t('list_delete');
+  // modals
+  const dt=document.querySelector('#delete-list-modal .pm-header-title');if(dt)dt.textContent=t('delete_title');
+  const dc=document.querySelector('#delete-list-modal .pm-footer .pm-btn:first-child');if(dc)dc.textContent=t('delete_cancel');
+  const dd=document.querySelector('#delete-list-modal .pm-footer .pm-btn:last-child');if(dd)dd.textContent=t('delete_delete');
+  const it=document.querySelector('#import-myitems-modal .pm-header-title');if(it)it.textContent=t('import_title');
+  const ic=document.querySelector('#import-myitems-modal .pm-footer .pm-btn:first-child');if(ic)ic.textContent=t('import_cancel');
+  const icf=document.querySelector('#import-myitems-modal .pm-footer .pm-btn:last-child');if(icf)icf.textContent=t('import_confirm');
+  const pt=document.querySelector('#print-modal .pm-header-title');if(pt)pt.textContent=t('pdf_title');
+  const pp=document.querySelector('#print-modal .pm-footer .pm-btn:first-child');if(pp)pp.textContent=t('pdf_print');
+  const ps=document.querySelector('#print-modal .pm-footer .pm-btn:last-child');if(ps)ps.textContent=t('pdf_save');
+  const nt2=document.querySelector('#nickname-modal .pm-header-title');if(nt2)nt2.textContent=t('nickname_title');
+  const nht=document.getElementById('nickname-hint-text');if(nht)nht.textContent=t('nickname_hint');
+  const ni=document.getElementById('nickname-input');if(ni)ni.placeholder=t('nickname_placeholder');
+  const nsb=document.querySelector('#nickname-modal .pm-btn-primary');if(nsb)nsb.textContent=t('nickname_start');
+  // drop-zone empty text (CSS ::after override)
+  let ls=document.getElementById('lang-override-style');
+  if(!ls){ls=document.createElement('style');ls.id='lang-override-style';document.head.appendChild(ls);}
+  ls.textContent=lang==='en'?".drop-zone.empty::after{content:'Click or drag to add'}":"";
+  // lang button state
+  document.querySelectorAll('.lang-btn').forEach(b=>{b.classList.toggle('active',b.dataset.lang===lang);});
+}
 async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion,myItems,outerTab,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
 async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;if(d.myItems)myItems=d.myItems;if(d.outerTab)outerTab=d.outerTab;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
 // CHANGED: 도메인 등록 후 popup 방식으로 복구
@@ -1353,7 +1697,7 @@ function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthPro
 function doSignOut(){auth.signOut();}
 function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;if(d.myItems)myItems=d.myItems;if(d.outerTab)outerTab=d.outerTab;}}catch(e){}}
 // CHANGED: renderAll 업데이트
-function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();updateImportBtn();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?'접기 ▲':'펼치기 ▼';document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?'접기 ▲':'펼치기 ▼';switchOuterTab(outerTab);}
+function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();updateImportBtn();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?t('collapse'):t('expand');document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?t('collapse'):t('expand');switchOuterTab(outerTab);applyLang();}
 load();renderAll();
 // CHANGED: 모드 전환
 function switchMode(mode){
@@ -1444,14 +1788,14 @@ function buildPrintHTML(){
   const pct=total?Math.round(checked/total*100):0;
   let html=`<div class="pc-title">${list.name}</div>`;
   if(dests)html+=`<div class="pc-dests">${dests}</div>`;
-  if(total)html+=`<div class="pc-progress-row"><div class="pc-progress-bar"><div class="pc-progress-fill" style="width:${pct}%"></div></div><span class="pc-progress-text">${checked}/${total} 챙김 (${pct}%)</span></div>`;
+  if(total)html+=`<div class="pc-progress-row"><div class="pc-progress-bar"><div class="pc-progress-fill" style="width:${pct}%"></div></div><span class="pc-progress-text">${checked}/${total} ${t('packed')} (${pct}%)</span></div>`;
   ALL_CATS.forEach(cat=>{
     const ci=items.filter(i=>i.cat===cat);if(!ci.length)return;
-    html+=`<div class="pc-cat"><div class="pc-cat-label">${CAT_LABELS[cat]}</div><div class="pc-items">`;
-    ci.forEach(item=>{const qty=item.qty||1;html+=`<div class="pc-item${item.checked?' checked':''}"><div class="pc-checkbox">${item.checked?'✓':''}</div><span class="pc-item-name">${item.name}</span>${qty>1?`<span class="pc-item-qty">×${qty}</span>`:''}</div>`;});
+    html+=`<div class="pc-cat"><div class="pc-cat-label">${clabel(cat)}</div><div class="pc-items">`;
+    ci.forEach(item=>{const qty=item.qty||1;html+=`<div class="pc-item${item.checked?' checked':''}"><div class="pc-checkbox">${item.checked?'✓':''}</div><span class="pc-item-name">${iname(item.name)}</span>${qty>1?`<span class="pc-item-qty">×${qty}</span>`:''}</div>`;});
     html+=`</div></div>`;
   });
-  return html||`<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">준비물이 없습니다</div>`;
+  return html||`<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">${t('pdf_empty')}</div>`;
 }
 // CHANGED: 리스트 삭제 확인 모달
 function openDeleteListModal(){document.getElementById('delete-list-name').textContent=CL().name;document.getElementById('delete-list-modal').style.display='flex';}
@@ -1472,17 +1816,16 @@ function buildBoardPrintHTML(){
   const pct=total?Math.round(checked/total*100):0;
   let html=`<div class="pc-title">${list.name}</div>`;
   if(dests)html+=`<div class="pc-dests">${dests}</div>`;
-  if(total)html+=`<div class="pc-progress-row"><div class="pc-progress-bar"><div class="pc-progress-fill" style="width:${pct}%"></div></div><span class="pc-progress-text">${checked}/${total} 챙김 (${pct}%)</span></div>`;
+  if(total)html+=`<div class="pc-progress-row"><div class="pc-progress-bar"><div class="pc-progress-fill" style="width:${pct}%"></div></div><span class="pc-progress-text">${checked}/${total} ${t('packed')} (${pct}%)</span></div>`;
   PERIOD_KEYS.forEach(p=>{
-    const key=p===null?'null':p;
-    const label=PERIOD_LABELS[key];
+    const label=plabel(p);
     const pi=items.filter(i=>(i.period||null)===p);
     if(!pi.length)return;
     html+=`<div class="pc-cat"><div class="pc-cat-label">${label}</div><div class="pc-items">`;
-    pi.forEach(item=>{const qty=item.qty||1;html+=`<div class="pc-item${item.checked?' checked':''}"><div class="pc-checkbox">${item.checked?'✓':''}</div><span class="pc-item-name">${item.name}</span>${qty>1?`<span class="pc-item-qty">×${qty}</span>`:''}</div>`;});
+    pi.forEach(item=>{const qty=item.qty||1;html+=`<div class="pc-item${item.checked?' checked':''}"><div class="pc-checkbox">${item.checked?'✓':''}</div><span class="pc-item-name">${iname(item.name)}</span>${qty>1?`<span class="pc-item-qty">×${qty}</span>`:''}</div>`;});
     html+=`</div></div>`;
   });
-  return html||`<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">준비물이 없습니다</div>`;
+  return html||`<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">${t('pdf_empty')}</div>`;
 }
 </script>
 </body>
