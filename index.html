@@ -2005,10 +2005,10 @@ function buildBoardPrintHTML(){
   let html=`<div class="pc-title">${list.name}</div>`;
   if(dests)html+=`<div class="pc-dests">${dests}</div>`;
   if(total)html+=`<div class="pc-progress-row"><div class="pc-progress-bar"><div class="pc-progress-fill" style="width:${pct}%"></div></div><span class="pc-progress-text">${checked}/${total} ${t('packed')} (${pct}%)</span></div>`;
-  const activeCols=PERIOD_KEYS.filter(p=>items.some(i=>(i.period||null)===p));
-  if(!activeCols.length)return `<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">${t('pdf_empty')}</div>`;
+  if(!items.length)return `<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">${t('pdf_empty')}</div>`;
+  // CHANGED: 항목 없어도 모든 기간 컬럼 표시
   html+=`<div class="pb-board">`;
-  activeCols.forEach(p=>{
+  PERIOD_KEYS.forEach(p=>{
     const pi=items.filter(i=>(i.period||null)===p);
     const label=plabel(p);
     html+=`<div class="pb-col"><div class="pb-col-header">${label}</div><div class="pb-col-body">`;
