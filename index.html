@@ -409,8 +409,8 @@ const db=firebase.firestore();
   <div id="auth-right">
     <!-- CHANGED: 언어 전환 버튼 -->
     <div style="display:flex;gap:2px">
-      <button class="lang-btn active" data-lang="ko" onclick="setLang('ko')">KO</button>
       <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn active" data-lang="ko" onclick="setLang('ko')">KO</button>
     </div>
     <div id="auth-guest" style="display:flex;align-items:center;gap:8px">
       <span id="auth-guest-hint" style="font-size:12px;color:var(--text3)">로그인하면 저장됩니다</span>
@@ -920,7 +920,52 @@ const ITEM_EN={
   '우비·우산(북부 강수)':'Raincoat (Northern Rain)','DB·MVV 앱(교통 사전 설치)':'DB/MVV Transit App',
   '방수 카메라·방수 가방':'Waterproof Camera & Bag',
   '편안한 샌들·워킹화(돌바닥·계단)':'Sandals & Walking Shoes','편안한 워킹화·샌들(자갈·돌바닥)':'Walking Shoes & Sandals',
-  '변환어댑터(C/L타입)':'Adapter (Type C/L)'
+  '변환어댑터(C/L타입)':'Adapter (Type C/L)',
+  // CHANGED: 누락 번역 추가
+  '에코백':'Eco Bag',
+  '위안화(CNY) 현금':'CNY Cash',
+  'VPN 앱(출국 전 설치)':'VPN App (Install Before Departure)',
+  '위챗페이·알리페이':'WeChat Pay & Alipay',
+  '대만달러(TWD) 현금':'TWD Cash',
+  '선크림·냉감 의류':'Sunscreen & Cooling Clothes',
+  '멀미약(산악 도로)':'Motion Sickness Med (Mountain Roads)',
+  '우비·우산(빈번한 소나기)':'Raincoat (Frequent Showers)',
+  '우비·우산(태풍 시즌)':'Raincoat (Typhoon Season)',
+  '싱가포르달러(SGD) 현금':'SGD Cash',
+  '우비·우산(열대 집중 강수)':'Raincoat (Tropical Downpours)',
+  '모기기피제(뎅기열 주의)':'Mosquito Repellent (Dengue Risk)',
+  '모기기피제(뎅기열)':'Mosquito Repellent (Dengue)',
+  '모기기피제(뎅기·말라리아)':'Mosquito Repellent (Dengue & Malaria)',
+  '모기기피제(말라리아·뎅기)':'Mosquito Repellent (Malaria & Dengue)',
+  '모기기피제(뎅기)':'Mosquito Repellent (Dengue)',
+  '모기기피제(저녁)':'Mosquito Repellent (Evenings)',
+  '위장약·지사제':'Stomach & Diarrhea Meds',
+  '위장약':'Stomach Meds',
+  '변환어댑터(A/C타입)':'Adapter (Type A/C)',
+  '멀미약(선박·방카 이동)':'Motion Sickness Med (Boat)',
+  '보조배터리(정전 빈번)':'Power Bank (Frequent Power Cuts)',
+  '선크림·냉감 의류(지중해 자외선)':'Sunscreen & Cooling Clothes (Mediterranean)',
+  '유로(EUR) 현금(섬·소도시)':'EUR Cash (Islands & Small Towns)',
+  '멀미약(페리 이동)':'Motion Sickness Med (Ferry)',
+  '복장 커버(성당·바티칸)':'Cover-up (Churches & Vatican)',
+  '편안한 워킹화(돌바닥)':'Walking Shoes (Cobblestones)',
+  '방수 재킷·레이어링':'Waterproof Jacket & Layers',
+  '자전거 이용 시 안전 헬멧':'Bike Helmet',
+  '멀미약(선박 이동)':'Motion Sickness Med (Boat)',
+  '방수 가방(보트 투어)':'Waterproof Bag (Boat Tour)',
+  '우비·우산(몬순)':'Raincoat (Monsoon)',
+  '트레킹화·방수 양말':'Trekking Shoes & Waterproof Socks',
+  '정수 필터·알약':'Water Filter / Purification Tablets',
+  '트레킹화·방수 장비':'Trekking Shoes & Waterproof Gear',
+  '현지 SIM카드':'Local SIM Card',
+  '멀미약(스피드보트)':'Motion Sickness Med (Speedboat)',
+  '멀미약(아동용)':'Motion Sickness Med (Children)',
+  // 동행자 solo 전용
+  '여행용 잠금장치':'Travel Lock',
+  '1인용 숙소 예약확인서':'Accommodation Confirmation',
+  '소지품 보안 파우치':'Anti-theft Pouch',
+  '여행 일정 메모':'Travel Itinerary Note',
+  '비상 연락처 카드':'Emergency Contact Card'
 };
 const CAT_LABELS_EN={
   '예약-항공':'Flight','예약-숙소':'Accommodation','예약-서류':'Entry Docs','예약-금융':'Finance & Insurance',
@@ -1174,7 +1219,7 @@ function renderMyItems(){
   function renderSrcSection(title,cats){
     const rows=cats.map(cat=>{
       const items=byCat[cat];if(!items||!items.length)return'';
-      return `<div class="mi-cat-group"><div class="mi-cat-label">${CAT_LABELS[cat]||cat}</div><div class="items-grid">`+
+      return `<div class="mi-cat-group"><div class="mi-cat-label">${clabel(cat)}</div><div class="items-grid">`+
         items.map(name=>{
           const owned=!!(myItems[name]&&myItems[name].owned);
           return `<span class="mi-chip${owned?' owned':''}" data-miname="${name}" data-micat="${cat}">${iname(name)}</span>`;
