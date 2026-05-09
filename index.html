@@ -217,7 +217,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 /* CHANGED: 내 물품 탭 — 디자인 전면 개선 */
 #myitems-view{display:none}
 .mi-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;align-items:start}
-@media(max-width:640px){.mi-grid{grid-template-columns:1fr}}
+/* mi-grid 모바일: 아래 통합 미디어 쿼리로 이동 */
 /* 소스 패널 (좌) */
 .mi-source-panel{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:16px}
 .mi-cat-group{margin-bottom:16px}
@@ -366,7 +366,82 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 /* CHANGED: 닉네임 편집 */
 #auth-name{cursor:pointer}
 #auth-name:hover{text-decoration:underline;text-decoration-style:dotted}
-@media(max-width:640px){.main-grid{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}}
+/* CHANGED: 모바일 반응형 최적화 */
+@media(max-width:640px){
+  /* 레이아웃 */
+  body{padding:10px 10px 28px}
+  .app{gap:10px}
+
+  /* 헤더: 2줄 배치 (로고+인증 / 네비탭) */
+  #auth-bar{flex-wrap:wrap;padding:10px 14px;gap:6px 0}
+  #auth-nav{width:100%;order:3}
+  .nav-tab{flex:1;padding:8px 6px;font-size:12px;text-align:center}
+  #auth-guest-hint{display:none}
+  #auth-right{gap:6px}
+
+  /* 그리드 1열 */
+  .main-grid{grid-template-columns:1fr}
+  .info-grid{grid-template-columns:1fr}
+  .mi-grid{grid-template-columns:1fr}
+
+  /* 터치 영역 확대 (목표 최소 40px 높이) */
+  .item-chip{padding:7px 12px;font-size:13px}
+  .country-tab,.companion-tab{padding:7px 12px;font-size:13px}
+  .ce-chip,.companion-ess-chip{padding:6px 12px;font-size:12px}
+  .check-row{padding:10px;min-height:44px}
+  .list-tab{padding:9px 14px;font-size:13px}
+  .list-tab-add{padding:8px 12px;font-size:18px}
+  .mode-tab{padding:13px 0;font-size:14px}
+  .manage-sub-tab{padding:10px 16px;font-size:13px}
+  .auth-btn{padding:8px 12px;font-size:12px}
+  .lang-btn{padding:6px 10px;font-size:12px}
+  .input-row input{padding:10px;font-size:14px}
+  .input-row button{padding:10px 14px;font-size:14px}
+  .mi-chip{padding:8px 14px;font-size:13px}
+  .mi-add-input{padding:10px;font-size:14px}
+  .mi-add-btn{padding:10px 14px;font-size:13px}
+  .manage-item-row{padding:10px;min-height:44px}
+  .manage-memo-btn{padding:5px 10px;font-size:11px}
+  .qty-plus-btn{width:22px;height:22px;font-size:14px}
+  .qty-popover-btn{width:28px;height:28px;font-size:16px}
+  .trip-section-header{padding:12px 14px}
+  .country-tab{min-height:36px}
+
+  /* 모바일: hover 없으므로 제거/드래그 버튼 항상 표시 */
+  .tag-remove{opacity:.65}
+  .remove-btn{opacity:.8}
+  .drag-handle{display:none}
+
+  /* 패널 안쪽 여백 축소 */
+  .panel,.right-panel,.manage-panel{padding:12px}
+  .mi-source-panel{padding:12px}
+  .list-body{padding:10px 12px}
+  .country-regions{padding:10px 12px 12px}
+  .country-info-panel{padding:10px 12px}
+
+  /* 칸반 보드 */
+  .board-col{min-width:88px}
+  .board-col-body{min-height:160px}
+  .board-card{padding:7px 8px}
+
+  /* 모달 */
+  .pm-box{width:96vw;max-height:92vh}
+  .pm-page{padding:20px 16px}
+
+  /* 내 물품 owned 패널: sticky 해제 */
+  .mi-owned-panel{position:static}
+
+  /* 드롭존 태그 */
+  .pack-item-tag{font-size:13px;padding:5px 8px 5px 12px}
+  .qty-num{font-size:12px;padding:1px 7px}
+
+  /* 체크박스 터치 영역 */
+  .check-box{width:18px;height:18px}
+  .manage-check-box{width:18px;height:18px}
+
+  /* 토스트 */
+  .save-toast{right:12px;bottom:16px}
+}
 </style>
 <!-- CHANGED: Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
