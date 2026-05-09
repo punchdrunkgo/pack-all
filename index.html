@@ -479,6 +479,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
   .manage-check-box{width:17px;height:17px}
 }
 
+/* CHANGED: 일정별 PDF 보드 레이아웃 */
+.pm-box.board-preview{width:min(920px,96vw)}
+.pm-box.board-preview .pm-body{overflow-x:auto}
+.pb-board{display:flex;gap:8px;width:100%;min-width:520px}
+.pb-col{flex:1;min-width:80px;display:flex;flex-direction:column}
+.pb-col-header{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;background:#d2e8f6;border:0.5px solid #7eb6d8;border-bottom:none;border-radius:6px 6px 0 0;text-align:center;color:#1055aa;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pb-col-body{flex:1;background:#f5faff;border:0.5px solid #b5d3ea;border-top:none;border-radius:0 0 6px 6px;padding:5px;display:flex;flex-direction:column;gap:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pb-card{display:flex;align-items:flex-start;gap:5px;padding:4px 6px;border-radius:4px;border:0.5px solid #b5d3ea;background:#fff;break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pb-card.checked{background:#eaf3de;border-color:#c0dd97;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pb-card-dot{width:8px;height:8px;border-radius:2px;border:1px solid #b5d3ea;flex-shrink:0;margin-top:2px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pb-card.checked .pb-card-dot{background:#3b6d11;border-color:#3b6d11}
+.pb-card-name{font-size:11px;line-height:1.4;flex:1;color:#1a1a18}
+.pb-card.checked .pb-card-name{color:#9a9a96;text-decoration:line-through}
+
 /* 모든 터치 기기 공통: hover 의존 UI 항상 표시 */
 @media(pointer:coarse){
   .tag-remove{opacity:.6}
@@ -1970,12 +1984,19 @@ function closeDeleteListModal(){document.getElementById('delete-list-modal').sty
 function confirmDeleteList(){closeDeleteListModal();deleteCurrentList();}
 // CHANGED: PDF 카테고리별/일정별 분리
 function openPrintPreview(type){
+  // CHANGED: 일정별 → 가로 인쇄 방향
+  let os=document.getElementById('print-orient-style');
+  if(!os){os=document.createElement('style');os.id='print-orient-style';document.head.appendChild(os);}
+  os.textContent=type==='board'?'@page{size:landscape}':'@page{size:portrait}';
   const h=type==='board'?buildBoardPrintHTML():buildPrintHTML();
   document.getElementById('pm-content').innerHTML=h;
   document.getElementById('print-content').innerHTML=h;
+  // CHANGED: 일정별 미리보기 와이드 모달
+  document.querySelector('#print-modal .pm-box').classList.toggle('board-preview',type==='board');
   document.getElementById('print-modal').style.display='flex';
 }
 function closePrintPreview(){document.getElementById('print-modal').style.display='none';}
+// CHANGED: 일정별 PDF — 화면 보드 UI 그대로 가로 배치
 function buildBoardPrintHTML(){
   const list=CL();const items=list.items||[];
   const dests=(list.destinations||[]).map(c=>{const i=allFlat().find(x=>x.c===c);return i?`${i.f} ${i.n}`:null;}).filter(Boolean).join('  ');
@@ -1984,15 +2005,18 @@ function buildBoardPrintHTML(){
   let html=`<div class="pc-title">${list.name}</div>`;
   if(dests)html+=`<div class="pc-dests">${dests}</div>`;
   if(total)html+=`<div class="pc-progress-row"><div class="pc-progress-bar"><div class="pc-progress-fill" style="width:${pct}%"></div></div><span class="pc-progress-text">${checked}/${total} ${t('packed')} (${pct}%)</span></div>`;
-  PERIOD_KEYS.forEach(p=>{
-    const label=plabel(p);
+  const activeCols=PERIOD_KEYS.filter(p=>items.some(i=>(i.period||null)===p));
+  if(!activeCols.length)return `<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">${t('pdf_empty')}</div>`;
+  html+=`<div class="pb-board">`;
+  activeCols.forEach(p=>{
     const pi=items.filter(i=>(i.period||null)===p);
-    if(!pi.length)return;
-    html+=`<div class="pc-cat"><div class="pc-cat-label">${label}</div><div class="pc-items">`;
-    pi.forEach(item=>{const qty=item.qty||1;html+=`<div class="pc-item${item.checked?' checked':''}"><div class="pc-checkbox">${item.checked?'✓':''}</div><span class="pc-item-name">${iname(item.name)}</span>${qty>1?`<span class="pc-item-qty">×${qty}</span>`:''}</div>`;});
+    const label=plabel(p);
+    html+=`<div class="pb-col"><div class="pb-col-header">${label}</div><div class="pb-col-body">`;
+    pi.forEach(item=>{const qty=item.qty||1;html+=`<div class="pb-card${item.checked?' checked':''}"><div class="pb-card-dot"></div><span class="pb-card-name">${iname(item.name)}${qty>1?` ×${qty}`:''}</span></div>`;});
     html+=`</div></div>`;
   });
-  return html||`<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">${t('pdf_empty')}</div>`;
+  html+=`</div>`;
+  return html;
 }
 </script>
 </body>
