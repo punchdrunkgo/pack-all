@@ -217,10 +217,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 #auth-logo-text{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1}
 #auth-logo-text span{background:linear-gradient(135deg,#007AFF 0%,#5856D6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 /* 세그먼트 컨트롤 네비 */
-#auth-nav{display:flex;gap:2px;background:rgba(0,0,0,0.06);border-radius:11px;padding:3px}
-.nav-tab{font-size:13px;font-weight:500;padding:6px 18px;border-radius:8px;border:none;background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{background:#fff;color:#007AFF;font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,0.1),0 0.5px 1px rgba(0,0,0,0.07)}
+/* CHANGED: nav 탭 — 박스 제거, 텍스트 하이라이트 방식 */
+#auth-nav{display:flex;gap:2px}
+.nav-tab{font-size:13px;font-weight:500;padding:7px 16px;border-radius:20px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .18s;white-space:nowrap;letter-spacing:-.01em}
+.nav-tab:hover{color:var(--text);background:rgba(0,0,0,0.05)}
+.nav-tab.active{background:rgba(0,122,255,0.1);color:#007AFF;font-weight:600}
 #auth-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .auth-btn{font-size:12px;padding:6px 14px;border-radius:var(--radius-pill);border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.7);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
 .auth-btn:hover{background:rgba(255,255,255,0.92)}
@@ -321,10 +322,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 /* CHANGED: 모달 position fix + 모드 탭 + 관리 뷰 */
 #delete-list-modal,#nickname-modal,#import-myitems-modal{position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center}
 /* 세그먼트 컨트롤 메인 탭 */
-.mode-tabs-row{display:flex;background:rgba(255,255,255,0.62);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-radius:var(--radius-lg);padding:5px;gap:4px;border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow)}
-.mode-tab{flex:1;font-size:13px;font-weight:500;padding:11px 0;border-radius:var(--radius);border:none;background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .18s;text-align:center;letter-spacing:-.01em}
-.mode-tab.active{background:#007AFF;color:#fff;font-weight:600;box-shadow:0 2px 10px rgba(0,122,255,0.35)}
+/* CHANGED: 모드 탭 — 박스 제거, 언더라인 방식 */
+.mode-tabs-row{display:flex;background:transparent;padding:0;gap:0;border:none;border-bottom:1.5px solid rgba(0,0,0,0.07);box-shadow:none}
+.mode-tab{flex:1;font-size:13px;font-weight:500;padding:0 0 11px;border-radius:0;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .18s;text-align:center;letter-spacing:-.01em;margin-bottom:-1.5px}
+.mode-tab:hover{color:var(--text)}
+.mode-tab.active{color:#007AFF;font-weight:600;border-bottom-color:#007AFF;box-shadow:none}
 @keyframes viewFadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+/* CHANGED: 모드 탭 ↔ 콘텐츠 간격 최소화 */
+.mode-tabs-row{margin-bottom:-8px}
 #pack-view,#manage-view{animation:viewFadeIn .18s ease}
 #manage-view{display:flex;flex-direction:column;gap:10px}
 /* 관리하기 탭 */
@@ -409,7 +414,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
   .check-row{padding:10px;min-height:44px}
   .list-tab{padding:9px 14px;font-size:13px}
   .list-tab-add{padding:8px 12px;font-size:18px}
-  .mode-tab{padding:13px 0;font-size:14px}
+  .mode-tab{padding:0 0 13px;font-size:14px}
   .manage-sub-tab{padding:10px 16px;font-size:13px}
   .auth-btn{padding:8px 12px;font-size:12px}
   .lang-btn{padding:6px 10px;font-size:12px}
@@ -470,7 +475,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
   .country-tab,.companion-tab{padding:6px 12px;font-size:13px}
   .ce-chip,.companion-ess-chip{padding:5px 11px;font-size:12px}
   .check-row{padding:10px;min-height:44px}
-  .mode-tab{padding:12px 0;font-size:13px}
+  .mode-tab{padding:0 0 12px;font-size:13px}
   .manage-sub-tab{padding:9px 16px;font-size:13px}
   .list-tab{padding:8px 14px}
   .nav-tab{padding:8px 18px}
