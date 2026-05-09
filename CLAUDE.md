@@ -1,4 +1,4 @@
-# pack-all
+# packo
 
 단일 HTML 파일(`travel-pack.html`) 프로젝트.
 
