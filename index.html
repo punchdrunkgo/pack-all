@@ -28,7 +28,8 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans-serif;background:#ddeef8;color:#1a1a18;min-height:100vh;padding:24px 16px}
-.app{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+/* CHANGED: 최대 너비 확장 */
+.app{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
 
 /* 색상 변수 */
 /* CHANGED: 하늘색 테마 */
@@ -288,8 +289,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .pc-progress-text{font-size:11px;color:#9a9a96;white-space:nowrap}
 .pc-cat{margin-bottom:14px}
 .pc-cat-label{font-size:10px;font-weight:600;color:#9a9a96;letter-spacing:.07em;text-transform:uppercase;margin:0 0 5px}
-.pc-items{display:flex;flex-direction:column;gap:3px}
-.pc-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;border:0.5px solid #e0dfd8;background:#f5f4f0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+/* CHANGED: PDF 2열 그리드 */
+.pc-items{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;align-items:start}
+.pc-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;border:0.5px solid #e0dfd8;background:#f5f4f0;-webkit-print-color-adjust:exact;print-color-adjust:exact;break-inside:avoid}
 .pc-item.checked{background:#eaf3de;border-color:#c0dd97}
 .pc-checkbox{width:13px;height:13px;border-radius:3px;border:1px solid #ccc;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:8px;font-weight:700;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pc-item.checked .pc-checkbox{background:#3b6d11;border-color:#3b6d11}
@@ -341,6 +343,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
 .manage-memo-input:focus{border-color:var(--border2)}
 .manage-memo-input::placeholder{color:var(--text3)}
 .cat-group-header{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:2px 0 5px;margin-top:4px;border-bottom:0.5px solid var(--border);margin-bottom:5px}
+/* CHANGED: 관리하기 카테고리별 2열 */
+.manage-cat-items{display:grid;grid-template-columns:1fr 1fr;gap:4px;align-items:start}
+.manage-cat-items .manage-item{margin-bottom:0}
 .manage-board{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
 .board-col{min-width:110px;flex:1;display:flex;flex-direction:column}
 .board-col-header{font-size:11px;font-weight:500;color:var(--text2);padding:5px 8px;background:var(--bg3);border-radius:var(--radius) var(--radius) 0 0;border:0.5px solid var(--border);border-bottom:none;text-align:center;white-space:nowrap}
@@ -383,6 +388,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR',sans
   .main-grid{grid-template-columns:1fr}
   .info-grid{grid-template-columns:1fr}
   .mi-grid{grid-template-columns:1fr}
+  .manage-cat-items{grid-template-columns:1fr}
 
   /* 터치 영역 확대 (목표 최소 40px 높이) */
   .item-chip{padding:7px 12px;font-size:13px}
@@ -1726,7 +1732,11 @@ function renderManageTab(){
     hdr.className='cat-group-header';
     hdr.textContent=clabel(cat);
     group.appendChild(hdr);
-    catItems.forEach(({item,i})=>group.appendChild(makeItemEl(item,i)));
+    // CHANGED: 2열 래퍼
+    const iw=document.createElement('div');
+    iw.className='manage-cat-items';
+    catItems.forEach(({item,i})=>iw.appendChild(makeItemEl(item,i)));
+    group.appendChild(iw);
     container.appendChild(group);
   });
   if(manageSub==='board')renderBoard();
