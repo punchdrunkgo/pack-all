@@ -27,7 +27,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue','Noto Sans KR',sans-serif;background:#dce4ef;background-image:radial-gradient(ellipse 80% 60% at 15% 40%,rgba(0,122,255,0.14) 0%,transparent 68%),radial-gradient(ellipse 65% 55% at 85% 15%,rgba(88,86,214,0.11) 0%,transparent 62%),radial-gradient(ellipse 55% 65% at 55% 88%,rgba(52,199,89,0.09) 0%,transparent 60%);color:#1c1c1e;min-height:100vh;padding:24px 16px}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue','Noto Sans KR',sans-serif;background:#dce4ef;background-image:radial-gradient(ellipse 80% 60% at 15% 40%,rgba(0,122,255,0.14) 0%,transparent 68%),radial-gradient(ellipse 65% 55% at 85% 15%,rgba(88,86,214,0.11) 0%,transparent 62%),radial-gradient(ellipse 55% 65% at 55% 88%,rgba(52,199,89,0.09) 0%,transparent 60%);color:#1c1c1e;min-height:100vh;padding:70px 16px 24px}
 /* CHANGED: 최대 너비 확장 */
 .app{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
 
@@ -211,15 +211,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .progress-text{font-size:11px;color:var(--text3);white-space:nowrap}
 .save-toast{position:fixed;bottom:20px;right:20px;font-size:12px;font-weight:500;background:rgba(28,28,30,0.88);color:#fff;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);padding:8px 18px;border-radius:var(--radius-pill);opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
 .save-toast.show{opacity:1}
-/* CHANGED: Apple 글래스 헤더 */
-#auth-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.85);backdrop-filter:saturate(200%) blur(30px);-webkit-backdrop-filter:saturate(200%) blur(30px);border:1px solid rgba(255,255,255,0.9);border-radius:var(--radius-lg);padding:12px 20px;box-shadow:0 4px 24px rgba(0,0,0,0.06),0 1px 0 rgba(255,255,255,0.7) inset}
+/* CHANGED: 고정 full-width 네비바 */
+#auth-bar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(248,248,252,0.82);backdrop-filter:saturate(200%) blur(40px);-webkit-backdrop-filter:saturate(200%) blur(40px);border:none;border-radius:0;border-bottom:0.5px solid rgba(0,0,0,0.09);padding:0;box-shadow:0 1px 0 rgba(255,255,255,0.85) inset}
+.auth-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:54px;gap:0}
 #auth-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
 #auth-logo-text{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1}
 #auth-logo-text span{background:linear-gradient(135deg,#007AFF 0%,#5856D6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 /* 세그먼트 컨트롤 네비 */
 /* CHANGED: nav 탭 — 박스 제거, 텍스트 하이라이트 방식 */
 #auth-nav{display:flex;gap:2px}
-.nav-tab{font-size:13px;font-weight:500;padding:7px 16px;border-radius:20px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .18s;white-space:nowrap;letter-spacing:-.01em}
+.nav-tab{font-size:14px;font-weight:500;padding:7px 18px;border-radius:20px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .18s;white-space:nowrap;letter-spacing:-.01em}
 .nav-tab:hover{color:var(--text);background:rgba(0,0,0,0.05)}
 .nav-tab.active{background:rgba(0,122,255,0.1);color:#007AFF;font-weight:600}
 #auth-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -322,14 +323,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 /* CHANGED: 모달 position fix + 모드 탭 + 관리 뷰 */
 #delete-list-modal,#nickname-modal,#import-myitems-modal{position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center}
 /* 세그먼트 컨트롤 메인 탭 */
-/* CHANGED: 모드 탭 — 박스 제거, 언더라인 방식 */
-.mode-tabs-row{display:flex;background:transparent;padding:0;gap:0;border:none;border-bottom:1.5px solid rgba(0,0,0,0.07);box-shadow:none}
-.mode-tab{flex:1;font-size:13px;font-weight:500;padding:0 0 11px;border-radius:0;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .18s;text-align:center;letter-spacing:-.01em;margin-bottom:-1.5px}
-.mode-tab:hover{color:var(--text)}
-.mode-tab.active{color:#007AFF;font-weight:600;border-bottom-color:#007AFF;box-shadow:none}
+.mode-tabs-row{display:flex;background:rgba(255,255,255,0.62);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-radius:var(--radius-lg);padding:5px;gap:4px;border:1px solid rgba(255,255,255,0.8);box-shadow:var(--shadow)}
+.mode-tab{flex:1;font-size:13px;font-weight:500;padding:11px 0;border-radius:var(--radius);border:none;background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .18s;text-align:center;letter-spacing:-.01em}
+.mode-tab.active{background:#007AFF;color:#fff;font-weight:600;box-shadow:0 2px 10px rgba(0,122,255,0.35)}
 @keyframes viewFadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-/* CHANGED: 모드 탭 ↔ 콘텐츠 간격 최소화 */
-.mode-tabs-row{margin-bottom:-8px}
 #pack-view,#manage-view{animation:viewFadeIn .18s ease}
 #manage-view{display:flex;flex-direction:column;gap:10px}
 /* 관리하기 탭 */
@@ -391,12 +388,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 /* CHANGED: 모바일 반응형 최적화 */
 @media(max-width:640px){
   /* 레이아웃 */
-  body{padding:10px 10px 28px}
+  body{padding:94px 10px 28px}
   .app{gap:10px}
 
   /* 헤더: 2줄 배치 (로고+인증 / 네비탭) */
-  #auth-bar{flex-wrap:wrap;padding:10px 14px;gap:6px 0}
-  #auth-nav{width:100%;order:3}
+  .auth-inner{flex-wrap:wrap;padding:8px 14px;height:auto;gap:4px 0}
+  #auth-nav{width:100%;order:3;justify-content:center}
   .nav-tab{flex:1;padding:8px 6px;font-size:12px;text-align:center}
   #auth-guest-hint{display:none}
   #auth-right{gap:6px}
@@ -414,7 +411,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
   .check-row{padding:10px;min-height:44px}
   .list-tab{padding:9px 14px;font-size:13px}
   .list-tab-add{padding:8px 12px;font-size:18px}
-  .mode-tab{padding:0 0 13px;font-size:14px}
+  .mode-tab{padding:13px 0;font-size:14px}
   .manage-sub-tab{padding:10px 16px;font-size:13px}
   .auth-btn{padding:8px 12px;font-size:12px}
   .lang-btn{padding:6px 10px;font-size:12px}
@@ -468,14 +465,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 
 /* CHANGED: 태블릿(아이패드) 반응형 최적화 */
 @media(min-width:641px) and (max-width:1024px){
-  body{padding:16px 20px}
+  body{padding:70px 20px 24px}
 
   /* 터치 영역 확대 */
   .item-chip{padding:7px 12px;font-size:13px}
   .country-tab,.companion-tab{padding:6px 12px;font-size:13px}
   .ce-chip,.companion-ess-chip{padding:5px 11px;font-size:12px}
   .check-row{padding:10px;min-height:44px}
-  .mode-tab{padding:0 0 12px;font-size:13px}
+  .mode-tab{padding:12px 0;font-size:13px}
   .manage-sub-tab{padding:9px 16px;font-size:13px}
   .list-tab{padding:8px 14px}
   .nav-tab{padding:8px 18px}
@@ -541,6 +538,7 @@ const db=firebase.firestore();
 
 <!-- CHANGED: 인증 바 + 로고 -->
 <div id="auth-bar">
+<div class="auth-inner">
   <div id="auth-logo">
     <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -577,6 +575,7 @@ const db=firebase.firestore();
       <button class="auth-btn" id="auth-signout-btn" onclick="doSignOut()">로그아웃</button>
     </div>
   </div>
+</div>
 </div>
 
 <!-- CHANGED: trip-card merged into list-manager -->
