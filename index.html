@@ -211,6 +211,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .progress-text{font-size:11px;color:var(--text3);white-space:nowrap}
 .save-toast{position:fixed;bottom:20px;right:20px;font-size:12px;font-weight:500;background:rgba(28,28,30,0.88);color:#fff;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);padding:8px 18px;border-radius:var(--radius-pill);opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
 .save-toast.show{opacity:1}
+/* CHANGED: 피드백 푸터 + 모달 */
+#feedback-footer{text-align:center;padding:28px 0 8px;opacity:.7;transition:opacity .2s}
+#feedback-footer:hover{opacity:1}
+#feedback-footer-btn{font-size:12px;color:var(--text3);background:transparent;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--radius-pill);transition:all .15s}
+#feedback-footer-btn:hover{background:rgba(0,0,0,0.05);color:var(--text2)}
+#feedback-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center}
+.feedback-box{background:rgba(248,248,252,0.95);backdrop-filter:saturate(200%) blur(30px);-webkit-backdrop-filter:saturate(200%) blur(30px);border:1px solid rgba(255,255,255,0.88);border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,0.14),0 4px 16px rgba(0,0,0,0.07);width:min(480px,90vw);display:flex;flex-direction:column;overflow:hidden}
+.feedback-msg{font-size:13px;color:var(--text2);line-height:1.75;padding:22px 22px 0;word-break:keep-all}
+.feedback-textarea{width:100%;font-size:13px;padding:11px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:var(--radius);background:rgba(255,255,255,0.8);color:var(--text);font-family:inherit;resize:none;height:120px;outline:none;transition:border-color .15s;box-sizing:border-box}
+.feedback-textarea:focus{border-color:rgba(0,122,255,0.4);background:#fff}
+.feedback-input-wrap{padding:14px 22px}
+.feedback-char{font-size:11px;color:var(--text3);text-align:right;margin-top:5px}
+.feedback-footer-row{display:flex;justify-content:flex-end;gap:8px;padding:0 22px 18px}
+.feedback-submit{font-size:13px;font-weight:600;padding:9px 22px;border-radius:var(--radius-pill);border:none;background:#007AFF;color:#fff;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.feedback-submit:hover{opacity:.88}
+.feedback-submit:disabled{opacity:.45;cursor:not-allowed}
+.feedback-cancel{font-size:13px;padding:9px 16px;border-radius:var(--radius-pill);border:1px solid rgba(0,0,0,0.1);background:transparent;color:var(--text2);cursor:pointer;font-family:inherit;transition:all .15s}
+.feedback-cancel:hover{background:rgba(0,0,0,0.05)}
 /* CHANGED: 고정 full-width 네비바 */
 #auth-bar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(248,248,252,0.82);backdrop-filter:saturate(200%) blur(40px);-webkit-backdrop-filter:saturate(200%) blur(40px);border:none;border-radius:0;border-bottom:0.5px solid rgba(0,0,0,0.09);padding:0;box-shadow:0 1px 0 rgba(255,255,255,0.85) inset}
 /* CHANGED: 좌측 로고+탭 그룹 */
@@ -889,7 +907,31 @@ const db=firebase.firestore();
     </div>
   </div>
 </div>
+<!-- CHANGED: 피드백 푸터 버튼 -->
+<div id="feedback-footer">
+  <button id="feedback-footer-btn" onclick="openFeedbackModal()">💬 <span id="feedback-btn-label">피드백 남기기</span></button>
+</div>
 </div><!-- /app -->
+
+<!-- 피드백 모달 -->
+<div id="feedback-modal">
+  <div class="pm-overlay" onclick="closeFeedbackModal()"></div>
+  <div class="feedback-box">
+    <div class="pm-header">
+      <span class="pm-header-title" id="feedback-modal-title">피드백</span>
+      <button class="pm-close" onclick="closeFeedbackModal()">✕</button>
+    </div>
+    <p class="feedback-msg" id="feedback-msg"></p>
+    <div class="feedback-input-wrap">
+      <textarea class="feedback-textarea" id="feedback-textarea" maxlength="500" oninput="updateFeedbackChar()" placeholder=""></textarea>
+      <div class="feedback-char"><span id="feedback-char-count">0</span> / 500</div>
+    </div>
+    <div class="feedback-footer-row">
+      <button class="feedback-cancel" onclick="closeFeedbackModal()" id="feedback-cancel-btn">취소</button>
+      <button class="feedback-submit" id="feedback-submit-btn" onclick="submitFeedback()">보내기</button>
+    </div>
+  </div>
+</div>
 <!-- CHANGED: 닉네임 설정 모달 (첫 로그인 강제) -->
 <div id="nickname-modal" style="display:none">
   <div class="pm-overlay"></div>
@@ -1215,6 +1257,11 @@ const UI_TEXT={
     rsec_booking:'예약 관리',rsec_essentials:'기본 준비물',
     new_list:'새 리스트 ',first_trip:'나의 첫 번째 여행',
     items_count:'개',drop_hint:'클릭 또는 드래그해서 추가',
+    feedback_btn:'피드백 남기기',feedback_title:'피드백',
+    feedback_msg:'저는 한국에 사는 아마추어 개발자예요. 나름 열심히 만들었는데, 좋든 나쁘든 모든 피드백을 기꺼이 받겠습니다. packo를 한 번이라도 써주셔서 정말 감사해요. 좋은 하루 보내세요 :)',
+    feedback_placeholder:'편하게 남겨주세요...',
+    feedback_submit:'보내기',feedback_cancel:'취소',
+    feedback_sending:'전송 중...',feedback_done:'감사합니다 ✓',
   },
   en:{
     nav_travel:'Travel Packing',nav_myitems:'My Items',
@@ -1254,6 +1301,11 @@ const UI_TEXT={
     rsec_booking:'Reservations',rsec_essentials:'Essentials',
     new_list:'New List ',first_trip:'My First Trip',
     items_count:' items',drop_hint:'Click or drag to add',
+    feedback_btn:'Leave Feedback',feedback_title:'Feedback',
+    feedback_msg:"I'm an amateur developer based in Korea. I built this with a lot of heart — and I genuinely welcome all feedback, good or bad. Thank you so much for using packo even once. Have a wonderful day :)",
+    feedback_placeholder:'Feel free to share anything...',
+    feedback_submit:'Send',feedback_cancel:'Cancel',
+    feedback_sending:'Sending...',feedback_done:'Thank you ✓',
   }
 };
 
@@ -1887,6 +1939,7 @@ function applyLang(){
   const pt=document.querySelector('#print-modal .pm-header-title');if(pt)pt.textContent=t('pdf_title');
   const pp=document.querySelector('#print-modal .pm-footer .pm-btn:first-child');if(pp)pp.textContent=t('pdf_print');
   const ps=document.querySelector('#print-modal .pm-footer .pm-btn:last-child');if(ps)ps.textContent=t('pdf_save');
+  const fbl=document.getElementById('feedback-btn-label');if(fbl)fbl.textContent=t('feedback_btn');
   const nt2=document.querySelector('#nickname-modal .pm-header-title');if(nt2)nt2.textContent=t('nickname_title');
   const nht=document.getElementById('nickname-hint-text');if(nht)nht.textContent=t('nickname_hint');
   const ni=document.getElementById('nickname-input');if(ni)ni.placeholder=t('nickname_placeholder');
@@ -1903,6 +1956,42 @@ async function loadFromFirestore(){if(!currentUser)return false;try{const snap=a
 // CHANGED: 도메인 등록 후 popup 방식으로 복구
 function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
 function doSignOut(){auth.signOut();}
+
+// CHANGED: 피드백 기능
+function openFeedbackModal(){
+  document.getElementById('feedback-modal-title').textContent=t('feedback_title');
+  document.getElementById('feedback-msg').textContent=t('feedback_msg');
+  document.getElementById('feedback-textarea').placeholder=t('feedback_placeholder');
+  document.getElementById('feedback-submit-btn').textContent=t('feedback_submit');
+  document.getElementById('feedback-cancel-btn').textContent=t('feedback_cancel');
+  document.getElementById('feedback-textarea').value='';
+  document.getElementById('feedback-char-count').textContent='0';
+  document.getElementById('feedback-submit-btn').disabled=false;
+  document.getElementById('feedback-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('feedback-textarea').focus(),100);
+}
+function closeFeedbackModal(){document.getElementById('feedback-modal').style.display='none';}
+function updateFeedbackChar(){
+  const v=document.getElementById('feedback-textarea').value;
+  document.getElementById('feedback-char-count').textContent=v.length;
+}
+async function submitFeedback(){
+  const text=document.getElementById('feedback-textarea').value.trim();
+  if(!text)return;
+  const btn=document.getElementById('feedback-submit-btn');
+  btn.textContent=t('feedback_sending');btn.disabled=true;
+  try{
+    await db.collection('feedback').add({
+      text,lang,
+      uid:auth.currentUser?.uid||null,
+      nickname:auth.currentUser?.displayName||null,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      ua:navigator.userAgent.slice(0,120)
+    });
+    btn.textContent=t('feedback_done');
+    setTimeout(()=>closeFeedbackModal(),1200);
+  }catch(e){btn.textContent=t('feedback_submit');btn.disabled=false;console.error(e);}
+}
 function load(){try{const r=localStorage.getItem(SK);if(r){const d=JSON.parse(r);if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;if(d.myItems)myItems=d.myItems;if(d.outerTab)outerTab=d.outerTab;}}catch(e){}}
 // CHANGED: renderAll 업데이트
 function renderAll(){renderListTabs();renderListMeta();renderRegions();renderCountryInfoPanel();renderEssentials();renderCompanionTabs();renderCompanionEssentials();renderCatDropZones();renderManageTab();updateImportBtn();document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?t('collapse'):t('expand');document.getElementById('companion-regions').classList.toggle('open',companionOpen);document.getElementById('companion-toggle').textContent=companionOpen?t('collapse'):t('expand');switchOuterTab(outerTab);applyLang();}
