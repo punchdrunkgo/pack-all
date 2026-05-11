@@ -715,6 +715,11 @@ const db=firebase.firestore();
         <div class="item-chip" draggable="true" data-name="손톱깎이" data-cat="세면·위생">손톱깎이</div>
         <div class="item-chip" draggable="true" data-name="마스크" data-cat="세면·위생">마스크</div>
         <div class="item-chip" draggable="true" data-name="손소독제" data-cat="세면·위생">손소독제</div>
+        <div class="item-chip" draggable="true" data-name="데오도란트" data-cat="세면·위생">데오도란트</div>
+        <div class="item-chip" draggable="true" data-name="치실" data-cat="세면·위생">치실</div>
+        <div class="item-chip" draggable="true" data-name="드라이 샴푸" data-cat="세면·위생">드라이 샴푸</div>
+        <div class="item-chip" draggable="true" data-name="면도 크림" data-cat="세면·위생">면도 크림</div>
+        <div class="item-chip" draggable="true" data-name="탐폰/생리컵" data-cat="세면·위생">탐폰/생리컵</div>
       </div></div>
       <div class="category"><div class="cat-label">의류 · 잡화</div><div class="items-grid">
         <div class="item-chip" draggable="true" data-name="여벌옷" data-cat="의류·잡화">여벌옷</div>
@@ -734,6 +739,9 @@ const db=firebase.firestore();
         <div class="item-chip" draggable="true" data-name="자물쇠" data-cat="의류·잡화">자물쇠</div>
         <div class="item-chip" draggable="true" data-name="비닐봉지" data-cat="의류·잡화">비닐봉지</div>
         <div class="item-chip" draggable="true" data-name="지퍼백" data-cat="의류·잡화">지퍼백</div>
+        <div class="item-chip" draggable="true" data-name="패킹 큐브" data-cat="의류·잡화">패킹 큐브</div>
+        <div class="item-chip" draggable="true" data-name="세탁 가방" data-cat="의류·잡화">세탁 가방</div>
+        <div class="item-chip" draggable="true" data-name="압박 양말" data-cat="의류·잡화">압박 양말</div>
       </div></div>
       <div class="category"><div class="cat-label">의약품</div><div class="items-grid">
         <div class="item-chip" draggable="true" data-name="종합감기약" data-cat="의약품">종합감기약</div>
@@ -1030,10 +1038,13 @@ const ITEM_EN={
   '스킨':'Toner','로션':'Lotion','선크림':'Sunscreen','메이크업 화장품':'Makeup','면도기':'Razor',
   '인공눈물':'Eye Drops','빗':'Comb','머리끈':'Hair Tie','면봉':'Cotton Swab','화장솜':'Cotton Pad',
   '손톱깎이':'Nail Clipper','마스크':'Face Mask','손소독제':'Hand Sanitizer',
+  '데오도란트':'Deodorant','치실':'Dental Floss','드라이 샴푸':'Dry Shampoo',
+  '면도 크림':'Shaving Cream','탐폰/생리컵':'Tampons / Menstrual Cup',
   '여벌옷':'Extra Clothes','잠옷':'Pajamas','속옷':'Underwear','양말':'Socks','수영복':'Swimsuit',
   '가디건':'Cardigan','담요':'Blanket','스카프':'Scarf','우산':'Umbrella','우비':'Raincoat',
   '선글라스':'Sunglasses','모자':'Hat','슬리퍼':'Slippers','운동화':'Sneakers','자물쇠':'Lock',
   '비닐봉지':'Plastic Bag','지퍼백':'Ziplock Bag',
+  '패킹 큐브':'Packing Cubes','세탁 가방':'Laundry Bag','압박 양말':'Compression Socks',
   '종합감기약':'Cold Medicine','소화제':'Digestive Aid','소염제':'Anti-inflammatory','진통제':'Painkiller',
   '지사제':'Anti-diarrheal','밴드':'Band-aid','연고':'Ointment','파스':'Pain Patch','멀미약':'Motion Sickness Med',
   '모기기피제':'Mosquito Repellent','여성위생용품':'Feminine Hygiene','처방약':'Prescription Meds',
@@ -2080,7 +2091,7 @@ setupNicknameEdit();
 // CHANGED: PDF 미리보기
 function buildPrintHTML(){
   const list=CL();const items=list.items||[];
-  const dests=(list.destinations||[]).map(c=>{const i=allFlat().find(x=>x.c===c);return i?`${i.f} ${i.n}`:null;}).filter(Boolean).join('  ');
+  const dests=(list.destinations||[]).map(c=>{const i=allFlat().find(x=>x.c===c);if(!i)return null;const cn=lang==='en'?(COUNTRY_NAME_EN[c]||i.n):i.n;return`${i.f} ${cn}`;}).filter(Boolean).join('  ');
   const checked=items.filter(i=>i.checked).length,total=items.length;
   const pct=total?Math.round(checked/total*100):0;
   let html=`<div class="pc-title">${list.name}</div>`;
@@ -2115,7 +2126,7 @@ function closePrintPreview(){document.getElementById('print-modal').style.displa
 // CHANGED: 일정별 PDF — 화면 보드 UI 그대로 가로 배치
 function buildBoardPrintHTML(){
   const list=CL();const items=list.items||[];
-  const dests=(list.destinations||[]).map(c=>{const i=allFlat().find(x=>x.c===c);return i?`${i.f} ${i.n}`:null;}).filter(Boolean).join('  ');
+  const dests=(list.destinations||[]).map(c=>{const i=allFlat().find(x=>x.c===c);if(!i)return null;const cn=lang==='en'?(COUNTRY_NAME_EN[c]||i.n):i.n;return`${i.f} ${cn}`;}).filter(Boolean).join('  ');
   const checked=items.filter(i=>i.checked).length,total=items.length;
   const pct=total?Math.round(checked/total*100):0;
   let html=`<div class="pc-title">${list.name}</div>`;
