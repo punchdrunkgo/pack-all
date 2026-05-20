@@ -70,7 +70,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 
 /* 리스트 매니저 */
 .list-manager{background:var(--bg);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
-.list-tabs-row{display:flex;align-items:center;padding:10px 12px 0;border-bottom:1px solid rgba(0,0,0,0.06);overflow-x:auto;gap:0;background:rgba(255,255,255,0.35)}
+.list-tabs-row{display:flex;align-items:center;padding:10px 12px 0;border-bottom:1px solid rgba(0,0,0,0.06);overflow-x:auto;gap:0;background:rgba(255,255,255,0.35);cursor:grab;user-select:none;scrollbar-width:none;-ms-overflow-style:none}
+.list-tabs-row::-webkit-scrollbar{display:none}
+.list-tabs-row.dragging{cursor:grabbing}
 .list-tab{font-size:13px;padding:6px 12px;border-radius:8px 8px 0 0;border:1px solid transparent;cursor:pointer;user-select:none;white-space:nowrap;color:var(--text3);transition:all .15s}
 .list-tab:hover{color:var(--text);background:rgba(255,255,255,0.6)}
 .list-tab.active{color:var(--text);background:rgba(255,255,255,0.9);border-color:rgba(0,0,0,0.07);border-bottom-color:rgba(255,255,255,0.9);font-weight:500;margin-bottom:-1px}
@@ -1630,6 +1632,30 @@ function renderListTabs(){
 function addNewList(){lists.push({id:nextListId,name:t('new_list')+nextListId,items:[],destinations:[]});currentListId=nextListId++;renderAll();save();setTimeout(startEdit,50);}
 function deleteCurrentList(){if(lists.length<=1)return;lists=lists.filter(l=>l.id!==currentListId);currentListId=lists[lists.length-1].id;renderAll();save();}
 document.getElementById('add-list-btn').addEventListener('click',addNewList);
+
+// CHANGED: list-tabs-row 드래그 스크롤
+(function(){
+  const row=document.getElementById('list-tabs-row');
+  let down=false,startX=0,scrollLeft=0,moved=false;
+  row.addEventListener('mousedown',e=>{
+    if(e.target.closest('.list-tab-add'))return;
+    down=true;moved=false;
+    startX=e.pageX-row.getBoundingClientRect().left;
+    scrollLeft=row.scrollLeft;
+    row.classList.add('dragging');
+  });
+  document.addEventListener('mouseup',()=>{down=false;row.classList.remove('dragging');});
+  document.addEventListener('mousemove',e=>{
+    if(!down)return;
+    const x=e.pageX-row.getBoundingClientRect().left;
+    const dx=x-startX;
+    if(Math.abs(dx)>4)moved=true;
+    row.scrollLeft=scrollLeft-dx;
+  });
+  row.addEventListener('click',e=>{
+    if(moved){e.stopPropagation();e.preventDefault();moved=false;}
+  },true);
+})();
 
 function updateSourceChips(){
   const nc={};(CL().items||[]).forEach(i=>{nc[i.name]=(nc[i.name]||0)+1;});
