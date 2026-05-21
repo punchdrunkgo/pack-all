@@ -253,7 +253,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .nav-tab{font-size:14px;font-weight:500;padding:6px 14px;border-radius:0;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:color .15s;white-space:nowrap;letter-spacing:-.01em}
 .nav-tab:hover{color:var(--text);background:transparent}
 .nav-tab.active{color:#007AFF;font-weight:600;background:transparent}
-#auth-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+#auth-right{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto}
 .auth-btn{font-size:12px;padding:6px 14px;border-radius:var(--radius-pill);border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.7);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
 .auth-btn:hover{background:rgba(255,255,255,0.92)}
 .auth-btn.primary{background:#007AFF;border-color:transparent;color:#fff;font-weight:500}
@@ -421,16 +421,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 /* CHANGED: 모바일 반응형 최적화 */
 @media(max-width:640px){
   /* 레이아웃 */
-  body{padding:94px 10px 28px}
+  body{padding:104px 10px 28px}
   .app{gap:10px}
 
-  /* 헤더: 2줄 배치 */
-  .auth-inner{flex-wrap:wrap;padding:8px 14px;height:auto;gap:4px 0}
-  #auth-left{flex-wrap:wrap;width:100%;gap:0}
-  #auth-nav{order:3;width:100%;margin-left:0;border-top:0.5px solid rgba(0,0,0,0.06);padding-top:4px;margin-top:2px}
-  .nav-tab{flex:1;padding:7px 8px;font-size:12px;text-align:center}
+  /* 헤더: 2줄 배치 — 1행: 로고+우측메뉴, 2행: 탭 */
+  .auth-inner{flex-wrap:wrap;padding:6px 14px;height:auto;gap:0}
+  #auth-left{flex-shrink:0;height:44px;display:flex;align-items:center}
+  #auth-nav{order:3;width:100%;margin-left:0;border-top:0.5px solid rgba(0,0,0,0.06);padding-top:2px;margin-top:2px;display:flex}
+  .nav-tab{flex:1;padding:8px 8px;font-size:12px;text-align:center}
   #auth-guest-hint{display:none}
-  #auth-right{gap:6px}
+  #auth-right{margin-left:auto;height:44px;display:flex;align-items:center;gap:6px;flex-shrink:0}
+  #auth-right>div:first-child{border-right:1px solid rgba(0,0,0,0.1);padding-right:8px;margin-right:2px}
 
   /* 그리드 1열 */
   .main-grid{grid-template-columns:1fr}
@@ -589,11 +590,11 @@ const db=firebase.firestore();
       </svg>
       <span id="auth-logo-text">pac<span>ko</span></span>
     </div>
-    <!-- CHANGED: 로고 옆으로 이동 -->
-    <div id="auth-nav">
-      <button class="nav-tab active" id="nav-travel" onclick="switchOuterTab('travel')">여행 준비물</button>
-      <button class="nav-tab" id="nav-myitems" onclick="switchOuterTab('myitems')">내 물품</button>
-    </div>
+  </div>
+  <!-- CHANGED: auth-nav을 auth-inner 직접 자식으로 이동 → 모바일에서 2행으로 분리 가능 -->
+  <div id="auth-nav">
+    <button class="nav-tab active" id="nav-travel" onclick="switchOuterTab('travel')">여행 준비물</button>
+    <button class="nav-tab" id="nav-myitems" onclick="switchOuterTab('myitems')">내 물품</button>
   </div>
   <div id="auth-right">
     <!-- CHANGED: 언어 전환 버튼 -->
