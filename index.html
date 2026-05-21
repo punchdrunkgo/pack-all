@@ -1014,8 +1014,8 @@ const db=firebase.firestore();
       <div class="pm-page" id="pm-content"></div>
     </div>
     <div class="pm-footer">
-      <button class="pm-btn" onclick="window.print()">🖨 인쇄하기</button>
-      <button class="pm-btn pm-btn-primary" onclick="window.print()">📄 저장하기 (PDF)</button>
+      <button class="pm-btn" onclick="trackEvent('pdf_export',{action:'print'});window.print()">🖨 인쇄하기</button>
+      <button class="pm-btn pm-btn-primary" onclick="trackEvent('pdf_export',{action:'save'});window.print()">📄 저장하기 (PDF)</button>
     </div>
   </div>
 </div>
@@ -1023,6 +1023,9 @@ const db=firebase.firestore();
 <div class="save-toast" id="toast">저장됨 ✓</div>
 
 <script>
+// GA4 이벤트 트래킹 헬퍼
+function trackEvent(name,params){if(typeof gtag==='function')gtag('event',name,params||{});}
+
 // CHANGED: 언어 상태 (가장 먼저 초기화)
 let lang=localStorage.getItem('packo-lang')||'ko';
 function t(k){return(UI_TEXT[lang]||UI_TEXT.ko)[k]||UI_TEXT.ko[k]||k;}
@@ -1381,11 +1384,12 @@ function renderRegions(){
       tab.addEventListener('click',()=>{
         if(!CL().destinations)CL().destinations=[];
         const idx=CL().destinations.indexOf(c);
-        if(idx>=0)CL().destinations.splice(idx,1);else CL().destinations.push(c);
+        if(idx>=0){CL().destinations.splice(idx,1);trackEvent('destination_deselect',{country:c});}
+        else{CL().destinations.push(c);trackEvent('destination_select',{country:c});}
         if(infoCountry===c&&idx>=0)infoCountry=null;
         save();renderRegions();renderListMeta();renderCountryInfoPanel();renderEssentials();renderCompanionEssentials();
       });
-      tab.addEventListener('dblclick',e=>{e.stopPropagation();infoCountry=c;infoOpen=true;renderCountryInfoPanel();});
+      tab.addEventListener('dblclick',e=>{e.stopPropagation();infoCountry=c;infoOpen=true;renderCountryInfoPanel();trackEvent('country_info_view',{country:c});});
       tabs.appendChild(tab);
     });
     div.appendChild(tabs);body.appendChild(div);
@@ -1553,6 +1557,7 @@ function confirmImportMyItems(){
   const ownedItems=Object.entries(myItems).filter(([,v])=>v.owned);
   CL().items=ownedItems.map(([name,v])=>({name,cat:v.cat||'기타',qty:1,checked:false,memo:v.memo||'',period:null}));
   CL().myItemsImported=true;
+  trackEvent('myitems_import',{item_count:ownedItems.length});
   closeImportModal();save();
   renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();updateImportBtn();
 }
@@ -1588,7 +1593,9 @@ function renderCompanionTabs(){
     tab.className='companion-tab'+(currentCompanion===key?' active':'');
     tab.textContent=lang==='en'?(COMPANION_LABEL_EN[key]||label):label;
     tab.addEventListener('click',()=>{
+      const prev=currentCompanion;
       currentCompanion=currentCompanion===key?null:key;
+      trackEvent('companion_select',{companion:currentCompanion||'none',prev_companion:prev||'none'});
       save();renderCompanionTabs();renderCompanionEssentials();renderListMeta();
     });
     wrap.appendChild(tab);
@@ -1629,8 +1636,8 @@ function renderListTabs(){
   document.getElementById('list-name-display').textContent=CL().name;
   document.getElementById('list-delete-btn').style.display=lists.length>1?'inline':'none';
 }
-function addNewList(){lists.push({id:nextListId,name:t('new_list')+nextListId,items:[],destinations:[]});currentListId=nextListId++;renderAll();save();setTimeout(startEdit,50);}
-function deleteCurrentList(){if(lists.length<=1)return;lists=lists.filter(l=>l.id!==currentListId);currentListId=lists[lists.length-1].id;renderAll();save();}
+function addNewList(){lists.push({id:nextListId,name:t('new_list')+nextListId,items:[],destinations:[]});currentListId=nextListId++;trackEvent('list_create',{list_count:lists.length});renderAll();save();setTimeout(startEdit,50);}
+function deleteCurrentList(){if(lists.length<=1)return;trackEvent('list_delete',{list_name:CL().name});lists=lists.filter(l=>l.id!==currentListId);currentListId=lists[lists.length-1].id;renderAll();save();}
 document.getElementById('add-list-btn').addEventListener('click',addNewList);
 
 // CHANGED: list-tabs-row 드래그 스크롤
@@ -1703,16 +1710,16 @@ function renderCatDropZones(){
       pb.addEventListener('click',e=>{e.stopPropagation();openQtyIdx=openQtyIdx===gi?null:gi;renderCatDropZones();});
       tag.appendChild(pb);
       const rb=document.createElement('span');rb.className='tag-remove';rb.textContent='✕';rb.draggable=false;
-      rb.addEventListener('click',e=>{e.stopPropagation();CL().items.splice(gi,1);openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();});
+      rb.addEventListener('click',e=>{e.stopPropagation();trackEvent('item_remove',{item_name:item.name,category:item.cat});CL().items.splice(gi,1);openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();});
       tag.appendChild(rb);
       row.appendChild(tag);pi.appendChild(row);
       if(openQtyIdx===gi){
         const pop=document.createElement('div');pop.className='qty-popover';pop.addEventListener('click',e=>e.stopPropagation());
         const minus=document.createElement('button');minus.className='qty-popover-btn';minus.textContent='−';
-        minus.addEventListener('click',e=>{e.stopPropagation();const cur=CL().items[gi].qty||1;if(cur>1){CL().items[gi].qty=cur-1;save();renderCatDropZones();renderManageTab();}});
+        minus.addEventListener('click',e=>{e.stopPropagation();const cur=CL().items[gi].qty||1;if(cur>1){CL().items[gi].qty=cur-1;trackEvent('item_qty_change',{item_name:item.name,qty:cur-1});save();renderCatDropZones();renderManageTab();}});
         const num=document.createElement('span');num.className='qty-popover-num';num.textContent=qty;
         const plus=document.createElement('button');plus.className='qty-popover-btn';plus.textContent='+';
-        plus.addEventListener('click',e=>{e.stopPropagation();CL().items[gi].qty=(CL().items[gi].qty||1)+1;save();renderCatDropZones();renderManageTab();});
+        plus.addEventListener('click',e=>{e.stopPropagation();const nq=(CL().items[gi].qty||1)+1;CL().items[gi].qty=nq;trackEvent('item_qty_change',{item_name:item.name,qty:nq});save();renderCatDropZones();renderManageTab();});
         pop.appendChild(minus);pop.appendChild(num);pop.appendChild(plus);pi.appendChild(pop);
       }
       pi.addEventListener('dragover',e=>{if(sortDragCat!==cat)return;e.preventDefault();e.stopPropagation();if(sortOverIdx!==gi){sortOverIdx=gi;renderCatDropZones();}});
@@ -1722,7 +1729,7 @@ function renderCatDropZones(){
     dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
     dz.addEventListener('drop',e=>{
       e.preventDefault();dz.classList.remove('over');
-      if(srcDragged){addItem(srcDragged.dataset.name,cat);}
+      if(srcDragged){addItem(srcDragged.dataset.name,cat,'drag');}
       else if(sortDragCat===cat&&sortDragIdx!==null&&sortOverIdx!==null&&sortDragIdx!==sortOverIdx){
         const arr=CL().items;const moved=arr.splice(sortDragIdx,1)[0];
         arr.splice(sortOverIdx>sortDragIdx?sortOverIdx-1:sortOverIdx,0,moved);
@@ -1813,12 +1820,15 @@ function renderBoard(){
   });
 }
 function toggleManageCheck(idx){
-  CL().items[idx].checked=!CL().items[idx].checked;
+  const item=CL().items[idx];
+  item.checked=!item.checked;
+  trackEvent(item.checked?'item_check':'item_uncheck',{item_name:item.name,category:item.cat});
   save();renderManageTab();
 }
 function setItemPeriod(idx,period){
   const item=CL().items[idx];
   item.period=item.period===period?null:period;
+  trackEvent('item_period_set',{item_name:item.name,period:item.period||'default'});
   save();renderManageTab();
 }
 function updateManageMemo(idx,val){
@@ -1890,12 +1900,13 @@ function renderManageTab(){
   if(manageSub==='board')renderBoard();
 }
 
-function addItem(name,cat){
+function addItem(name,cat,method){
   if(!CL().items)CL().items=[];
   CL().items.push({name,cat:cat||'기타',qty:1,checked:false,memo:'',period:null});
+  trackEvent('item_add',{item_name:name,category:cat||'기타',method:method||'click'});
   save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();
 }
-function addCustom(){const input=document.getElementById('custom-input');const val=input.value.trim();if(!val)return;addItem(val,'기타');input.value='';}
+function addCustom(){const input=document.getElementById('custom-input');const val=input.value.trim();if(!val)return;addItem(val,'기타','manual');input.value='';}
 function clearAll(){if(!(CL().items||[]).length)return;CL().items=[];openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();}
 function uncheckAll(){(CL().items||[]).forEach(i=>i.checked=false);save();renderCatDropZones();renderManageTab();}
 
@@ -1904,7 +1915,7 @@ document.querySelectorAll('.item-chip').forEach(chip=>{
   chip.addEventListener('mousedown',()=>{dragStarted=false;});
   chip.addEventListener('dragstart',e=>{dragStarted=true;srcDragged=chip;chip.classList.add('dragging');e.dataTransfer.effectAllowed='copy';renderCatDropZones();});
   chip.addEventListener('dragend',()=>{chip.classList.remove('dragging');srcDragged=null;document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('over'));renderCatDropZones();});
-  chip.addEventListener('click',()=>{if(!dragStarted)addItem(chip.dataset.name,chip.dataset.cat||'기타');});
+  chip.addEventListener('click',()=>{if(!dragStarted)addItem(chip.dataset.name,chip.dataset.cat||'기타','click');});
 });
 
 document.getElementById('custom-input').addEventListener('keydown',e=>{if(e.key==='Enter')addCustom();});
@@ -1913,7 +1924,7 @@ const nd=document.getElementById('list-name-display'),hint=document.getElementBy
 function startEdit(){
   const cur=CL().name;const inp=document.createElement('input');inp.className='list-name-input';inp.value=cur;
   nd.replaceWith(inp);hint.textContent=t('edit_enter');inp.focus();inp.select();
-  function commit(){const v=inp.value.trim()||cur;CL().name=v;const s=document.createElement('span');s.className='list-name';s.id='list-name-display';s.textContent=v;inp.replaceWith(s);hint.textContent=t('edit_hint');s.addEventListener('dblclick',startEdit);renderListTabs();save();}
+  function commit(){const v=inp.value.trim()||cur;if(v!==cur)trackEvent('list_rename',{old_name:cur,new_name:v});CL().name=v;const s=document.createElement('span');s.className='list-name';s.id='list-name-display';s.textContent=v;inp.replaceWith(s);hint.textContent=t('edit_hint');s.addEventListener('dblclick',startEdit);renderListTabs();save();}
   function cancel(){const s=document.createElement('span');s.className='list-name';s.id='list-name-display';s.textContent=cur;inp.replaceWith(s);hint.textContent=t('edit_hint');s.addEventListener('dblclick',startEdit);}
   inp.addEventListener('keydown',e=>{if(e.key==='Enter')commit();if(e.key==='Escape')cancel();});
   inp.addEventListener('blur',commit);
@@ -1927,9 +1938,11 @@ let currentUser=null;
 function save(){try{localStorage.setItem(SK,JSON.stringify({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion,myItems,outerTab}));}catch(e){}if(currentUser)saveToFirestore();showToast();}
 // CHANGED: 언어 전환
 function setLang(l){
+  const prev=lang;
   lang=l;
   localStorage.setItem('packo-lang',l);
   document.documentElement.lang=l==='en'?'en':'ko';
+  if(prev!==l)trackEvent('language_switch',{from:prev,to:l});
   applyLang();
   renderAll();
 }
@@ -2010,8 +2023,8 @@ function applyLang(){
 async function saveToFirestore(){if(!currentUser)return;try{await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').set({lists,currentListId,infoCountry,infoOpen,tripOpen,companionOpen,manageSub,currentCompanion,myItems,outerTab,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}catch(e){console.error('Firestore 저장 오류:',e);}}
 async function loadFromFirestore(){if(!currentUser)return false;try{const snap=await db.collection('users').doc(currentUser.uid).collection('data').doc('travel-pack').get();if(snap.exists){const d=snap.data();if(d.lists){lists=d.lists;nextListId=Math.max(...lists.map(l=>l.id))+1;}if(d.currentListId)currentListId=d.currentListId;if(d.infoCountry!==undefined)infoCountry=d.infoCountry;if(d.infoOpen!==undefined)infoOpen=d.infoOpen;if(d.tripOpen!==undefined)tripOpen=d.tripOpen;if(d.companionOpen!==undefined)companionOpen=d.companionOpen;if(d.manageSub)manageSub=d.manageSub;if(d.currentCompanion!==undefined)currentCompanion=d.currentCompanion;if(d.myItems)myItems=d.myItems;if(d.outerTab)outerTab=d.outerTab;return true;}return false;}catch(e){console.error('Firestore 로드 오류:',e);return false;}}
 // CHANGED: 도메인 등록 후 popup 방식으로 복구
-function signInWithGoogle(){auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(console.error);}
-function doSignOut(){auth.signOut();}
+function signInWithGoogle(){trackEvent('login_attempt',{method:'google'});auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>{trackEvent('login_fail',{method:'google',error:e.code});console.error(e);});}
+function doSignOut(){trackEvent('logout');auth.signOut();}
 
 // CHANGED: 피드백 기능
 function openFeedbackModal(){
@@ -2044,6 +2057,7 @@ async function submitFeedback(){
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
       ua:navigator.userAgent.slice(0,120)
     });
+    trackEvent('feedback_submit',{lang,text_length:text.length});
     btn.textContent=t('feedback_done');
     setTimeout(()=>closeFeedbackModal(),1200);
   }catch(e){btn.textContent=t('feedback_submit');btn.disabled=false;console.error(e);}
@@ -2125,6 +2139,7 @@ auth.onAuthStateChanged(async user=>{
     g.style.display='none';u.style.display='flex';
     document.getElementById('auth-photo').src=user.photoURL||'';
     document.getElementById('auth-name').textContent=user.displayName||user.email;
+    trackEvent('login',{method:'google',uid_hash:user.uid.slice(-6)});
     await checkAndShowNickname(user);
     if(await loadFromFirestore())renderAll();
   }else{
@@ -2156,6 +2171,7 @@ function closeDeleteListModal(){document.getElementById('delete-list-modal').sty
 function confirmDeleteList(){closeDeleteListModal();deleteCurrentList();}
 // CHANGED: PDF 카테고리별/일정별 분리
 function openPrintPreview(type){
+  trackEvent('pdf_preview_open',{view_type:type,item_count:(CL().items||[]).length});
   // CHANGED: 일정별 → 가로 인쇄 방향
   let os=document.getElementById('print-orient-style');
   if(!os){os=document.createElement('style');os.id='print-orient-style';document.head.appendChild(os);}
