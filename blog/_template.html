@@ -4,23 +4,91 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- [EDIT] 글 제목 (브라우저 탭 + 구글 검색 결과에 표시) -->
-<title>일본 여행 준비물 완벽 정리 | Packo</title>
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SEO 필수 태그 — 새 글 작성 시 아래 항목 모두 수정하세요
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 
-<!-- [EDIT] 글 요약 (150자 이내, 구글 검색 결과 설명란에 표시) -->
-<meta name="description" content="여기에 글 요약을 작성하세요. 150자 이내로 핵심 내용을 담아주세요.">
+<!-- [EDIT 1] 제목 — 핵심 키워드 포함, 60자 이내 권장 -->
+<title>글 제목을 여기에 작성하세요 (2026) | Packo</title>
 
-<!-- [EDIT] OG 태그 — SNS 공유 시 표시되는 제목/설명/이미지 -->
-<meta property="og:title" content="일본 여행 준비물 완벽 정리 | Packo">
+<!-- [EDIT 2] 설명 — 검색 결과 스니펫. 핵심 내용 + 행동 유도, 130~155자 -->
+<meta name="description" content="여기에 글 요약을 작성하세요. 검색자가 궁금해할 내용을 130~155자 이내로 담아주세요.">
+
+<!-- [EDIT 3] 키워드 — 쉼표 구분, 8~12개 (구글은 무시하나 네이버/다음에 유효) -->
+<meta name="keywords" content="키워드1, 키워드2, 키워드3, 키워드4, 키워드5">
+
+<!-- [EDIT 4] OG 태그 — SNS 공유 / 카카오톡 링크 미리보기 -->
+<meta property="og:title" content="글 제목을 여기에 작성하세요 (2026) | Packo">
 <meta property="og:description" content="여기에 글 요약을 작성하세요.">
 <meta property="og:image" content="https://packo-travel.vercel.app/og-image.png">
+<!-- og:image 권장 사이즈: 1200×630px. 글별 대표 이미지가 있으면 해당 URL로 변경 -->
 <meta property="og:type" content="article">
+<meta property="og:url" content="https://packo-travel.vercel.app/blog/your-slug-here">
+<meta property="og:site_name" content="Packo">
+<meta property="og:locale" content="ko_KR">
 
-<!-- [EDIT] 발행일 (YYYY-MM-DD 형식) -->
-<meta name="article:published_time" content="2026-05-24">
+<!-- [EDIT 5] 발행일 / 수정일 (YYYY-MM-DD) -->
+<meta property="article:published_time" content="2026-05-24">
+<meta property="article:modified_time" content="2026-05-24">
+<meta property="article:section" content="여행 카테고리명">
+<!-- article:tag는 주요 태그 1~3개만 -->
+<meta property="article:tag" content="태그1">
 
-<!-- [EDIT] canonical URL — 폴더명을 실제 slug로 변경 -->
+<!-- [EDIT 6] Twitter Card — X(트위터) 공유 미리보기 -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="글 제목을 여기에 작성하세요 (2026) | Packo">
+<meta name="twitter:description" content="여기에 글 요약을 작성하세요.">
+<meta name="twitter:image" content="https://packo-travel.vercel.app/og-image.png">
+
+<!-- [EDIT 7] Canonical URL — 폴더명을 실제 slug로 변경 (중복 색인 방지) -->
 <link rel="canonical" href="https://packo-travel.vercel.app/blog/your-slug-here">
+
+<!-- [EDIT 8] JSON-LD 구조화 데이터 — 구글 리치 결과 & AI 검색(SGE) 노출에 중요
+  아래 항목을 실제 값으로 교체하세요:
+  - headline / description
+  - image (대표 이미지 URL)
+  - datePublished / dateModified
+  - BreadcrumbList 3번째 항목 name / item
+  - FAQPage → FAQ가 없으면 FAQPage 블록 전체 삭제 가능
+-->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+  {
+    "@type":"Article",
+    "headline":"글 제목을 여기에 작성하세요 (2026)",
+    "description":"여기에 글 요약을 작성하세요.",
+    "image":"https://packo-travel.vercel.app/og-image.png",
+    "datePublished":"2026-05-24",
+    "dateModified":"2026-05-24",
+    "author":{"@type":"Organization","name":"Packo","url":"https://packo-travel.vercel.app"},
+    "publisher":{"@type":"Organization","name":"Packo","url":"https://packo-travel.vercel.app","logo":{"@type":"ImageObject","url":"https://packo-travel.vercel.app/og-image.png"}},
+    "mainEntityOfPage":{"@type":"WebPage","@id":"https://packo-travel.vercel.app/blog/your-slug-here"}
+  },
+  {
+    "@type":"BreadcrumbList",
+    "itemListElement":[
+      {"@type":"ListItem","position":1,"name":"홈","item":"https://packo-travel.vercel.app"},
+      {"@type":"ListItem","position":2,"name":"블로그","item":"https://packo-travel.vercel.app/blog"},
+      {"@type":"ListItem","position":3,"name":"글 제목","item":"https://packo-travel.vercel.app/blog/your-slug-here"}
+    ]
+  },
+  {
+    "@type":"FAQPage",
+    "mainEntity":[
+      {
+        "@type":"Question",
+        "name":"자주 묻는 질문 1?",
+        "acceptedAnswer":{"@type":"Answer","text":"답변 내용을 작성하세요."}
+      },
+      {
+        "@type":"Question",
+        "name":"자주 묻는 질문 2?",
+        "acceptedAnswer":{"@type":"Answer","text":"답변 내용을 작성하세요."}
+      }
+    ]
+  }
+]}
+</script>
 
 <!-- Google Analytics (수정 금지) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EPP87SQ0SQ"></script>
@@ -44,28 +112,52 @@
   .blog-back:hover{opacity:.75}
 
   article{max-width:720px;margin:0 auto;padding:36px 24px 80px}
-  .post-meta{margin-bottom:28px}
+  .post-meta{margin-bottom:20px}
   .post-tag{font-size:12px;font-weight:600;color:#007AFF;letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
-  h1{font-size:26px;font-weight:700;letter-spacing:-.6px;line-height:1.25;margin-bottom:10px;color:#1c1c1e}
+  h1{font-size:26px;font-weight:700;letter-spacing:-.6px;line-height:1.28;margin-bottom:10px;color:#1c1c1e}
   .post-date{font-size:12px;color:#aeaeb2}
 
-  .post-body{background:#fff;border-radius:16px;padding:28px 28px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
-  .post-body h2{font-size:18px;font-weight:700;color:#1c1c1e;letter-spacing:-.3px;margin:28px 0 10px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.06)}
+  /* 대표 이미지 — loading="eager" 사용 (LCP 최적화) */
+  .post-hero-img{width:100%;height:260px;object-fit:cover;border-radius:16px;margin-bottom:24px;display:block;background:#e0e0e5}
+
+  .post-body{background:#fff;border-radius:16px;padding:28px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+  .post-body h2{font-size:18px;font-weight:700;color:#1c1c1e;letter-spacing:-.3px;margin:28px 0 10px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06)}
   .post-body h2:first-child{margin-top:0;border-top:none;padding-top:0}
-  .post-body p{font-size:15px;line-height:1.75;color:#3a3a3c;margin-bottom:12px}
+  .post-body p{font-size:15px;line-height:1.8;color:#3a3a3c;margin-bottom:12px}
   .post-body ul,.post-body ol{padding-left:20px;margin-bottom:14px}
-  .post-body li{font-size:15px;line-height:1.7;color:#3a3a3c;margin-bottom:4px}
+  .post-body li{font-size:15px;line-height:1.7;color:#3a3a3c;margin-bottom:6px}
   .post-body strong{color:#1c1c1e;font-weight:600}
+
+  /* 본문 이미지 — loading="lazy" 사용 */
+  .post-img-wrap{margin:20px 0;border-radius:12px;overflow:hidden}
+  .post-img-wrap img{width:100%;height:220px;object-fit:cover;display:block;background:#e0e0e5}
+  .post-img-caption{font-size:11px;color:#aeaeb2;text-align:center;margin-top:6px}
+
+  /* 날씨 카드 (필요 시 사용) */
+  .weather-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+  .weather-card{border-radius:12px;padding:14px 16px}
+  .weather-card.may{background:rgba(52,199,89,0.07);border:1px solid rgba(52,199,89,0.2)}
+  .weather-card.jun{background:rgba(0,122,255,0.07);border:1px solid rgba(0,122,255,0.18)}
+  .weather-card-title{font-size:13px;font-weight:700;margin-bottom:6px}
+  .weather-card.may .weather-card-title{color:#248A3D}
+  .weather-card.jun .weather-card-title{color:#007AFF}
+  .weather-card p{font-size:13px;color:#3a3a3c;line-height:1.6;margin:0}
+
   .tip-box{background:rgba(0,122,255,0.07);border:1px solid rgba(0,122,255,0.18);border-radius:10px;padding:14px 16px;margin:16px 0}
   .tip-box p{font-size:14px;color:#1c1c1e;margin:0;line-height:1.6}
   .warn-box{background:rgba(255,149,0,0.07);border:1px solid rgba(255,149,0,0.25);border-radius:10px;padding:14px 16px;margin:16px 0}
   .warn-box p{font-size:14px;color:#1c1c1e;margin:0;line-height:1.6}
 
+  /* FAQ 섹션 */
+  .faq-item{border-top:1px solid rgba(0,0,0,0.06);padding:16px 0}
+  .faq-item:first-child{border-top:none}
+  .faq-q{font-size:15px;font-weight:600;color:#1c1c1e;margin-bottom:6px;line-height:1.4}
+  .faq-a{font-size:14px;color:#3a3a3c;line-height:1.7}
+
   .post-cta{background:linear-gradient(135deg,rgba(0,122,255,0.08),rgba(88,86,214,0.08));border:1px solid rgba(0,122,255,0.18);border-radius:14px;padding:28px;text-align:center;margin-top:32px}
   .post-cta p{font-size:14px;color:#48484a;margin-bottom:16px;line-height:1.6}
   .cta-btn{display:inline-block;background:#007AFF;color:#fff;font-size:14px;font-weight:600;padding:11px 26px;border-radius:100px;text-decoration:none;letter-spacing:-.2px;transition:opacity .15s}
   .cta-btn:hover{opacity:.85}
-
   .post-footer{margin-top:32px;text-align:center}
   .post-footer a{font-size:13px;color:#007AFF;text-decoration:none}
   .post-footer a:hover{text-decoration:underline}
@@ -73,8 +165,11 @@
   @media(max-width:600px){
     article{padding:24px 14px 60px}
     .post-body{padding:20px 16px}
-    h1{font-size:22px}
+    h1{font-size:21px}
     .post-body h2{font-size:16px}
+    .post-hero-img{height:200px}
+    .post-img-wrap img{height:180px}
+    .weather-row{grid-template-columns:1fr}
   }
 </style>
 </head>
@@ -83,10 +178,10 @@
 <!--
 [네이버 블로그 교차 게시 방법]
 1. 이 파일의 .post-body 안의 텍스트를 그대로 복사해서 네이버 블로그에 붙여넣기
-2. 이미지는 /blog/{slug}/images/ 폴더의 파일을 동일하게 사용
+2. 이미지는 아래 img src URL을 그대로 네이버 블로그에 첨부
 3. 네이버 글 하단에 다음 문구 추가:
    출처: packo-travel.vercel.app/blog/{slug}
-4. 네이버 글 제목은 이 파일의 <title> 태그와 동일하게 설정
+4. 네이버 글 제목: <title> 태그와 동일하게 설정
 -->
 
 <header class="blog-header">
@@ -107,15 +202,29 @@
 <article>
   <div class="post-meta">
     <!-- [EDIT] 카테고리 태그 -->
-    <div class="post-tag">일본 여행</div>
-    <!-- [EDIT] 글 제목 (h1) -->
+    <div class="post-tag">🇰🇷 여행 카테고리</div>
+    <!-- [EDIT] 글 제목 (h1) — title 태그와 동일하게 -->
     <h1>글 제목을 여기에 작성하세요</h1>
     <!-- [EDIT] 발행일 표시용 -->
     <div class="post-date">2026년 5월 24일</div>
   </div>
 
+  <!-- 대표 이미지 — alt 필수, 핵심 키워드 포함 권장, loading="eager" -->
+  <img
+    class="post-hero-img"
+    src="https://images.unsplash.com/photo-XXXXXXXXX?auto=format&fit=crop&w=900&q=80"
+    alt="대표 이미지 설명 (핵심 키워드 포함)"
+    loading="eager"
+  >
+
   <div class="post-body">
-    <!-- [EDIT] 본문 시작 — h2로 섹션 구분, p로 문단 작성 -->
+    <!-- ─── 본문 작성 가이드 ───────────────────────────
+      • h2로 섹션 구분 (h1은 페이지당 1개, 위의 글 제목만)
+      • 각 섹션 첫 문단에 자연스럽게 키워드 포함
+      • 250자 이상 문단 권장 (얕은 내용 지양)
+      • 이미지마다 alt 속성 필수 (키워드 자연스럽게 포함)
+      • 본문 이미지는 loading="lazy" 사용
+      ──────────────────────────────────────────────── -->
 
     <h2>첫 번째 소제목</h2>
     <p>본문 내용을 여기에 작성하세요. 문단은 &lt;p&gt; 태그로 감싸주세요.</p>
@@ -123,10 +232,20 @@
     <h2>두 번째 소제목</h2>
     <p>내용을 작성하세요.</p>
     <ul>
-      <li>목록 항목 1</li>
-      <li>목록 항목 2</li>
-      <li>목록 항목 3</li>
+      <li><strong>항목 1:</strong> 설명</li>
+      <li><strong>항목 2:</strong> 설명</li>
+      <li><strong>항목 3:</strong> 설명</li>
     </ul>
+
+    <!-- 본문 이미지 — loading="lazy", alt 필수 -->
+    <div class="post-img-wrap">
+      <img
+        src="https://images.unsplash.com/photo-XXXXXXXXX?auto=format&fit=crop&w=900&q=80"
+        alt="이미지 설명"
+        loading="lazy"
+      >
+      <p class="post-img-caption">이미지 캡션을 여기에 작성하세요</p>
+    </div>
 
     <!-- 유용한 팁 박스 (파란색) -->
     <div class="tip-box">
@@ -138,7 +257,19 @@
       <p>⚠️ <strong>주의:</strong> 주의사항을 여기에 작성하세요.</p>
     </div>
 
-    <!-- [EDIT] 본문 끝 -->
+    <!-- FAQ 섹션 — 구글 Featured Snippet & AI 검색 노출에 효과적
+         JSON-LD의 FAQPage와 동일한 Q&A를 여기에도 작성하세요 -->
+    <h2>자주 묻는 질문 (FAQ)</h2>
+
+    <div class="faq-item">
+      <p class="faq-q">Q. 자주 묻는 질문 1?</p>
+      <p class="faq-a">답변 내용을 작성하세요.</p>
+    </div>
+    <div class="faq-item">
+      <p class="faq-q">Q. 자주 묻는 질문 2?</p>
+      <p class="faq-a">답변 내용을 작성하세요.</p>
+    </div>
+
   </div>
 
   <!-- CTA — 수정 불필요 -->
@@ -149,6 +280,11 @@
 
   <div class="post-footer">
     <a href="/blog">← 다른 여행 가이드 보기</a>
+    <!-- 관련 글 내부 링크 — SEO 내부 링크 구조에 중요, 2~3개 연결 권장 -->
+    <div style="margin-top:16px;border-top:1px solid rgba(0,0,0,0.07);padding-top:16px">
+      <p style="font-size:11px;color:#aeaeb2;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">관련 글</p>
+      <a href="/blog/관련글-slug" style="display:block;margin-bottom:7px">관련 글 제목 →</a>
+    </div>
   </div>
 </article>
 
