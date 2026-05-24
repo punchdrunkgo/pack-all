@@ -362,7 +362,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .pc-progress-bar{flex:1;height:5px;background:#e0dfd8;border-radius:3px;overflow:hidden}
 .pc-progress-fill{height:100%;background:#3b6d11;border-radius:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .pc-progress-text{font-size:11px;color:#9a9a96;white-space:nowrap}
-.pc-cat{margin-bottom:14px}
+.pc-cats-grid{columns:2;column-gap:22px}
+.pc-cat{margin-bottom:14px;break-inside:avoid;page-break-inside:avoid}
 .pc-cat-label{font-size:10px;font-weight:600;color:#9a9a96;letter-spacing:.07em;text-transform:uppercase;margin:0 0 5px}
 /* CHANGED: PDF 2열 그리드 */
 .pc-items{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;align-items:start}
@@ -375,10 +376,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .pc-item-qty{font-size:10px;color:#9a9a96}
 #print-content{display:none}
 @media print{
-  body{background:#fff;padding:20px;margin:0}
+  @page{size:A4 landscape;margin:10mm 14mm}
+  body{background:#fff;padding:0;margin:0}
   .app,#auth-bar,.save-toast,#print-modal,#nickname-modal,#share-modal,#import-code-modal{display:none!important}
-  #print-content{display:block!important}
-  .pc-item,.pc-checkbox,.pc-progress-fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print-content{display:block!important;padding:0;margin:0}
+  .pc-item,.pc-checkbox,.pc-progress-fill,.pb-col-header,.pb-col-body,.pb-card,.pb-card-dot{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pc-cats-grid{columns:2;column-gap:22px}
+  .pc-cat{break-inside:avoid;page-break-inside:avoid}
+  .pb-board{page-break-inside:avoid}
 }
 /* CHANGED: 모달 position fix + 모드 탭 + 관리 뷰 */
 #delete-list-modal,#nickname-modal,#import-myitems-modal{position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center}
@@ -2364,12 +2369,14 @@ function buildPrintHTML(){
   let html=`<div class="pc-title">${list.name}</div>`;
   if(dests)html+=`<div class="pc-dests">${dests}</div>`;
   if(total)html+=`<div class="pc-progress-row"><div class="pc-progress-bar"><div class="pc-progress-fill" style="width:${pct}%"></div></div><span class="pc-progress-text">${checked}/${total} ${t('packed')} (${pct}%)</span></div>`;
+  let catHtml='';
   ALL_CATS.forEach(cat=>{
     const ci=items.filter(i=>i.cat===cat);if(!ci.length)return;
-    html+=`<div class="pc-cat"><div class="pc-cat-label">${clabel(cat)}</div><div class="pc-items">`;
-    ci.forEach(item=>{const qty=item.qty||1;html+=`<div class="pc-item${item.checked?' checked':''}"><div class="pc-checkbox">${item.checked?'✓':''}</div><span class="pc-item-name">${iname(item.name)}</span>${qty>1?`<span class="pc-item-qty">×${qty}</span>`:''}</div>`;});
-    html+=`</div></div>`;
+    catHtml+=`<div class="pc-cat"><div class="pc-cat-label">${clabel(cat)}</div><div class="pc-items">`;
+    ci.forEach(item=>{const qty=item.qty||1;catHtml+=`<div class="pc-item${item.checked?' checked':''}"><div class="pc-checkbox">${item.checked?'✓':''}</div><span class="pc-item-name">${iname(item.name)}</span>${qty>1?`<span class="pc-item-qty">×${qty}</span>`:''}</div>`;});
+    catHtml+=`</div></div>`;
   });
+  html+=`<div class="pc-cats-grid">${catHtml}</div>`;
   return html||`<div style="font-size:13px;color:#9a9a96;text-align:center;padding:24px">${t('pdf_empty')}</div>`;
 }
 // CHANGED: 리스트 삭제 확인 모달
@@ -2381,13 +2388,10 @@ let _currentPrintType='cat';
 function openPrintPreview(type){
   _currentPrintType=type;
   trackEvent('pdf_preview_open',{view_type:type,item_count:(CL().items||[]).length});
-  let os=document.getElementById('print-orient-style');
-  if(!os){os=document.createElement('style');os.id='print-orient-style';document.head.appendChild(os);}
-  os.textContent=type==='board'?'@page{size:landscape}':'@page{size:portrait}';
   const h=type==='board'?buildBoardPrintHTML():buildPrintHTML();
   document.getElementById('pm-content').innerHTML=h;
   document.getElementById('print-content').innerHTML=h;
-  document.querySelector('#print-modal .pm-box').classList.toggle('board-preview',type==='board');
+  document.querySelector('#print-modal .pm-box').classList.add('board-preview');
   document.getElementById('print-modal').style.display='flex';
 }
 
@@ -2398,14 +2402,15 @@ async function saveAsImage(){
   const timeout=setTimeout(resetBtn,30000);
   try{
     const el=document.getElementById('pm-content');
-    const isBoard=_currentPrintType==='board';
     const canvas=await html2canvas(el,{
       scale:2,
-      backgroundColor:'#f5f5f7',
+      backgroundColor:'#fff',
       useCORS:true,
       scrollX:0,scrollY:0,
-      width:isBoard?el.scrollWidth:el.offsetWidth,
-      windowWidth:isBoard?el.scrollWidth:el.offsetWidth
+      width:el.scrollWidth,
+      height:el.scrollHeight,
+      windowWidth:el.scrollWidth,
+      windowHeight:el.scrollHeight
     });
     canvas.toBlob(async blob=>{
       clearTimeout(timeout);
@@ -2438,6 +2443,7 @@ async function saveAsImage(){
 }
 function closePrintPreview(){
   document.getElementById('print-modal').style.display='none';
+  document.querySelector('#print-modal .pm-box').classList.remove('board-preview');
   const btn=document.getElementById('save-image-btn');
   btn.textContent='📷 이미지로 저장 (갤러리)';btn.disabled=false;
 }
