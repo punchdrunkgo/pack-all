@@ -644,7 +644,7 @@ const db=firebase.firestore();
 
 <!-- CHANGED: trip-card merged into list-manager -->
 <div class="list-manager">
-  <div class="list-tabs-row" id="list-tabs-row"><span class="list-tab-add" id="add-list-btn">+</span><span class="list-tab-add" id="import-code-tab-btn" onclick="openImportCodeModal()" title="코드로 불러오기" style="font-size:14px;margin-left:2px">📥</span></div>
+  <div class="list-tabs-row" id="list-tabs-row"><span class="list-tab-add" id="add-list-btn">+</span></div>
   <div class="list-body">
     <div class="list-name-row">
       <span class="list-name" id="list-name-display">나의 첫 번째 여행</span>
@@ -979,34 +979,28 @@ const db=firebase.firestore();
       <button class="pm-close" onclick="closeShareModal()">✕</button>
     </div>
     <div style="padding:20px 18px">
-      <div style="font-size:12px;color:var(--text3);margin-bottom:10px;text-align:center">아래 코드를 상대방에게 알려주세요</div>
-      <div class="share-code-box" id="share-code-display">------</div>
-      <div class="share-copy-row">
-        <button class="share-copy-btn" id="share-copy-code-btn" onclick="copyShareCode()">📋 코드 복사</button>
-        <button class="share-copy-btn primary" id="share-copy-url-btn" onclick="copyShareUrl()">🔗 링크 복사</button>
-      </div>
-      <div class="share-hint">코드는 30일간 유효합니다</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px">링크를 공유하면 상대방이 클릭 한 번으로<br>준비물 리스트를 바로 받을 수 있어요.</div>
+      <div id="share-url-preview" style="font-size:11px;color:var(--text3);background:rgba(0,0,0,0.04);border-radius:var(--radius);padding:8px 10px;word-break:break-all;margin-bottom:10px;min-height:32px"></div>
+      <button class="share-copy-btn primary" id="share-copy-url-btn" onclick="copyShareUrl()" style="width:100%">🔗 링크 복사</button>
+      <div class="share-hint">링크는 30일간 유효합니다</div>
     </div>
   </div>
 </div>
-<!-- 코드로 불러오기 모달 -->
+<!-- 공유 리스트 불러오기 모달 (링크로 진입 시) -->
 <div id="import-code-modal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center">
   <div class="pm-overlay" onclick="closeImportCodeModal()"></div>
   <div class="pm-box" style="width:min(400px,92vw);max-height:none">
     <div class="pm-header">
-      <span class="pm-header-title">📥 공유 리스트 불러오기</span>
+      <span class="pm-header-title">📥 공유 리스트 받기</span>
       <button class="pm-close" onclick="closeImportCodeModal()">✕</button>
     </div>
+    <input type="hidden" id="import-code-input"/>
     <div style="padding:16px 18px">
-      <div class="import-code-row">
-        <input class="import-code-input" id="import-code-input" maxlength="6" placeholder="코드 6자리" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"/>
-        <button class="import-load-btn" id="import-load-btn" onclick="loadSharedList()">불러오기</button>
-      </div>
       <div id="import-preview-area"></div>
     </div>
     <div class="pm-footer" id="import-code-footer" style="display:none">
       <button class="pm-btn" onclick="closeImportCodeModal()">취소</button>
-      <button class="pm-btn pm-btn-primary" id="import-apply-btn" onclick="applySharedList()">내 리스트에 추가</button>
+      <button class="pm-btn pm-btn-primary" id="import-apply-btn" onclick="applySharedList()">새 리스트로 추가</button>
     </div>
   </div>
 </div>
@@ -1691,15 +1685,16 @@ function renderListMeta(){
   const destHtml=dests.map(c=>{const i=allFlat().find(x=>x.c===c);if(!i)return'';const cn=lang==='en'?(COUNTRY_NAME_EN[c]||i.n):i.n;return`<span class="dest-tag">${i.f} ${cn}</span>`;}).join('');
   const compLabel=compTag?(lang==='en'?(COMPANION_LABEL_EN[compTag.key]||compTag.label):compTag.label):null;
   const compHtml=compLabel?`<span class="companion-tag">${compLabel}</span>`:'';
-  if(!dests.length&&!compTag){meta.innerHTML=`<span style="font-size:11px;color:var(--text3)">${t('select_dest')}</span>`;return;}
-  meta.innerHTML=destHtml+compHtml;
+  const sharedByHtml=CL().sharedBy?`<span style="font-size:11px;color:#5856D6;background:rgba(88,86,214,0.08);border:1px solid rgba(88,86,214,0.2);padding:2px 8px;border-radius:20px;font-weight:500">🔗 ${escHtml(CL().sharedBy)}</span>`:'';
+  if(!dests.length&&!compTag){meta.innerHTML=sharedByHtml||`<span style="font-size:11px;color:var(--text3)">${t('select_dest')}</span>`;return;}
+  meta.innerHTML=sharedByHtml+destHtml+compHtml;
 }
 
 function renderListTabs(){
   const row=document.getElementById('list-tabs-row'),addBtn=document.getElementById('add-list-btn');
   row.innerHTML='';
   lists.forEach(l=>{
-    const tab=document.createElement('span');tab.className='list-tab'+(l.id===currentListId?' active':'');tab.textContent=l.name;
+    const tab=document.createElement('span');tab.className='list-tab'+(l.id===currentListId?' active':'');tab.textContent=(l.sharedBy?'🔗 ':'')+l.name;
     tab.addEventListener('click',()=>{currentListId=l.id;renderAll();});
     row.appendChild(tab);
   });
@@ -2146,12 +2141,12 @@ function _genCode(){return Math.random().toString(36).substr(2,6).toUpperCase();
 
 async function openShareModal(){
   const modal=document.getElementById('share-modal');
-  const codeEl=document.getElementById('share-code-display');
-  codeEl.textContent='...';
+  const urlPreview=document.getElementById('share-url-preview');
+  urlPreview.textContent='링크 생성 중...';
   modal.style.display='flex';
   _shareCurrentCode='';
-  document.getElementById('share-copy-code-btn').textContent='📋 코드 복사';
-  document.getElementById('share-copy-url-btn').textContent='🔗 링크 복사';
+  const btn=document.getElementById('share-copy-url-btn');
+  btn.textContent='🔗 링크 복사';btn.classList.remove('copied');btn.classList.add('primary');
   try{
     const code=_genCode();
     const list=CL();
@@ -2165,101 +2160,92 @@ async function openShareModal(){
       expires_at:new Date(Date.now()+30*24*60*60*1000)
     });
     _shareCurrentCode=code;
-    codeEl.textContent=code;
-    trackEvent('list_share',{item_count:(list.items||[]).length,code});
+    const shareUrl=`${location.origin}${location.pathname}?share=${code}`;
+    urlPreview.textContent=shareUrl;
+    trackEvent('list_share',{item_count:(list.items||[]).length});
   }catch(e){
-    codeEl.textContent='오류';
-    codeEl.style.fontSize='16px';
+    urlPreview.textContent='링크 생성 중 오류가 발생했어요.';
     console.error(e);
   }
 }
 function closeShareModal(){document.getElementById('share-modal').style.display='none';}
 
-function copyShareCode(){
-  if(!_shareCurrentCode)return;
-  navigator.clipboard.writeText(_shareCurrentCode).then(()=>{
-    const btn=document.getElementById('share-copy-code-btn');
-    btn.textContent='✓ 복사됨';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 코드 복사';btn.classList.remove('copied');},2000);
-  });
-}
 function copyShareUrl(){
   if(!_shareCurrentCode)return;
   const url=`${location.origin}${location.pathname}?share=${_shareCurrentCode}`;
   navigator.clipboard.writeText(url).then(()=>{
     const btn=document.getElementById('share-copy-url-btn');
-    btn.textContent='✓ 링크 복사됨';btn.classList.remove('primary');btn.classList.add('copied');
+    btn.textContent='✓ 복사됨';btn.classList.remove('primary');btn.classList.add('copied');
     setTimeout(()=>{btn.textContent='🔗 링크 복사';btn.classList.remove('copied');btn.classList.add('primary');},2000);
   });
 }
 
-function openImportCodeModal(prefillCode){
+function openImportCodeModal(code){
   _importPendingData=null;
-  document.getElementById('import-code-input').value=prefillCode||'';
+  document.getElementById('import-code-input').value=code||'';
   document.getElementById('import-preview-area').innerHTML='';
   document.getElementById('import-code-footer').style.display='none';
   document.getElementById('import-code-modal').style.display='flex';
-  if(prefillCode)loadSharedList();
+  if(code)loadSharedList();
 }
 function closeImportCodeModal(){
   document.getElementById('import-code-modal').style.display='none';
   _importPendingData=null;
-  // URL에서 share 파라미터 제거
   const url=new URL(location.href);
   if(url.searchParams.has('share')){url.searchParams.delete('share');history.replaceState({},'',url);}
 }
 
 async function loadSharedList(){
   const code=document.getElementById('import-code-input').value.trim().toUpperCase();
-  if(code.length!==6){alert('코드 6자리를 입력해주세요.');return;}
+  if(code.length!==6)return;
   const area=document.getElementById('import-preview-area');
-  area.innerHTML='<div style="text-align:center;padding:16px;font-size:13px;color:var(--text3)">불러오는 중...</div>';
+  area.innerHTML='<div style="text-align:center;padding:20px;font-size:13px;color:var(--text3)">불러오는 중...</div>';
   document.getElementById('import-code-footer').style.display='none';
   _importPendingData=null;
   try{
     const snap=await db.collection('shared_lists').doc(code).get();
-    if(!snap.exists){area.innerHTML='<div style="text-align:center;padding:16px;font-size:13px;color:var(--danger-text)">코드를 찾을 수 없어요.</div>';return;}
+    if(!snap.exists){area.innerHTML='<div style="text-align:center;padding:20px;font-size:13px;color:var(--danger-text)">공유 링크를 찾을 수 없어요.</div>';return;}
     const data=snap.data();
     _importPendingData=data;
-    const existing=new Set((CL().items||[]).map(i=>i.name));
-    const newItems=(data.items||[]).filter(i=>!existing.has(i.name));
-    const skipItems=(data.items||[]).filter(i=>existing.has(i.name));
-    const creatorLabel=data.creator_name?`${data.creator_name}의 `:'' ;
+    const items=data.items||[];
+    const creatorLabel=data.creator_name?`${escHtml(data.creator_name)}가 공유한 리스트`:'공유 리스트';
     area.innerHTML=`<div class="import-preview">
       <div class="import-preview-header">
-        <div class="import-preview-title">${creatorLabel}${escHtml(data.name||'공유 리스트')}</div>
-        <div class="import-preview-sub">추가될 ${newItems.length}개 항목${skipItems.length?` · 중복 ${skipItems.length}개 제외`:''}</div>
+        <div class="import-preview-title">${escHtml(data.name||'공유 리스트')}</div>
+        <div class="import-preview-sub">${creatorLabel} · 총 ${items.length}개 항목</div>
       </div>
       <div class="import-preview-items">
-        ${newItems.map(i=>`<div class="import-preview-item"><div class="import-preview-dot"></div>${escHtml(iname(i.name))}</div>`).join('')}
-        ${skipItems.map(i=>`<div class="import-preview-item skip"><div class="import-preview-dot skip"></div>${escHtml(iname(i.name))}</div>`).join('')}
+        ${items.slice(0,12).map(i=>`<div class="import-preview-item"><div class="import-preview-dot"></div>${escHtml(iname(i.name))}</div>`).join('')}
+        ${items.length>12?`<div class="import-preview-item" style="color:var(--text3)">... 외 ${items.length-12}개</div>`:''}
       </div>
     </div>`;
-    if(newItems.length>0)document.getElementById('import-code-footer').style.display='flex';
-    else{
-      const footer=document.getElementById('import-code-footer');
-      footer.style.display='flex';
-      document.getElementById('import-apply-btn').disabled=true;
-      document.getElementById('import-apply-btn').textContent='추가할 항목 없음';
-    }
-  }catch(e){area.innerHTML='<div style="text-align:center;padding:16px;font-size:13px;color:var(--danger-text)">오류가 발생했어요.</div>';console.error(e);}
+    document.getElementById('import-code-footer').style.display='flex';
+  }catch(e){area.innerHTML='<div style="text-align:center;padding:20px;font-size:13px;color:var(--danger-text)">오류가 발생했어요.</div>';console.error(e);}
 }
 
 function applySharedList(){
   if(!_importPendingData)return;
-  const existing=new Set((CL().items||[]).map(i=>i.name));
-  const newItems=(_importPendingData.items||[]).filter(i=>!existing.has(i.name)).map(i=>({...i,checked:false}));
-  if(!CL().items)CL().items=[];
-  CL().items.push(...newItems);
-  trackEvent('list_import',{item_count:newItems.length,code:document.getElementById('import-code-input').value});
-  save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();
+  const data=_importPendingData;
+  const creatorName=data.creator_name||null;
+  const newId=nextListId++;
+  const sharedByLabel=creatorName?`${creatorName}가 공유`:null;
+  const newList={
+    id:newId,
+    name:data.name||'공유 리스트',
+    items:(data.items||[]).map(i=>({...i,checked:false})),
+    destinations:data.destinations||[],
+    sharedBy:sharedByLabel
+  };
+  lists.push(newList);
+  currentListId=newId;
+  trackEvent('list_import',{item_count:(data.items||[]).length});
+  save();renderAll();
   closeImportCodeModal();
-  showToast();
 }
 
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-// URL 파라미터로 공유 코드가 있으면 자동으로 불러오기 모달 표시
+// URL 파라미터 share 코드 자동 감지
 (function(){
   const params=new URLSearchParams(location.search);
   const shareCode=params.get('share');
