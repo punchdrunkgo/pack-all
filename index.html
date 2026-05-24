@@ -1685,7 +1685,7 @@ function renderListMeta(){
   const destHtml=dests.map(c=>{const i=allFlat().find(x=>x.c===c);if(!i)return'';const cn=lang==='en'?(COUNTRY_NAME_EN[c]||i.n):i.n;return`<span class="dest-tag">${i.f} ${cn}</span>`;}).join('');
   const compLabel=compTag?(lang==='en'?(COMPANION_LABEL_EN[compTag.key]||compTag.label):compTag.label):null;
   const compHtml=compLabel?`<span class="companion-tag">${compLabel}</span>`:'';
-  const sharedByHtml=CL().sharedBy?`<span style="font-size:11px;color:#5856D6;background:rgba(88,86,214,0.08);border:1px solid rgba(88,86,214,0.2);padding:2px 8px;border-radius:20px;font-weight:500">🔗 ${escHtml(CL().sharedBy)}</span>`:'';
+  const sharedByHtml=CL().sharedBy?`<span style="font-size:11px;color:#5856D6;background:rgba(88,86,214,0.08);border:1px solid rgba(88,86,214,0.2);padding:2px 8px;border-radius:20px;font-weight:500">🎁 ${escHtml(CL().sharedBy)}</span>`:'';
   if(!dests.length&&!compTag){meta.innerHTML=sharedByHtml||`<span style="font-size:11px;color:var(--text3)">${t('select_dest')}</span>`;return;}
   meta.innerHTML=sharedByHtml+destHtml+compHtml;
 }
@@ -1694,7 +1694,7 @@ function renderListTabs(){
   const row=document.getElementById('list-tabs-row'),addBtn=document.getElementById('add-list-btn');
   row.innerHTML='';
   lists.forEach(l=>{
-    const tab=document.createElement('span');tab.className='list-tab'+(l.id===currentListId?' active':'');tab.textContent=(l.sharedBy?'🔗 ':'')+l.name;
+    const tab=document.createElement('span');tab.className='list-tab'+(l.id===currentListId?' active':'');tab.textContent=(l.sharedBy?'🎁 ':'')+l.name;
     tab.addEventListener('click',()=>{currentListId=l.id;renderAll();});
     row.appendChild(tab);
   });
@@ -2208,7 +2208,7 @@ async function loadSharedList(){
     const data=snap.data();
     _importPendingData=data;
     const items=data.items||[];
-    const creatorLabel=data.creator_name?`${escHtml(data.creator_name)}가 공유한 리스트`:'공유 리스트';
+    const creatorLabel=data.creator_name?`${escHtml(data.creator_name)}님이 공유하신 리스트`:'공유 리스트';
     area.innerHTML=`<div class="import-preview">
       <div class="import-preview-header">
         <div class="import-preview-title">${escHtml(data.name||'공유 리스트')}</div>
@@ -2228,7 +2228,7 @@ function applySharedList(){
   const data=_importPendingData;
   const creatorName=data.creator_name||null;
   const newId=nextListId++;
-  const sharedByLabel=creatorName?`${creatorName}가 공유`:null;
+  const sharedByLabel=creatorName?`${creatorName}님이 공유하신`:null;
   const newList={
     id:newId,
     name:data.name||'공유 리스트',
