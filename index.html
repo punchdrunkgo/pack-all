@@ -577,6 +577,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 }
 </style>
 <!-- CHANGED: Firebase SDK -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -1085,9 +1086,12 @@ const db=firebase.firestore();
     <div class="pm-body">
       <div class="pm-page" id="pm-content"></div>
     </div>
-    <div class="pm-footer">
-      <button class="pm-btn" onclick="trackEvent('pdf_export',{action:'print'});window.print()">🖨 인쇄하기</button>
-      <button class="pm-btn pm-btn-primary" onclick="trackEvent('pdf_export',{action:'save'});window.print()">📄 저장하기 (PDF)</button>
+    <div class="pm-footer" style="flex-direction:column;gap:8px">
+      <div style="display:flex;gap:8px;width:100%">
+        <button class="pm-btn" onclick="trackEvent('pdf_export',{action:'print'});window.print()">🖨 인쇄</button>
+        <button class="pm-btn pm-btn-primary" onclick="trackEvent('pdf_export',{action:'save'});window.print()">📄 PDF 저장</button>
+      </div>
+      <button class="pm-btn" id="save-image-btn" onclick="saveAsImage()" style="width:100%;background:rgba(52,199,89,0.08);border-color:rgba(52,199,89,0.3);color:#248A3D">📷 이미지로 저장 (갤러리)</button>
     </div>
   </div>
 </div>
@@ -2079,8 +2083,8 @@ function applyLang(){
   const ic=document.querySelector('#import-myitems-modal .pm-footer .pm-btn:first-child');if(ic)ic.textContent=t('import_cancel');
   const icf=document.querySelector('#import-myitems-modal .pm-footer .pm-btn:last-child');if(icf)icf.textContent=t('import_confirm');
   const pt=document.querySelector('#print-modal .pm-header-title');if(pt)pt.textContent=t('pdf_title');
-  const pp=document.querySelector('#print-modal .pm-footer .pm-btn:first-child');if(pp)pp.textContent=t('pdf_print');
-  const ps=document.querySelector('#print-modal .pm-footer .pm-btn:last-child');if(ps)ps.textContent=t('pdf_save');
+  const ppRow=document.querySelector('#print-modal .pm-footer>div');
+  if(ppRow){const pp=ppRow.querySelector('.pm-btn:first-child');if(pp)pp.textContent=t('pdf_print');const ps=ppRow.querySelector('.pm-btn:last-child');if(ps)ps.textContent=t('pdf_save');}
   const fbl=document.getElementById('feedback-btn-label');if(fbl)fbl.textContent=t('feedback_btn');
   const nt2=document.querySelector('#nickname-modal .pm-header-title');if(nt2)nt2.textContent=t('nickname_title');
   const nht=document.getElementById('nickname-hint-text');if(nht)nht.textContent=t('nickname_hint');
@@ -2373,18 +2377,56 @@ function openDeleteListModal(){document.getElementById('delete-list-name').textC
 function closeDeleteListModal(){document.getElementById('delete-list-modal').style.display='none';}
 function confirmDeleteList(){closeDeleteListModal();deleteCurrentList();}
 // CHANGED: PDF 카테고리별/일정별 분리
+let _currentPrintType='cat';
 function openPrintPreview(type){
+  _currentPrintType=type;
   trackEvent('pdf_preview_open',{view_type:type,item_count:(CL().items||[]).length});
-  // CHANGED: 일정별 → 가로 인쇄 방향
   let os=document.getElementById('print-orient-style');
   if(!os){os=document.createElement('style');os.id='print-orient-style';document.head.appendChild(os);}
   os.textContent=type==='board'?'@page{size:landscape}':'@page{size:portrait}';
   const h=type==='board'?buildBoardPrintHTML():buildPrintHTML();
   document.getElementById('pm-content').innerHTML=h;
   document.getElementById('print-content').innerHTML=h;
-  // CHANGED: 일정별 미리보기 와이드 모달
   document.querySelector('#print-modal .pm-box').classList.toggle('board-preview',type==='board');
   document.getElementById('print-modal').style.display='flex';
+}
+
+async function saveAsImage(){
+  const btn=document.getElementById('save-image-btn');
+  btn.textContent='⏳ 생성 중...';btn.disabled=true;
+  try{
+    const el=document.getElementById('pm-content');
+    const isBoard=_currentPrintType==='board';
+    const canvas=await html2canvas(el,{
+      scale:2,
+      backgroundColor:'#f5f5f7',
+      useCORS:true,
+      scrollX:0,scrollY:0,
+      width:isBoard?el.scrollWidth:el.offsetWidth,
+      windowWidth:isBoard?el.scrollWidth:el.offsetWidth
+    });
+    canvas.toBlob(async blob=>{
+      const fileName=`packo-${CL().name||'list'}.png`;
+      const file=new File([blob],fileName,{type:'image/png'});
+      // Web Share API (iOS/Android 갤러리 저장 지원)
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:CL().name||'준비물 리스트'});
+        trackEvent('image_export',{method:'share',view_type:_currentPrintType});
+      }else{
+        // 데스크톱 / 미지원 기기: 다운로드
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');a.href=url;a.download=fileName;a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
+        trackEvent('image_export',{method:'download',view_type:_currentPrintType});
+      }
+      btn.textContent='✓ 완료';
+      setTimeout(()=>{btn.textContent='📷 이미지로 저장 (갤러리)';btn.disabled=false;},2000);
+    },'image/png');
+  }catch(e){
+    console.error(e);
+    btn.textContent='오류 발생';
+    setTimeout(()=>{btn.textContent='📷 이미지로 저장 (갤러리)';btn.disabled=false;},2000);
+  }
 }
 function closePrintPreview(){document.getElementById('print-modal').style.display='none';}
 // CHANGED: 일정별 PDF — 화면 보드 UI 그대로 가로 배치
