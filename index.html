@@ -2394,6 +2394,8 @@ function openPrintPreview(type){
 async function saveAsImage(){
   const btn=document.getElementById('save-image-btn');
   btn.textContent='⏳ 생성 중...';btn.disabled=true;
+  const resetBtn=()=>{btn.textContent='📷 이미지로 저장 (갤러리)';btn.disabled=false;};
+  const timeout=setTimeout(resetBtn,30000);
   try{
     const el=document.getElementById('pm-content');
     const isBoard=_currentPrintType==='board';
@@ -2406,29 +2408,39 @@ async function saveAsImage(){
       windowWidth:isBoard?el.scrollWidth:el.offsetWidth
     });
     canvas.toBlob(async blob=>{
+      clearTimeout(timeout);
       const fileName=`packo-${CL().name||'list'}.png`;
       const file=new File([blob],fileName,{type:'image/png'});
-      // Web Share API (iOS/Android 갤러리 저장 지원)
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        await navigator.share({files:[file],title:CL().name||'준비물 리스트'});
-        trackEvent('image_export',{method:'share',view_type:_currentPrintType});
-      }else{
-        // 데스크톱 / 미지원 기기: 다운로드
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement('a');a.href=url;a.download=fileName;a.click();
-        setTimeout(()=>URL.revokeObjectURL(url),1000);
-        trackEvent('image_export',{method:'download',view_type:_currentPrintType});
+      try{
+        if(navigator.canShare&&navigator.canShare({files:[file]})){
+          await navigator.share({files:[file],title:CL().name||'준비물 리스트'});
+          trackEvent('image_export',{method:'share',view_type:_currentPrintType});
+        }else{
+          const url=URL.createObjectURL(blob);
+          const a=document.createElement('a');a.href=url;a.download=fileName;a.click();
+          setTimeout(()=>URL.revokeObjectURL(url),1000);
+          trackEvent('image_export',{method:'download',view_type:_currentPrintType});
+        }
+        btn.textContent='✓ 완료';
+        setTimeout(resetBtn,2000);
+      }catch(e){
+        // 공유 취소(AbortError)는 오류가 아님
+        if(e.name!=='AbortError')console.error(e);
+        resetBtn();
       }
-      btn.textContent='✓ 완료';
-      setTimeout(()=>{btn.textContent='📷 이미지로 저장 (갤러리)';btn.disabled=false;},2000);
     },'image/png');
   }catch(e){
+    clearTimeout(timeout);
     console.error(e);
     btn.textContent='오류 발생';
-    setTimeout(()=>{btn.textContent='📷 이미지로 저장 (갤러리)';btn.disabled=false;},2000);
+    setTimeout(resetBtn,2000);
   }
 }
-function closePrintPreview(){document.getElementById('print-modal').style.display='none';}
+function closePrintPreview(){
+  document.getElementById('print-modal').style.display='none';
+  const btn=document.getElementById('save-image-btn');
+  btn.textContent='📷 이미지로 저장 (갤러리)';btn.disabled=false;
+}
 // CHANGED: 일정별 PDF — 화면 보드 UI 그대로 가로 배치
 function buildBoardPrintHTML(){
   const list=CL();const items=list.items||[];
