@@ -978,11 +978,18 @@ const db=firebase.firestore();
       <span class="pm-header-title">🔗 리스트 공유</span>
       <button class="pm-close" onclick="closeShareModal()">✕</button>
     </div>
-    <div style="padding:20px 18px">
-      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px">링크를 공유하면 상대방이 클릭 한 번으로<br>준비물 리스트를 바로 받을 수 있어요.</div>
-      <div id="share-url-preview" style="font-size:11px;color:var(--text3);background:rgba(0,0,0,0.04);border-radius:var(--radius);padding:8px 10px;word-break:break-all;margin-bottom:10px;min-height:32px"></div>
+    <div style="padding:20px 18px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">링크를 공유하면 상대방이 클릭 한 번으로<br>준비물 리스트를 바로 받을 수 있어요.</div>
+      <div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:500">메시지 (선택)</div>
+        <div style="position:relative">
+          <textarea id="share-message-input" maxlength="100" placeholder="상대방에게 전할 말을 적어주세요" oninput="document.getElementById('share-msg-count').textContent=this.value.length" style="width:100%;height:72px;resize:none;font-size:13px;padding:9px 10px;border-radius:var(--radius);border:1px solid rgba(0,0,0,0.12);background:rgba(255,255,255,0.8);font-family:inherit;color:var(--text);outline:none;line-height:1.5;padding-bottom:20px"></textarea>
+          <span id="share-msg-count" style="position:absolute;bottom:6px;right:8px;font-size:10px;color:var(--text3)">0</span><span style="position:absolute;bottom:6px;right:19px;font-size:10px;color:var(--text3)">/100 </span>
+        </div>
+      </div>
       <button class="share-copy-btn primary" id="share-copy-url-btn" onclick="copyShareUrl()" style="width:100%">🔗 링크 복사</button>
-      <div class="share-hint">링크는 30일간 유효합니다</div>
+      <div id="share-url-preview" style="font-size:11px;color:var(--text3);background:rgba(0,0,0,0.04);border-radius:var(--radius);padding:7px 10px;word-break:break-all;min-height:28px"></div>
+      <div class="share-hint" style="margin-top:-4px">링크는 30일간 유효합니다</div>
     </div>
   </div>
 </div>
@@ -2139,38 +2146,45 @@ let _importPendingData=null;
 
 function _genCode(){return Math.random().toString(36).substr(2,6).toUpperCase();}
 
-async function openShareModal(){
-  const modal=document.getElementById('share-modal');
-  const urlPreview=document.getElementById('share-url-preview');
-  urlPreview.textContent='링크 생성 중...';
-  modal.style.display='flex';
+function openShareModal(){
   _shareCurrentCode='';
+  document.getElementById('share-message-input').value='';
+  document.getElementById('share-msg-count').textContent='0';
+  document.getElementById('share-url-preview').textContent='';
   const btn=document.getElementById('share-copy-url-btn');
   btn.textContent='🔗 링크 복사';btn.classList.remove('copied');btn.classList.add('primary');
+  document.getElementById('share-modal').style.display='flex';
+}
+
+async function _generateShareLink(){
+  const urlPreview=document.getElementById('share-url-preview');
+  urlPreview.textContent='생성 중...';
+  const list=CL();
+  const msg=document.getElementById('share-message-input').value.trim();
   try{
     const code=_genCode();
-    const list=CL();
     await db.collection('shared_lists').doc(code).set({
       name:list.name||'공유 리스트',
       items:(list.items||[]).map(i=>({name:i.name,cat:i.cat,qty:i.qty||1,memo:i.memo||'',period:i.period||null,checked:false})),
       destinations:list.destinations||[],
       companion:currentCompanion||null,
       creator_name:currentUser?.displayName||null,
+      message:msg||null,
       created_at:firebase.firestore.FieldValue.serverTimestamp(),
       expires_at:new Date(Date.now()+30*24*60*60*1000)
     });
     _shareCurrentCode=code;
-    const shareUrl=`${location.origin}${location.pathname}?share=${code}`;
-    urlPreview.textContent=shareUrl;
+    urlPreview.textContent=`${location.origin}${location.pathname}?share=${code}`;
     trackEvent('list_share',{item_count:(list.items||[]).length});
   }catch(e){
-    urlPreview.textContent='링크 생성 중 오류가 발생했어요.';
+    urlPreview.textContent='오류가 발생했어요.';
     console.error(e);
   }
 }
 function closeShareModal(){document.getElementById('share-modal').style.display='none';}
 
-function copyShareUrl(){
+async function copyShareUrl(){
+  if(!_shareCurrentCode)await _generateShareLink();
   if(!_shareCurrentCode)return;
   const url=`${location.origin}${location.pathname}?share=${_shareCurrentCode}`;
   navigator.clipboard.writeText(url).then(()=>{
@@ -2209,11 +2223,13 @@ async function loadSharedList(){
     _importPendingData=data;
     const items=data.items||[];
     const creatorLabel=data.creator_name?`${escHtml(data.creator_name)}님이 공유하신 리스트`:'공유 리스트';
+    const msgHtml=data.message?`<div style="margin:10px 14px;padding:9px 12px;background:rgba(88,86,214,0.07);border:1px solid rgba(88,86,214,0.15);border-radius:var(--radius);font-size:13px;color:var(--text2);line-height:1.6;white-space:pre-wrap">${escHtml(data.message)}</div>`:'';
     area.innerHTML=`<div class="import-preview">
       <div class="import-preview-header">
         <div class="import-preview-title">${escHtml(data.name||'공유 리스트')}</div>
         <div class="import-preview-sub">${creatorLabel} · 총 ${items.length}개 항목</div>
       </div>
+      ${msgHtml}
       <div class="import-preview-items">
         ${items.slice(0,12).map(i=>`<div class="import-preview-item"><div class="import-preview-dot"></div>${escHtml(iname(i.name))}</div>`).join('')}
         ${items.length>12?`<div class="import-preview-item" style="color:var(--text3)">... 외 ${items.length-12}개</div>`:''}
