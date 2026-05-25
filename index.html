@@ -1283,7 +1283,21 @@ const ITEM_EN={
   '1인용 숙소 예약확인서':'Accommodation Confirmation',
   '소지품 보안 파우치':'Anti-theft Pouch',
   '여행 일정 메모':'Travel Itinerary Note',
-  '비상 연락처 카드':'Emergency Contact Card'
+  '비상 연락처 카드':'Emergency Contact Card',
+  // 출장 전용
+  '노트북':'Laptop',
+  '노트북 충전기':'Laptop Charger',
+  '명함':'Business Cards',
+  '업무용 서류':'Work Documents',
+  'HDMI 어댑터':'HDMI Adapter',
+  '휴대용 마우스':'Portable Mouse',
+  '멀티탭':'Power Strip',
+  '이어폰(노이즈캔슬링)':'Noise-Cancelling Earphones',
+  '업무용 메모장':'Business Notepad',
+  '피로회복제':'Fatigue Recovery Supplement',
+  '안약(인공눈물)':'Eye Drops (Artificial Tears)',
+  '멀티비타민':'Multivitamins',
+  '무릎 보호대':'Knee Support'
 };
 const CAT_LABELS_EN={
   '예약-항공':'Flight','예약-숙소':'Accommodation','예약-서류':'Entry Docs','예약-금융':'Finance & Insurance',
@@ -1301,7 +1315,7 @@ const COUNTRY_NAME_EN={
   germany:'Germany',switzerland:'Switzerland',czech:'Czech Republic',netherlands:'Netherlands',
   greece:'Greece',croatia:'Croatia'
 };
-const COMPANION_LABEL_EN={solo:'🧳 Solo',friends:'👯 With Friends',couple:'💑 With Partner',infant:'👶 With Infant',child:'🧒 With Child',parents:'👴 With Parents',undecided:'🤷 Undecided'};
+const COMPANION_LABEL_EN={solo_travel:'🧳 Solo Travel',solo_business:'💼 Solo Business',friends:'👯 With Friends',couple:'💑 With Partner',infant:'👶 With Infant',child:'🧒 With Child',parents:'👴 With Parents',undecided:'🤷 Undecided'};
 const CI_EN={
   japan:{must:['90-day visa-free','IC card (Suica/PASMO) essential','Buy rail passes in advance','Cash still needed alongside cards'],warn:['Know earthquake emergency procedures','Tattoos may bar you from onsens','Keep noise down, no littering']},
   china:{must:['Visa required in advance','Set up WeChat Pay / Alipay beforehand','Install VPN before departure'],warn:['Google/SNS fully blocked','Avoid political speech','No photos near military sites']},
@@ -1430,7 +1444,8 @@ const UI_TEXT={
 
 // CHANGED: 동행자 선택 데이터
 const COMPANIONS=[
-  {key:'solo',label:'🧳 혼자',items:['이어폰','여행용 잠금장치','1인용 숙소 예약확인서','소지품 보안 파우치','여행 일정 메모','비상 연락처 카드']},
+  {key:'solo_travel',label:'🧳 혼자-여행',items:['이어폰','여행용 잠금장치','1인용 숙소 예약확인서','소지품 보안 파우치','여행 일정 메모','비상 연락처 카드']},
+  {key:'solo_business',label:'💼 혼자-출장',items:['노트북','노트북 충전기','명함','업무용 서류','HDMI 어댑터','휴대용 마우스','멀티탭','이어폰(노이즈캔슬링)','업무용 메모장','보조배터리','혈압약','소화제','진통제','파스','피로회복제','안약(인공눈물)','멀티비타민','무릎 보호대']},
   {key:'friends',label:'👯 친구와',items:['공동 경비 정산 앱','유심·포켓와이파이(인원수)','스피커','술·간식','단체 사진용 삼각대','그룹 단체복']},
   {key:'couple',label:'💑 연인과',items:['커플 여권 케이스','로맨틱 레스토랑 예약','방향제·캔들','셀카봉','커플 여행 다이어리','선물·이벤트 소품']},
   {key:'infant',label:'👶 유아와',items:['이유식','분유','분유통','젖병','젖병 세정제','기저귀','물티슈','아기 로션','아기 선크림','아기 모기 패치','체온계','어린이 해열제','유아용 식기','유아 캐리어','휴대용 유모차','아기 장난감','수유 쿠션']},
