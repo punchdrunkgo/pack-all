@@ -337,7 +337,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 /* 내 물품 가져오기 버튼 */
 .import-myitems-btn{font-size:11px;padding:5px 12px;border-radius:var(--radius-pill);border:1px solid rgba(52,199,89,0.3);background:rgba(52,199,89,0.1);color:#248A3D;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;font-weight:500}
 .import-myitems-btn:hover{background:rgba(52,199,89,0.18)}
-.import-myitems-btn:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+/* 내 물품 가져오기 모달 — 체크리스트 */
+.import-checklist{max-height:280px;overflow-y:auto;padding:4px 0;display:flex;flex-direction:column;gap:2px}
+.import-check-item{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--radius);cursor:pointer;transition:background .12s;user-select:none}
+.import-check-item:hover:not(.disabled){background:rgba(0,0,0,0.03)}
+.import-check-item.disabled{opacity:.38;cursor:default}
+.import-check-item input[type=checkbox]{width:15px;height:15px;accent-color:#007AFF;cursor:pointer;flex-shrink:0}
+.import-check-item.disabled input{cursor:default}
+.import-check-name{font-size:13px;color:var(--text);flex:1}
+.import-check-already{font-size:10px;color:var(--text3);margin-left:auto}
+.import-check-all-row{display:flex;gap:8px;padding:0 0 8px;border-bottom:1px solid rgba(0,0,0,0.06);margin-bottom:6px}
+.import-check-all-btn{font-size:11px;padding:3px 9px;border-radius:var(--radius-pill);border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.8);color:var(--text2);cursor:pointer;font-family:inherit;transition:all .12s}
+.import-check-all-btn:hover{background:rgba(0,0,0,0.05)}
+/* owned 패널 "추가" 버튼 */
+.mi-add-to-list{font-size:10px;padding:2px 7px;border-radius:var(--radius-pill);border:1px solid rgba(0,122,255,0.25);background:rgba(0,122,255,0.07);color:#007AFF;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;flex-shrink:0}
+.mi-add-to-list:hover{background:rgba(0,122,255,0.14)}
+.mi-add-to-list.added{border-color:rgba(52,199,89,0.3);background:rgba(52,199,89,0.08);color:#248A3D;cursor:default;pointer-events:none}
 /* PDF 미리보기 버튼 */
 .pdf-preview-btn{width:100%;margin-top:8px;font-size:12px;padding:9px 0;border-radius:var(--radius);border:none;background:#007AFF;color:#fff;cursor:pointer;font-family:inherit;transition:opacity .15s;font-weight:500}
 .pdf-preview-btn:hover{opacity:.88}
@@ -1069,18 +1084,24 @@ const db=firebase.firestore();
     </div>
   </div>
 </div>
-<!-- CHANGED: 내 물품 가져오기 모달 -->
-<div id="import-myitems-modal" style="display:none">
+<!-- CHANGED: 내 물품 가져오기 모달 — 체크리스트 -->
+<div id="import-myitems-modal" style="display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center">
   <div class="pm-overlay" onclick="closeImportModal()"></div>
-  <div class="pm-box" style="width:min(380px,88vw);max-height:none">
+  <div class="pm-box" style="width:min(380px,88vw)">
     <div class="pm-header">
       <span class="pm-header-title">📦 내 물품 가져오기</span>
       <button class="pm-close" onclick="closeImportModal()">✕</button>
     </div>
-    <div style="padding:20px 18px;font-size:13px;color:var(--text2);line-height:1.8" id="import-modal-msg"></div>
+    <div style="padding:14px 18px 0">
+      <div class="import-check-all-row">
+        <button class="import-check-all-btn" onclick="importSelectAll(true)">전체 선택</button>
+        <button class="import-check-all-btn" onclick="importSelectAll(false)">전체 해제</button>
+      </div>
+      <div class="import-checklist" id="import-checklist"></div>
+    </div>
     <div class="pm-footer">
       <button class="pm-btn" onclick="closeImportModal()">취소</button>
-      <button class="pm-btn pm-btn-primary" onclick="confirmImportMyItems()">가져오기</button>
+      <button class="pm-btn pm-btn-primary" id="import-confirm-btn" onclick="confirmImportMyItems()">가져오기</button>
     </div>
   </div>
 </div>
@@ -1613,7 +1634,9 @@ function renderMyItems(){
     grouped[cat].forEach(name=>{
       const memo=myItems[name]&&myItems[name].memo||'';
       const memoOpen=miMemoOpen.has(name);
-      ownedHtml+=`<div class="mi-owned-item"><div class="mi-owned-row"><span class="mi-owned-name">${iname(name)}</span><div class="mi-owned-actions"><span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">${memoOpen?t('memo')+' ▲':t('memo')}</span><span class="mi-remove" data-removename="${name}">✕</span></div></div>${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="${t('memo_add')}">${memo}</textarea></div>`:''}</div>`;
+      const inList=!!(CL().items||[]).find(i=>i.name===name);
+      const addBtn=`<button class="mi-add-to-list${inList?' added':''}" data-addname="${name}" data-addcat="${myItems[name].cat||'기타'}">${inList?'✓ 추가됨':'+ 추가'}</button>`;
+      ownedHtml+=`<div class="mi-owned-item"><div class="mi-owned-row"><span class="mi-owned-name">${iname(name)}</span><div class="mi-owned-actions">${addBtn}<span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">${memoOpen?t('memo')+' ▲':t('memo')}</span><span class="mi-remove" data-removename="${name}">✕</span></div></div>${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="${t('memo_add')}">${memo}</textarea></div>`:''}</div>`;
     });
     ownedHtml+=`</div>`;
   });
@@ -1622,8 +1645,15 @@ function renderMyItems(){
 
   // 이벤트 위임 (owned list)
   ownedList.onclick=e=>{
+    const addBtn=e.target.closest('[data-addname]');
     const memoBtn=e.target.closest('[data-memoname]');
     const removeBtn=e.target.closest('[data-removename]');
+    if(addBtn&&!addBtn.classList.contains('added')){
+      const n=addBtn.dataset.addname,cat=addBtn.dataset.addcat||'기타';
+      const already=(CL().items||[]).find(i=>i.name===n);
+      if(!already){CL().items.push({name:n,cat,qty:1,checked:false,memo:'',period:null});save();renderCatDropZones();renderManageTab();updateSourceChips();}
+      renderMyItems();
+    }
     if(memoBtn){miMemoOpen.has(memoBtn.dataset.memoname)?miMemoOpen.delete(memoBtn.dataset.memoname):miMemoOpen.add(memoBtn.dataset.memoname);renderMyItems();}
     if(removeBtn){const n=removeBtn.dataset.removename;if(myItems[n])myItems[n].owned=false;miMemoOpen.delete(n);save();renderMyItems();}
   };
@@ -1644,29 +1674,39 @@ function doMiAdd(){
 function openImportMyItemsModal(){
   const ownedItems=Object.entries(myItems).filter(([,v])=>v.owned);
   if(!ownedItems.length){alert(t('import_empty'));return;}
-  const curCount=(CL().items||[]).length;
-  const cnt=ownedItems.length+(lang==='en'?' items':'개');
-  const msg=curCount===0
-    ?(lang==='en'?`Import all My Items?<br><span style="font-size:11px;color:var(--text3)">${cnt} will be added to the current list.</span>`:'내 물품 전체를 가져올까요?<br><span style="font-size:11px;color:var(--text3)">보유 중인 물품 '+cnt+'가 현재 리스트에 추가됩니다.</span>')
-    :(lang==='en'?`Your current items may be mixed with My Items.<br>Import anyway?<br><span style="font-size:11px;color:var(--text3)">${cnt} will overwrite the current list.</span>`:'선택된 준비물과 기존 내 물품이 섞일 수 있습니다.<br>그래도 내 물품 전체를 가져올까요?<br><span style="font-size:11px;color:var(--text3)">보유 중인 물품 '+cnt+'를 가져와 덮어씁니다.</span>');
-  document.getElementById('import-modal-msg').innerHTML=msg;
+  const curNames=new Set((CL().items||[]).map(i=>i.name));
+  const list=document.getElementById('import-checklist');
+  list.innerHTML=ownedItems.map(([name,v])=>{
+    const already=curNames.has(name);
+    return `<label class="import-check-item${already?' disabled':''}">
+      <input type="checkbox" data-iname="${name}" data-icat="${v.cat||'기타'}" ${already?'disabled checked':''}>
+      <span class="import-check-name">${iname(name)}</span>
+      ${already?'<span class="import-check-already">이미 추가됨</span>':''}
+    </label>`;
+  }).join('');
   document.getElementById('import-myitems-modal').style.display='flex';
+}
+function importSelectAll(val){
+  document.querySelectorAll('#import-checklist input[type=checkbox]:not(:disabled)').forEach(cb=>cb.checked=val);
 }
 function closeImportModal(){document.getElementById('import-myitems-modal').style.display='none';}
 function confirmImportMyItems(){
-  const ownedItems=Object.entries(myItems).filter(([,v])=>v.owned);
-  CL().items=ownedItems.map(([name,v])=>({name,cat:v.cat||'기타',qty:1,checked:false,memo:v.memo||'',period:null}));
-  CL().myItemsImported=true;
-  trackEvent('myitems_import',{item_count:ownedItems.length});
+  const curNames=new Set((CL().items||[]).map(i=>i.name));
+  const checked=[...document.querySelectorAll('#import-checklist input[type=checkbox]:not(:disabled):checked')];
+  const toAdd=checked.filter(cb=>!curNames.has(cb.dataset.iname));
+  if(!toAdd.length){closeImportModal();return;}
+  toAdd.forEach(cb=>{
+    CL().items.push({name:cb.dataset.iname,cat:cb.dataset.icat||'기타',qty:1,checked:false,memo:'',period:null});
+  });
+  trackEvent('myitems_import',{item_count:toAdd.length});
   closeImportModal();save();
-  renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();updateImportBtn();
+  renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();
 }
 function updateImportBtn(){
   const btn=document.getElementById('import-myitems-btn');
   if(!btn)return;
-  const imported=!!(CL().myItemsImported);
-  btn.disabled=imported;
-  btn.title=imported?t('import_disabled'):t('import_tooltip');
+  btn.disabled=false;
+  btn.title=t('import_tooltip');
 }
 
 function toggleTripCard(){tripOpen=!tripOpen;document.getElementById('country-regions').classList.toggle('open',tripOpen);document.getElementById('trip-toggle').textContent=tripOpen?t('collapse'):t('expand');}
