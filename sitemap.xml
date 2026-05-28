@@ -37,6 +37,24 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://packo-travel.vercel.app/blog/europe-1</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://packo-travel.vercel.app/blog/guam-1</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://packo-travel.vercel.app/blog/bali-1</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://packo-travel.vercel.app/blog/phuquoc-1</loc>
     <lastmod>2026-05-28</lastmod>
     <changefreq>monthly</changefreq>
