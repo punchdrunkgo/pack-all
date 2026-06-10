@@ -4,61 +4,63 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>여행 준비물 가이드 | Packo 블로그</title>
-<meta name="description" content="나라별 여행 준비물 완벽 가이드. 일본, 베트남, 태국 등 아시아 여행 필수 체크리스트.">
+<meta name="description" content="나라별 여행 준비물 완벽 가이드. 일본·태국·대만·필리핀·싱가포르·베트남 등 아시아 여행 필수 체크리스트를 한 번에 정리했습니다.">
 <meta property="og:title" content="여행 준비물 가이드 | Packo 블로그">
-<meta property="og:description" content="나라별 여행 준비물 완벽 가이드. 일본, 베트남, 태국 등 아시아 여행 필수 체크리스트.">
+<meta property="og:description" content="나라별 여행 준비물 완벽 가이드. 일본·태국·대만·필리핀·싱가포르·베트남 등 아시아 여행 필수 체크리스트.">
 <meta property="og:image" content="https://packo-travel.vercel.app/og-image.png">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://packo-travel.vercel.app/blog">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta name="keywords" content="여행준비물, 일본여행, 다낭여행, 베트남여행, 오키나와여행, 여행체크리스트, 해외여행준비물">
+<meta name="keywords" content="여행준비물, 일본여행, 태국여행, 대만여행, 싱가포르여행, 베트남여행, 몰디브여행, 여행체크리스트, 해외여행준비물">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="여행 준비물 가이드 | Packo 블로그">
-<meta name="twitter:description" content="나라별 여행 준비물 완벽 가이드. 일본, 베트남, 태국 등 아시아 여행 필수 체크리스트.">
+<meta name="twitter:description" content="나라별 여행 준비물 완벽 가이드. 일본·태국·대만·필리핀·싱가포르·베트남 등 아시아 여행 필수 체크리스트.">
 <meta name="twitter:image" content="https://packo-travel.vercel.app/og-image.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Blog","name":"Packo 여행 블로그","description":"나라별·상황별 여행 체크리스트. 아무것도 빠뜨리지 않는 여행을 위해.","url":"https://packo-travel.vercel.app/blog","publisher":{"@type":"Organization","name":"Packo","url":"https://packo-travel.vercel.app","logo":{"@type":"ImageObject","url":"https://packo-travel.vercel.app/og-image.png"}}}
 </script>
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EPP87SQ0SQ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-EPP87SQ0SQ');
-</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-EPP87SQ0SQ');</script>
 <script defer src="/blog/analytics.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;background:#f2f2f7;color:#1c1c1e;min-height:100vh}
 
-  /* 상단 헤더 */
   .blog-header{background:rgba(248,248,252,0.92);backdrop-filter:saturate(200%) blur(40px);-webkit-backdrop-filter:saturate(200%) blur(40px);border-bottom:0.5px solid rgba(0,0,0,0.09);position:sticky;top:0;z-index:100;padding:0 24px}
   .blog-header-inner{max-width:780px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
   .blog-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:#1c1c1e}
   .blog-logo-text{font-size:17px;font-weight:700;letter-spacing:-.5px}
   .blog-logo-text span{color:#007AFF}
-  .blog-back{font-size:13px;color:#007AFF;text-decoration:none;display:flex;align-items:center;gap:4px}
+  .blog-back{font-size:13px;color:#007AFF;text-decoration:none}
   .blog-back:hover{opacity:.75}
 
-  /* 히어로 */
-  .blog-hero{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.06);padding:40px 24px 36px}
+  .blog-hero{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.06);padding:40px 24px 0}
   .blog-hero-inner{max-width:780px;margin:0 auto}
   .blog-hero h1{font-size:28px;font-weight:700;letter-spacing:-.8px;line-height:1.25;margin-bottom:8px}
-  .blog-hero p{font-size:15px;color:#48484a;line-height:1.6}
+  .blog-hero p{font-size:15px;color:#48484a;line-height:1.6;padding-bottom:28px}
 
-  /* 글 목록 */
-  .blog-list{max-width:780px;margin:0 auto;padding:28px 24px 60px}
-  .post-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);margin-bottom:16px;text-decoration:none;display:flex;gap:0;transition:transform .15s,box-shadow .15s}
+  /* ── 나라 필터 탭 (Apple + Naver 스타일) ── */
+  .filter-wrap{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.06);position:sticky;top:52px;z-index:90}
+  .filter-inner{max-width:780px;margin:0 auto;padding:0 24px;position:relative}
+  .filter-inner::after{content:'';position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(to right,transparent,#fff);pointer-events:none}
+  .filter-scroll{display:flex;gap:6px;overflow-x:auto;padding:12px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .filter-scroll::-webkit-scrollbar{display:none}
+  .filter-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;background:#f5f5f7;color:#3a3a3c;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;letter-spacing:-.01em}
+  .filter-btn:hover{background:#e8e8ed}
+  .filter-btn.active{background:#1c1c1e;color:#fff}
+
+  /* ── 글 목록 ── */
+  .blog-list{max-width:780px;margin:0 auto;padding:24px 24px 60px}
+  .post-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);margin-bottom:14px;text-decoration:none;display:flex;transition:transform .15s,box-shadow .15s}
   .post-card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,0.1)}
-  .post-thumb{width:140px;flex-shrink:0;background:linear-gradient(135deg,#e8f0ff,#d4e4ff);display:flex;align-items:center;justify-content:center;font-size:40px}
-  .post-body{padding:20px;flex:1}
-  .post-tag{font-size:11px;font-weight:600;color:#007AFF;letter-spacing:.04em;text-transform:uppercase;margin-bottom:6px}
-  .post-title{font-size:17px;font-weight:600;color:#1c1c1e;letter-spacing:-.3px;line-height:1.3;margin-bottom:6px}
-  .post-summary{font-size:13px;color:#6e6e73;line-height:1.55;margin-bottom:10px}
+  .post-card[hidden]{display:none}
+  .post-thumb{width:120px;flex-shrink:0;background:linear-gradient(135deg,#e8f0ff,#d4e4ff);display:flex;align-items:center;justify-content:center;font-size:36px}
+  .post-body{padding:18px;flex:1;min-width:0}
+  .post-tag{font-size:11px;font-weight:600;color:#007AFF;letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
+  .post-title{font-size:16px;font-weight:600;color:#1c1c1e;letter-spacing:-.3px;line-height:1.3;margin-bottom:5px}
+  .post-summary{font-size:13px;color:#6e6e73;line-height:1.55;margin-bottom:8px}
   .post-date{font-size:11px;color:#aeaeb2}
 
-  /* CTA */
   .blog-cta{background:rgba(0,122,255,0.07);border:1px solid rgba(0,122,255,0.18);border-radius:14px;padding:24px;text-align:center;margin-top:8px}
   .blog-cta p{font-size:14px;color:#48484a;margin-bottom:14px;line-height:1.6}
   .cta-btn{display:inline-block;background:#007AFF;color:#fff;font-size:14px;font-weight:600;padding:11px 24px;border-radius:100px;text-decoration:none;letter-spacing:-.2px;transition:opacity .15s}
@@ -66,8 +68,8 @@
 
   @media(max-width:600px){
     .blog-hero h1{font-size:22px}
-    .blog-list{padding:20px 14px 48px}
-    .post-thumb{width:100px;font-size:32px}
+    .blog-list{padding:16px 14px 48px}
+    .post-thumb{width:90px;font-size:28px}
     .post-body{padding:14px}
     .post-title{font-size:15px}
   }
@@ -97,9 +99,78 @@
   </div>
 </section>
 
-<main class="blog-list">
+<!-- 나라별 필터 탭 -->
+<div class="filter-wrap">
+  <div class="filter-inner">
+    <div class="filter-scroll" role="tablist">
+      <button class="filter-btn active" data-filter="all" onclick="filterPosts(this,'all')">전체</button>
+      <button class="filter-btn" data-filter="japan" onclick="filterPosts(this,'japan')">🇯🇵 일본</button>
+      <button class="filter-btn" data-filter="thailand" onclick="filterPosts(this,'thailand')">🇹🇭 태국</button>
+      <button class="filter-btn" data-filter="taiwan" onclick="filterPosts(this,'taiwan')">🇹🇼 대만</button>
+      <button class="filter-btn" data-filter="philippines" onclick="filterPosts(this,'philippines')">🇵🇭 필리핀</button>
+      <button class="filter-btn" data-filter="singapore" onclick="filterPosts(this,'singapore')">🇸🇬 싱가포르</button>
+      <button class="filter-btn" data-filter="vietnam" onclick="filterPosts(this,'vietnam')">🇻🇳 베트남</button>
+      <button class="filter-btn" data-filter="maldives" onclick="filterPosts(this,'maldives')">🇲🇻 몰디브</button>
+      <button class="filter-btn" data-filter="indonesia" onclick="filterPosts(this,'indonesia')">🇮🇩 발리</button>
+      <button class="filter-btn" data-filter="guam" onclick="filterPosts(this,'guam')">🌴 괌</button>
+      <button class="filter-btn" data-filter="europe" onclick="filterPosts(this,'europe')">🌍 유럽</button>
+    </div>
+  </div>
+</div>
 
-  <a class="post-card" href="/blog/sapporo-1">
+<main class="blog-list" id="post-list">
+
+  <a class="post-card" href="/blog/maldives-1" data-country="maldives">
+    <div class="post-thumb">🏝</div>
+    <div class="post-body">
+      <div class="post-tag">몰디브 여행</div>
+      <div class="post-title">몰디브 허니문 여행 준비물 완벽 가이드 (2026)</div>
+      <div class="post-summary">수상빌라 체크인 팁부터 씨플레인 짐 싸기, 래쉬가드·방수 카메라·Reef-safe 선크림까지. 몰디브 허니문 필수 준비물 총정리.</div>
+      <div class="post-date">2026년 6월 10일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/singapore-1" data-country="singapore">
+    <div class="post-thumb">🦁</div>
+    <div class="post-body">
+      <div class="post-tag">싱가포르 여행</div>
+      <div class="post-title">싱가포르 여행 준비물 완벽 가이드 (2026)</div>
+      <div class="post-summary">연중 30°C 고온다습 대비 옷차림, EZ-Link 카드 발급법, 호커센터 활용법까지. 싱가포르 여행 필수 준비물 한 번에.</div>
+      <div class="post-date">2026년 6월 10일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/cebu-1" data-country="philippines">
+    <div class="post-thumb">🤿</div>
+    <div class="post-body">
+      <div class="post-tag">필리핀 여행</div>
+      <div class="post-title">세부 7월 날씨 & 준비물 완벽 정리 (2026)</div>
+      <div class="post-summary">우기 스노클링 가능 여부, 고래상어 투어 시기, 래쉬가드·방수 파우치·멀미약 등 세부 여름 여행 필수 준비물 총정리.</div>
+      <div class="post-date">2026년 6월 10일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/taipei-1" data-country="taiwan">
+    <div class="post-thumb">🧋</div>
+    <div class="post-body">
+      <div class="post-tag">대만 여행</div>
+      <div class="post-title">대만 타이페이 6월 7월 날씨 & 준비물 완벽 정리 (2026)</div>
+      <div class="post-summary">매화 장마·태풍 시즌 대비, 이지카드 발급법, 야시장·지우펀 여름 여행 필수 준비물을 한 번에 정리했습니다.</div>
+      <div class="post-date">2026년 6월 10일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/bangkok-1" data-country="thailand">
+    <div class="post-thumb">🛺</div>
+    <div class="post-body">
+      <div class="post-tag">태국 여행</div>
+      <div class="post-title">방콕 7월 날씨 & 준비물 완벽 정리 (2026)</div>
+      <div class="post-summary">우기 오후 스콜 패턴 완벽 분석. 우비·정장제·환전 팁·MRT 카드까지 방콕 여름 여행 필수 준비물 총정리.</div>
+      <div class="post-date">2026년 6월 10일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/sapporo-1" data-country="japan">
     <div class="post-thumb">🌿</div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
@@ -109,7 +180,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/fukuoka-1">
+  <a class="post-card" href="/blog/fukuoka-1" data-country="japan">
     <div class="post-thumb">🍜</div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
@@ -119,7 +190,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/osaka-1">
+  <a class="post-card" href="/blog/osaka-1" data-country="japan">
     <div class="post-thumb">🏯</div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
@@ -129,7 +200,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/tokyo-1">
+  <a class="post-card" href="/blog/tokyo-1" data-country="japan">
     <div class="post-thumb">🗼</div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
@@ -139,7 +210,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/nhatrang-2">
+  <a class="post-card" href="/blog/nhatrang-2" data-country="vietnam">
     <div class="post-thumb">🏛</div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
@@ -149,7 +220,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/nhatrang-1">
+  <a class="post-card" href="/blog/nhatrang-1" data-country="vietnam">
     <div class="post-thumb">🌊</div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
@@ -159,7 +230,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/phuquoc-2">
+  <a class="post-card" href="/blog/phuquoc-2" data-country="vietnam">
     <div class="post-thumb">🏝</div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
@@ -169,7 +240,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/phuquoc-1">
+  <a class="post-card" href="/blog/phuquoc-1" data-country="vietnam">
     <div class="post-thumb">☁️</div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
@@ -179,7 +250,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/europe-1">
+  <a class="post-card" href="/blog/europe-1" data-country="europe">
     <div class="post-thumb">🌍</div>
     <div class="post-body">
       <div class="post-tag">유럽 여행</div>
@@ -189,7 +260,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/guam-1">
+  <a class="post-card" href="/blog/guam-1" data-country="guam">
     <div class="post-thumb">🏖</div>
     <div class="post-body">
       <div class="post-tag">괌 여행</div>
@@ -199,7 +270,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/bali-1">
+  <a class="post-card" href="/blog/bali-1" data-country="indonesia">
     <div class="post-thumb">🌴</div>
     <div class="post-body">
       <div class="post-tag">발리 여행</div>
@@ -209,17 +280,17 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/vietnam-2">
+  <a class="post-card" href="/blog/vietnam-2" data-country="vietnam">
     <div class="post-thumb">💆</div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
-      <div class="post-title">베트남 다낭 마사지 종류 완벽 가이드 (아로마·핫스톤·임산부·썬번)</div>
+      <div class="post-title">베트남 다낭 마사지 종류 완벽 가이드</div>
       <div class="post-summary">아로마, 핫스톤, 임산부, 썬번, 풋, 딥티슈까지 8가지 종류별 특징·가격·추천 대상 + 팁 문화·주의사항 총정리.</div>
       <div class="post-date">2026년 5월 24일</div>
     </div>
   </a>
 
-  <a class="post-card" href="/blog/vietnam-1">
+  <a class="post-card" href="/blog/vietnam-1" data-country="vietnam">
     <div class="post-thumb">🇻🇳</div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
@@ -229,7 +300,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/japan-2">
+  <a class="post-card" href="/blog/japan-2" data-country="japan">
     <div class="post-thumb">🏖</div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
@@ -239,7 +310,7 @@
     </div>
   </a>
 
-  <a class="post-card" href="/blog/japan-1">
+  <a class="post-card" href="/blog/japan-1" data-country="japan">
     <div class="post-thumb">🇯🇵</div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
@@ -256,7 +327,6 @@
 
 </main>
 
-<!-- CHANGED: 피드백 FAB + 모달 -->
 <style>
 #feedback-fab{position:fixed;bottom:24px;right:20px;z-index:900;display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:50px;border:none;background:rgba(255,255,255,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);box-shadow:0 4px 20px rgba(0,0,0,0.13),0 1px 4px rgba(0,0,0,0.08);color:#3a3a3c;font-size:13px;font-family:inherit;cursor:pointer;transition:box-shadow .15s,transform .1s}
 #feedback-fab:hover{box-shadow:0 6px 28px rgba(0,0,0,0.18);transform:translateY(-1px)}
@@ -303,6 +373,18 @@ const _fbDb=firebase.firestore();
 function openFb(){document.getElementById('fb-text').value='';document.getElementById('fb-char').textContent='0';document.getElementById('fb-submit').textContent='보내기';document.getElementById('fb-submit').disabled=false;document.getElementById('feedback-modal').style.display='flex';setTimeout(()=>document.getElementById('fb-text').focus(),100);}
 function closeFb(){document.getElementById('feedback-modal').style.display='none';}
 async function submitFb(){const text=document.getElementById('fb-text').value.trim();if(!text)return;const btn=document.getElementById('fb-submit');btn.textContent='전송 중...';btn.disabled=true;try{await _fbDb.collection('feedback').add({text,source:location.pathname,createdAt:firebase.firestore.FieldValue.serverTimestamp(),ua:navigator.userAgent.slice(0,120)});btn.textContent='감사합니다 ✓';setTimeout(closeFb,1200);}catch(e){btn.textContent='보내기';btn.disabled=false;console.error(e);}}
+
+function filterPosts(btn, country) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#post-list .post-card').forEach(card => {
+    if (country === 'all' || card.dataset.country === country) {
+      card.hidden = false;
+    } else {
+      card.hidden = true;
+    }
+  });
+}
 </script>
 
 </body>
