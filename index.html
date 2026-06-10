@@ -477,7 +477,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
   #auth-left{flex-shrink:0;height:44px;display:flex;align-items:center}
   #auth-nav{order:3;width:100%;margin-left:0;border-top:0.5px solid rgba(0,0,0,0.06);padding-top:2px;margin-top:2px;display:flex}
   .nav-tab{flex:1;padding:8px 8px;font-size:12px;text-align:center}
-  .blog-nav-link{flex:none;font-size:11px;padding:8px 10px;margin-left:auto;border-left:none;border-top:none}
+  .blog-nav-link{flex:1;font-size:12px;padding:8px 8px;margin-left:0;border-left:0.5px solid rgba(0,0,0,0.08);border-top:none;text-align:center;justify-content:center}
   #auth-guest-hint{display:none}
   #auth-right{margin-left:auto;height:44px;display:flex;align-items:center;gap:6px;flex-shrink:0}
   #auth-right>div:first-child{border-right:1px solid rgba(0,0,0,0.1);padding-right:8px;margin-right:2px}
@@ -1709,7 +1709,7 @@ function renderEssentials(){
   if(!allEss.length){area.innerHTML='';return;}
   const destLabels=dests.map(c=>{const i=allFlat().find(x=>x.c===c);return i?i.f:'';}).join(' ');
   area.innerHTML=`<div class="country-essentials"><div class="ce-title">${destLabels} ${t('ess_title')}</div><div class="ce-chips">${allEss.map(e=>`<span class="ce-chip${addedNames.has(e)?' added':''}" data-ename="${e}">${iname(e)}</span>`).join('')}</div></div>`;
-  area.querySelectorAll('.ce-chip:not(.added)').forEach(chip=>{chip.addEventListener('click',()=>addItem(chip.dataset.ename,'기타'));});
+  area.querySelectorAll('.ce-chip').forEach(chip=>{chip.addEventListener('click',()=>toggleItem(chip.dataset.ename,'기타'));});
 }
 
 // CHANGED: 동행자 탭 렌더
@@ -1738,7 +1738,7 @@ function renderCompanionEssentials(){
   const addedNames=new Set((CL().items||[]).map(i=>i.name));
   const compLabel=lang==='en'?(COMPANION_LABEL_EN[comp.key]||comp.label):comp.label;
   area.innerHTML=`<div class="companion-essentials"><div class="companion-ess-title">${compLabel} ${t('comp_ess_title')}</div><div class="companion-ess-chips">${comp.items.map(e=>`<span class="companion-ess-chip${addedNames.has(e)?' added':''}" data-ename="${e}">${iname(e)}</span>`).join('')}</div></div>`;
-  area.querySelectorAll('.companion-ess-chip:not(.added)').forEach(chip=>{chip.addEventListener('click',()=>addItem(chip.dataset.ename,'기타'));});
+  area.querySelectorAll('.companion-ess-chip').forEach(chip=>{chip.addEventListener('click',()=>toggleItem(chip.dataset.ename,'기타'));});
 }
 
 function renderListMeta(){
@@ -2035,6 +2035,12 @@ function addItem(name,cat,method){
   trackEvent('item_add',{item_name:name,category:cat||'기타',method:method||'click'});
   save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();
 }
+function toggleItem(name,cat){
+  const idx=(CL().items||[]).findIndex(i=>i.name===name);
+  if(idx!==-1){trackEvent('item_remove',{item_name:name,method:'toggle'});CL().items.splice(idx,1);openQtyIdx=null;}
+  else{if(!CL().items)CL().items=[];CL().items.push({name,cat:cat||'기타',qty:1,checked:false,memo:'',period:null});trackEvent('item_add',{item_name:name,category:cat||'기타',method:'toggle'});}
+  save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();
+}
 function addCustom(){const input=document.getElementById('custom-input');const val=input.value.trim();if(!val)return;addItem(val,'기타','manual');input.value='';}
 function clearAll(){if(!(CL().items||[]).length)return;CL().items=[];openQtyIdx=null;save();renderCatDropZones();renderManageTab();updateSourceChips();renderEssentials();renderCompanionEssentials();}
 function uncheckAll(){(CL().items||[]).forEach(i=>i.checked=false);save();renderCatDropZones();renderManageTab();}
@@ -2044,7 +2050,7 @@ document.querySelectorAll('.item-chip').forEach(chip=>{
   chip.addEventListener('mousedown',()=>{dragStarted=false;});
   chip.addEventListener('dragstart',e=>{dragStarted=true;srcDragged=chip;chip.classList.add('dragging');e.dataTransfer.effectAllowed='copy';renderCatDropZones();});
   chip.addEventListener('dragend',()=>{chip.classList.remove('dragging');srcDragged=null;document.querySelectorAll('.drop-zone').forEach(z=>z.classList.remove('over'));renderCatDropZones();});
-  chip.addEventListener('click',()=>{if(!dragStarted)addItem(chip.dataset.name,chip.dataset.cat||'기타','click');});
+  chip.addEventListener('click',()=>{if(!dragStarted)toggleItem(chip.dataset.name,chip.dataset.cat||'기타');});
 });
 
 document.getElementById('custom-input').addEventListener('keydown',e=>{if(e.key==='Enter')addCustom();});
