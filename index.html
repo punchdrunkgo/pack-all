@@ -277,6 +277,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .nav-tab{font-size:14px;font-weight:500;padding:6px 14px;border-radius:0;border:none;background:transparent;color:var(--text3);cursor:pointer;font-family:inherit;transition:color .15s;white-space:nowrap;letter-spacing:-.01em}
 .nav-tab:hover{color:var(--text);background:transparent}
 .nav-tab.active{color:#007AFF;font-weight:600;background:transparent}
+.blog-nav-link{font-size:12px;font-weight:400;padding:6px 12px;color:var(--text3);text-decoration:none;white-space:nowrap;border-left:0.5px solid rgba(0,0,0,0.12);margin-left:8px;display:flex;align-items:center;transition:color .15s}
+.blog-nav-link:hover{color:var(--text)}
 #auth-right{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto}
 .auth-btn{font-size:12px;padding:6px 14px;border-radius:var(--radius-pill);border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.7);color:var(--text);cursor:pointer;font-family:inherit;transition:all .15s}
 .auth-btn:hover{background:rgba(255,255,255,0.92)}
@@ -475,6 +477,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
   #auth-left{flex-shrink:0;height:44px;display:flex;align-items:center}
   #auth-nav{order:3;width:100%;margin-left:0;border-top:0.5px solid rgba(0,0,0,0.06);padding-top:2px;margin-top:2px;display:flex}
   .nav-tab{flex:1;padding:8px 8px;font-size:12px;text-align:center}
+  .blog-nav-link{flex:none;font-size:11px;padding:8px 10px;margin-left:auto;border-left:none;border-top:none}
   #auth-guest-hint{display:none}
   #auth-right{margin-left:auto;height:44px;display:flex;align-items:center;gap:6px;flex-shrink:0}
   #auth-right>div:first-child{border-right:1px solid rgba(0,0,0,0.1);padding-right:8px;margin-right:2px}
@@ -642,6 +645,7 @@ const db=firebase.firestore();
   <div id="auth-nav">
     <button class="nav-tab active" id="nav-travel" onclick="switchOuterTab('travel')">여행 준비물</button>
     <button class="nav-tab" id="nav-myitems" onclick="switchOuterTab('myitems')">내 물품</button>
+    <a href="/blog" class="blog-nav-link">블로그</a>
   </div>
   <div id="auth-right">
     <!-- CHANGED: 언어 전환 버튼 -->
