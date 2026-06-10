@@ -978,12 +978,7 @@ const db=firebase.firestore();
         <span class="mi-owned-title">내 보유 물품</span>
         <span class="mi-owned-count" id="mi-count">0개</span>
       </div>
-      <div id="mi-owned-list"><div class="mi-owned-body"><div class="mi-owned-empty"><span class="mi-owned-empty-icon">📦</span>좌측에서 물품을 선택하거나<br>아래에서 직접 추가하세요</div></div></div>
-      <!-- CHANGED: 직접 추가 폼 (정적 HTML, 중복 생성 버그 수정) -->
-      <div class="mi-add-row">
-        <input class="mi-add-input" id="mi-add-input" type="text" placeholder="직접 추가할 물품명...">
-        <button class="mi-add-btn" onclick="doMiAdd()">추가</button>
-      </div>
+      <div id="mi-owned-list"><div class="mi-owned-body"><div class="mi-owned-empty"><span class="mi-owned-empty-icon">📦</span>좌측에서 물품을 선택해 추가하세요</div></div></div>
     </div>
   </div>
 </div>
@@ -1381,8 +1376,7 @@ const UI_TEXT={
     pdf_cat:'카테고리별 PDF',pdf_board:'일정별 PDF',
     mi_desc:'내가 자주 가지고 다니는 물건을 미리 저장해두고, 여행 준비물 리스트에 한 번에 불러올 수 있어요.',
     mi_owned_title:'내 보유 물품',
-    mi_empty:'좌측에서 물품을 선택하거나<br>아래에서 직접 추가하세요',
-    mi_add_placeholder:'직접 추가할 물품명...',mi_add_btn:'추가',
+    mi_empty:'좌측에서 물품을 선택해 추가하세요',
     mi_basic:'기본 준비물',mi_situation:'상황별 준비물',
     empty_pack:'좌측 태그를 클릭하거나<br>드래그해서 추가하세요',
     empty_manage:'준비물을 추가하면 여기서 체크할 수 있어요',
@@ -1426,8 +1420,7 @@ const UI_TEXT={
     pdf_cat:'Category PDF',pdf_board:'Schedule PDF',
     mi_desc:'Save items you already own and import them into your travel list whenever you need.',
     mi_owned_title:'My Owned Items',
-    mi_empty:'Select items from the left<br>or add one below',
-    mi_add_placeholder:'Item name to add...',mi_add_btn:'Add',
+    mi_empty:'Select items from the left to add',
     mi_basic:'Essentials',mi_situation:'Situational Items',
     empty_pack:'Click or drag items<br>from the left panel',
     empty_manage:'Add items to check them off here',
@@ -1608,8 +1601,6 @@ function renderMyItems(){
   };
 
   // Enter 키 핸들러 — early return 전에 등록
-  const miInput=document.getElementById('mi-add-input');
-  if(miInput)miInput.onkeydown=e=>{if(e.key==='Enter')doMiAdd();};
 
   // — 우측: 보유 목록 —
   const owned=Object.entries(myItems).filter(([,v])=>v.owned);
@@ -2126,8 +2117,6 @@ function applyLang(){
   // my items panel
   const mdt=document.getElementById('mi-desc-text');if(mdt)mdt.textContent=t('mi_desc');
   const mot=document.querySelector('.mi-owned-title');if(mot)mot.textContent=t('mi_owned_title');
-  const mai=document.getElementById('mi-add-input');if(mai)mai.placeholder=t('mi_add_placeholder');
-  const mab=document.querySelector('.mi-add-btn');if(mab)mab.textContent=t('mi_add_btn');
   // board hint
   const bh=document.getElementById('board-drag-hint');if(bh)bh.textContent=t('board_hint');
   // edit hint
