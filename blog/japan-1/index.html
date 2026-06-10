@@ -230,5 +230,54 @@
   </div>
 </article>
 
+<!-- CHANGED: 피드백 FAB + 모달 -->
+<style>
+#feedback-fab{position:fixed;bottom:24px;right:20px;z-index:900;display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:50px;border:none;background:rgba(255,255,255,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);box-shadow:0 4px 20px rgba(0,0,0,0.13),0 1px 4px rgba(0,0,0,0.08);color:#3a3a3c;font-size:13px;font-family:inherit;cursor:pointer;transition:box-shadow .15s,transform .1s}
+#feedback-fab:hover{box-shadow:0 6px 28px rgba(0,0,0,0.18);transform:translateY(-1px)}
+#feedback-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center}
+.fb-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.25)}
+.fb-box{position:relative;background:rgba(248,248,252,0.97);backdrop-filter:saturate(200%) blur(30px);-webkit-backdrop-filter:saturate(200%) blur(30px);border:1px solid rgba(255,255,255,0.88);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.14);width:min(480px,90vw);display:flex;flex-direction:column;overflow:hidden}
+.fb-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0}
+.fb-title{font-size:15px;font-weight:700;color:#1c1c1e}
+.fb-close{background:none;border:none;font-size:16px;color:#8e8e93;cursor:pointer;padding:4px 8px;border-radius:8px}
+.fb-close:hover{background:rgba(0,0,0,0.06)}
+.fb-msg{font-size:13px;color:#636366;line-height:1.75;padding:14px 20px 0;word-break:keep-all}
+.fb-wrap{padding:12px 20px}
+.fb-textarea{width:100%;font-size:13px;padding:11px 14px;border:1px solid rgba(0,0,0,0.1);border-radius:10px;background:rgba(255,255,255,0.8);color:#1c1c1e;font-family:inherit;resize:none;height:120px;outline:none;transition:border-color .15s;box-sizing:border-box}
+.fb-textarea:focus{border-color:rgba(0,122,255,0.4);background:#fff}
+.fb-char{font-size:11px;color:#aeaeb2;text-align:right;margin-top:5px}
+.fb-actions{display:flex;justify-content:flex-end;gap:8px;padding:0 20px 18px}
+.fb-cancel{font-size:13px;padding:9px 16px;border-radius:50px;border:1px solid rgba(0,0,0,0.1);background:transparent;color:#636366;cursor:pointer;font-family:inherit}
+.fb-cancel:hover{background:rgba(0,0,0,0.05)}
+.fb-submit{font-size:13px;font-weight:600;padding:9px 22px;border-radius:50px;border:none;background:#007AFF;color:#fff;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.fb-submit:hover{opacity:.88}
+.fb-submit:disabled{opacity:.45;cursor:not-allowed}
+</style>
+<button id="feedback-fab" onclick="openFb()">💬 피드백 남기기</button>
+<div id="feedback-modal">
+  <div class="fb-overlay" onclick="closeFb()"></div>
+  <div class="fb-box">
+    <div class="fb-header"><span class="fb-title">피드백</span><button class="fb-close" onclick="closeFb()">✕</button></div>
+    <p class="fb-msg">저는 한국에 사는 아마추어 개발자예요. 나름 열심히 만들었는데, 좋든 나쁘든 모든 피드백을 기꺼이 받겠습니다. packo를 한 번이라도 써주셔서 정말 감사해요. 좋은 하루 보내세요 :)</p>
+    <div class="fb-wrap">
+      <textarea class="fb-textarea" id="fb-text" maxlength="500" oninput="document.getElementById('fb-char').textContent=this.value.length" placeholder="편하게 남겨주세요..."></textarea>
+      <div class="fb-char"><span id="fb-char">0</span> / 500</div>
+    </div>
+    <div class="fb-actions">
+      <button class="fb-cancel" onclick="closeFb()">취소</button>
+      <button class="fb-submit" id="fb-submit" onclick="submitFb()">보내기</button>
+    </div>
+  </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
+if(!firebase.apps.length){firebase.initializeApp({apiKey:"AIzaSyAi8GH9BFKRi4AZwAaCQhcEh6Fbb--69SA",authDomain:"pack-all-c1794.firebaseapp.com",projectId:"pack-all-c1794",storageBucket:"pack-all-c1794.firebasestorage.app",messagingSenderId:"1033545847188",appId:"1:1033545847188:web:91367da0e81c2132e2bf81"});}
+const _fbDb=firebase.firestore();
+function openFb(){document.getElementById('fb-text').value='';document.getElementById('fb-char').textContent='0';document.getElementById('fb-submit').textContent='보내기';document.getElementById('fb-submit').disabled=false;document.getElementById('feedback-modal').style.display='flex';setTimeout(()=>document.getElementById('fb-text').focus(),100);}
+function closeFb(){document.getElementById('feedback-modal').style.display='none';}
+async function submitFb(){const text=document.getElementById('fb-text').value.trim();if(!text)return;const btn=document.getElementById('fb-submit');btn.textContent='전송 중...';btn.disabled=true;try{await _fbDb.collection('feedback').add({text,source:location.pathname,createdAt:firebase.firestore.FieldValue.serverTimestamp(),ua:navigator.userAgent.slice(0,120)});btn.textContent='감사합니다 ✓';setTimeout(closeFb,1200);}catch(e){btn.textContent='보내기';btn.disabled=false;console.error(e);}}
+</script>
+
 </body>
 </html>

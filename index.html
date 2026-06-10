@@ -247,11 +247,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .progress-text{font-size:11px;color:var(--text3);white-space:nowrap}
 .save-toast{position:fixed;bottom:20px;right:20px;font-size:12px;font-weight:500;background:rgba(28,28,30,0.88);color:#fff;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.12);padding:8px 18px;border-radius:var(--radius-pill);opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
 .save-toast.show{opacity:1}
-/* CHANGED: 피드백 푸터 + 모달 */
-#feedback-footer{text-align:center;padding:28px 0 8px;opacity:.7;transition:opacity .2s}
-#feedback-footer:hover{opacity:1}
-#feedback-footer-btn{font-size:12px;color:var(--text3);background:transparent;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--radius-pill);transition:all .15s}
-#feedback-footer-btn:hover{background:rgba(0,0,0,0.05);color:var(--text2)}
+/* CHANGED: 피드백 FAB + 모달 */
+#feedback-fab{position:fixed;bottom:24px;right:20px;z-index:900;display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:var(--radius-pill);border:none;background:rgba(255,255,255,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);box-shadow:0 4px 20px rgba(0,0,0,0.13),0 1px 4px rgba(0,0,0,0.08);color:var(--text2);font-size:13px;font-family:inherit;cursor:pointer;transition:box-shadow .15s,transform .1s}
+#feedback-fab:hover{box-shadow:0 6px 28px rgba(0,0,0,0.18),0 2px 6px rgba(0,0,0,0.1);transform:translateY(-1px)}
 #feedback-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center}
 .feedback-box{background:rgba(248,248,252,0.95);backdrop-filter:saturate(200%) blur(30px);-webkit-backdrop-filter:saturate(200%) blur(30px);border:1px solid rgba(255,255,255,0.88);border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,0.14),0 4px 16px rgba(0,0,0,0.07);width:min(480px,90vw);display:flex;flex-direction:column;overflow:hidden}
 .feedback-msg{font-size:13px;color:var(--text2);line-height:1.75;padding:22px 22px 0;word-break:keep-all}
@@ -985,13 +983,8 @@ const db=firebase.firestore();
     </div>
   </div>
 </div>
-<!-- CHANGED: 피드백 푸터 버튼 -->
-<div id="feedback-footer">
-  <button id="feedback-footer-btn" onclick="openFeedbackModal()">💬 <span id="feedback-btn-label">피드백 남기기</span></button>
-  <!-- [CHANGE START] 블로그 푸터 링크 -->
-  <a href="/blog" style="display:block;margin-top:8px;color:#aeaeb2;font-size:12px;text-decoration:none">여행 정보 블로그</a>
-  <!-- [CHANGE END] -->
-</div>
+<!-- CHANGED: 피드백 FAB -->
+<button id="feedback-fab" onclick="openFeedbackModal()">💬 <span id="feedback-btn-label">피드백 남기기</span></button>
 </div><!-- /app -->
 
 <!-- 피드백 모달 -->
