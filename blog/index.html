@@ -66,7 +66,14 @@
   .cta-btn{display:inline-block;background:#007AFF;color:#fff;font-size:14px;font-weight:600;padding:11px 24px;border-radius:100px;text-decoration:none;letter-spacing:-.2px;transition:opacity .15s}
   .cta-btn:hover{opacity:.85}
 
-  @media(max-width:600px){
+  /* CHANGED: 2열 그리드 */
+  @media(min-width:640px){
+    .blog-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding-bottom:60px}
+    .post-card{margin-bottom:0}
+    .blog-cta{grid-column:1/-1}
+    .post-summary{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  }
+  @media(max-width:639px){
     .blog-hero h1{font-size:22px}
     .blog-list{padding:16px 14px 48px}
     .post-thumb{width:90px;font-size:28px}
@@ -119,6 +126,46 @@
 </div>
 
 <main class="blog-list" id="post-list">
+
+  <a class="post-card" href="/blog/kaohsiung-1" data-country="taiwan">
+    <div class="post-thumb">🏙</div>
+    <div class="post-body">
+      <div class="post-tag">대만 여행</div>
+      <div class="post-title">가오슝 여행 준비물 & 날씨 완벽 가이드 (2026)</div>
+      <div class="post-summary">로터스 연못·치진 섬·보얼 예술특구 관광 팁, 이지카드·환전·유심까지. 대만 남부 가오슝 여행 완벽 정리.</div>
+      <div class="post-date">2026년 6월 11일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/taiwan-2" data-country="taiwan">
+    <div class="post-thumb">🧋</div>
+    <div class="post-body">
+      <div class="post-tag">대만 여행</div>
+      <div class="post-title">대만 여행 준비물 총정리 2026 — 유심·환전·날씨</div>
+      <div class="post-summary">이지카드 발급법, 유심 vs 포켓와이파이 비교, 환전 꿀팁, 야시장 필수품, 계절별 옷차림. 대만 첫 여행자 필독.</div>
+      <div class="post-date">2026년 6월 11일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/phuket-1" data-country="thailand">
+    <div class="post-thumb">🏖</div>
+    <div class="post-body">
+      <div class="post-tag">태국 여행</div>
+      <div class="post-title">푸켓 7월 날씨 & 준비물 완벽 정리 (2026)</div>
+      <div class="post-summary">우기 절정 푸켓, 오전 맑음·오후 스콜 패턴. 래쉬가드·우비·정장제·그랩 앱 등 필수 준비물 총정리.</div>
+      <div class="post-date">2026년 6월 11일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/chiangmai-1" data-country="thailand">
+    <div class="post-thumb">🐘</div>
+    <div class="post-body">
+      <div class="post-tag">태국 여행</div>
+      <div class="post-title">치앙마이 여행 준비물 & 날씨 완벽 가이드 (2026)</div>
+      <div class="post-summary">건기·우기·화전 시즌별 날씨, 사원 복장 규정, 도이수텝 트레킹 준비물, 야시장 팁까지. 치앙마이 첫 여행자 필독.</div>
+      <div class="post-date">2026년 6월 11일</div>
+    </div>
+  </a>
 
   <a class="post-card" href="/blog/maldives-1" data-country="maldives">
     <div class="post-thumb">🏝</div>
