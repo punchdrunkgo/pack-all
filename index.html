@@ -378,10 +378,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Ne
 .import-check-all-row{display:flex;gap:8px;padding:0 0 8px;border-bottom:1px solid rgba(0,0,0,0.06);margin-bottom:6px}
 .import-check-all-btn{font-size:11px;padding:3px 9px;border-radius:var(--radius-pill);border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.8);color:var(--text2);cursor:pointer;font-family:inherit;transition:all .12s}
 .import-check-all-btn:hover{background:rgba(0,0,0,0.05)}
-/* owned 패널 "추가" 버튼 */
-.mi-add-to-list{font-size:10px;padding:2px 7px;border-radius:var(--radius-pill);border:1px solid rgba(0,122,255,0.25);background:rgba(0,122,255,0.07);color:#007AFF;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;flex-shrink:0}
-.mi-add-to-list:hover{background:rgba(0,122,255,0.14)}
-.mi-add-to-list.added{border-color:rgba(52,199,89,0.3);background:rgba(52,199,89,0.08);color:#248A3D;cursor:default;pointer-events:none}
+/* owned 패널 개수 컨트롤 */
+.mi-qty-ctrl{display:flex;align-items:center;gap:3px;flex-shrink:0}
+.mi-qty-btn{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.9);color:var(--text3);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:all .15s;padding:0;font-family:inherit}
+.mi-qty-btn:hover{background:rgba(0,122,255,0.1);color:#007AFF;border-color:rgba(0,122,255,0.25)}
+.mi-qty-num{font-size:10px;font-weight:600;color:#007AFF;background:rgba(0,122,255,0.1);border:1px solid rgba(0,122,255,0.2);border-radius:10px;padding:0 5px;line-height:1.8;min-width:18px;text-align:center}
 /* PDF 미리보기 버튼 */
 .pdf-preview-btn{width:100%;margin-top:8px;font-size:12px;padding:9px 0;border-radius:var(--radius);border:none;background:#007AFF;color:#fff;cursor:pointer;font-family:inherit;transition:opacity .15s;font-weight:500}
 .pdf-preview-btn:hover{opacity:.88}
@@ -1579,7 +1580,7 @@ function getAllSourceItems(){
 }
 
 function toggleMyItem(name,cat){
-  if(!myItems[name])myItems[name]={owned:false,memo:'',cat};
+  if(!myItems[name])myItems[name]={owned:false,memo:'',cat,qty:1};
   myItems[name].owned=!myItems[name].owned;
   if(!myItems[name].owned)miMemoOpen.delete(name);
   save();renderMyItems();
@@ -1651,25 +1652,24 @@ function renderMyItems(){
     grouped[cat].forEach(name=>{
       const memo=myItems[name]&&myItems[name].memo||'';
       const memoOpen=miMemoOpen.has(name);
-      const inList=!!(CL().items||[]).find(i=>i.name===name);
-      const addBtn=`<button class="mi-add-to-list${inList?' added':''}" data-addname="${name}" data-addcat="${myItems[name].cat||'기타'}">${inList?'✓ 추가됨':'+ 추가'}</button>`;
-      ownedHtml+=`<div class="mi-owned-item"><div class="mi-owned-row"><span class="mi-owned-name">${iname(name)}</span><div class="mi-owned-actions">${addBtn}<span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">${memoOpen?t('memo')+' ▲':t('memo')}</span><span class="mi-remove" data-removename="${name}">✕</span></div></div>${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="${t('memo_add')}">${memo}</textarea></div>`:''}</div>`;
+      const qty=myItems[name].qty||1;
+      // CHANGED: +추가 버튼 제거, qty 컨트롤 추가
+      const qtyCtrl=`<div class="mi-qty-ctrl"><button class="mi-qty-btn" data-qtyname="${name}" data-qtydelta="-1">−</button><span class="mi-qty-num">${qty}</span><button class="mi-qty-btn" data-qtyname="${name}" data-qtydelta="1">+</button></div>`;
+      ownedHtml+=`<div class="mi-owned-item"><div class="mi-owned-row"><span class="mi-owned-name">${iname(name)}</span><div class="mi-owned-actions">${qtyCtrl}<span class="mi-memo-toggle${memoOpen?' open':''}" data-memoname="${name}">${memoOpen?t('memo')+' ▲':t('memo')}</span><span class="mi-remove" data-removename="${name}">✕</span></div></div>${memoOpen?`<div class="mi-memo-body"><textarea class="mi-memo-input" data-meminput="${name}" placeholder="${t('memo_add')}">${memo}</textarea></div>`:''}</div>`;
     });
     ownedHtml+=`</div>`;
   });
   ownedHtml+='</div>';
   ownedList.innerHTML=ownedHtml;
 
-  // 이벤트 위임 (owned list)
+  // CHANGED: 이벤트 위임 (owned list) — addBtn 제거, qty 핸들러 추가
   ownedList.onclick=e=>{
-    const addBtn=e.target.closest('[data-addname]');
+    const qtyBtn=e.target.closest('[data-qtyname]');
     const memoBtn=e.target.closest('[data-memoname]');
     const removeBtn=e.target.closest('[data-removename]');
-    if(addBtn&&!addBtn.classList.contains('added')){
-      const n=addBtn.dataset.addname,cat=addBtn.dataset.addcat||'기타';
-      const already=(CL().items||[]).find(i=>i.name===n);
-      if(!already){CL().items.push({name:n,cat,qty:1,checked:false,memo:'',period:null});save();renderCatDropZones();renderManageTab();updateSourceChips();}
-      renderMyItems();
+    if(qtyBtn){
+      const n=qtyBtn.dataset.qtyname,delta=parseInt(qtyBtn.dataset.qtydelta,10);
+      if(myItems[n]){const cur=myItems[n].qty||1;myItems[n].qty=Math.max(1,cur+delta);save();renderMyItems();}
     }
     if(memoBtn){miMemoOpen.has(memoBtn.dataset.memoname)?miMemoOpen.delete(memoBtn.dataset.memoname):miMemoOpen.add(memoBtn.dataset.memoname);renderMyItems();}
     if(removeBtn){const n=removeBtn.dataset.removename;if(myItems[n])myItems[n].owned=false;miMemoOpen.delete(n);save();renderMyItems();}
@@ -1682,7 +1682,7 @@ function doMiAdd(){
   const inp=document.getElementById('mi-add-input');
   if(!inp)return;
   const val=inp.value.trim();if(!val)return;
-  myItems[val]={owned:true,memo:'',cat:'기타'};
+  myItems[val]={owned:true,memo:'',cat:'기타',qty:1};
   inp.value='';save();renderMyItems();
   document.getElementById('mi-add-input')?.focus();
 }
