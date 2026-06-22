@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    width:1270px;height:760px;overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
+    background:#cdd9ea;
+    background-image:
+      radial-gradient(ellipse 70% 60% at 90% 10%,rgba(0,122,255,0.2) 0%,transparent 60%),
+      radial-gradient(ellipse 65% 55% at 10% 80%,rgba(88,86,214,0.16) 0%,transparent 58%),
+      radial-gradient(ellipse 60% 50% at 50% 45%,rgba(52,199,89,0.09) 0%,transparent 55%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px;padding:44px 56px}
+
+  .top{text-align:center}
+  h1{font-size:46px;font-weight:700;color:#1c1c1e;letter-spacing:-2px;line-height:1.1;margin-bottom:10px}
+  h1 em{font-style:normal;background:linear-gradient(135deg,#007AFF,#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .sub{font-size:17px;color:#48484a}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;width:100%}
+  .feat-card{
+    background:rgba(255,255,255,0.72);backdrop-filter:saturate(180%) blur(20px);
+    border:1px solid rgba(255,255,255,0.82);border-radius:20px;
+    box-shadow:0 4px 28px rgba(0,0,0,0.08),0 1px 4px rgba(0,0,0,0.04);
+    padding:28px 26px;display:flex;flex-direction:column;gap:16px}
+
+  .feat-icon-wrap{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px}
+  .feat-card h3{font-size:18px;font-weight:700;color:#1c1c1e;letter-spacing:-.4px;line-height:1.2}
+  .feat-card p{font-size:13px;color:#6e6e73;line-height:1.6}
+
+  /* Mini UI elements inside cards */
+  .mini-checklist{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+  .mini-row{display:flex;align-items:center;gap:8px}
+  .mini-dot{width:13px;height:13px;border-radius:50%;flex-shrink:0}
+  .mini-dot.done{background:#34c759;border:none}
+  .mini-dot.todo{background:#fff;border:1.5px solid rgba(0,0,0,0.15)}
+  .mini-label{font-size:11px;color:#1c1c1e}
+  .mini-label.done{text-decoration:line-through;color:#8e8e93}
+
+  .mini-countries{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+  .mini-flag{font-size:11px;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.7);border:1px solid rgba(0,0,0,0.09);font-weight:500;color:#1c1c1e}
+  .mini-flag.active{background:#007AFF;border-color:transparent;color:#fff}
+
+  .mini-pdf{display:flex;gap:8px;margin-top:4px}
+  .pdf-pill{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:12px;font-size:11px;font-weight:600;cursor:pointer}
+  .pdf-pill.cat{background:rgba(0,122,255,0.09);color:#007AFF;border:1px solid rgba(0,122,255,0.2)}
+  .pdf-pill.board{background:rgba(88,86,214,0.09);color:#5856D6;border:1px solid rgba(88,86,214,0.2)}
+
+  .mini-sync{display:flex;align-items:center;gap:10px;margin-top:4px;padding:10px 14px;border-radius:12px;background:rgba(52,199,89,0.07);border:1px solid rgba(52,199,89,0.18)}
+  .sync-icon{font-size:20px}
+  .sync-text{font-size:11px;color:#248A3D;font-weight:600}
+
+  .mini-langs{display:flex;gap:8px;margin-top:4px}
+  .lang-pill{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600}
+  .lang-pill.active{background:#007AFF;color:#fff}
+  .lang-pill.inactive{background:rgba(0,0,0,0.06);color:#48484a}
+
+  .mini-items{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+  .item-row{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:8px;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.05)}
+  .item-name{font-size:11px;color:#1c1c1e;font-weight:500}
+  .item-badge{font-size:10px;padding:1px 7px;border-radius:10px;background:rgba(0,122,255,0.09);color:#007AFF;border:0.5px solid rgba(0,122,255,0.2)}
+</style>
+</head>
+<body>
+  <div class="top">
+    <h1>Everything you need,<br><em>in one place</em></h1>
+    <p class="sub">Six powerful features to make every trip stress-free</p>
+  </div>
+
+  <div class="grid">
+    <!-- Card 1: Smart checklists -->
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(0,122,255,0.1)">✅</div>
+      <div>
+        <h3>Smart Checklists</h3>
+        <p>Track progress with a visual progress bar. Never miss an essential item again.</p>
+      </div>
+      <div class="mini-checklist">
+        <div class="mini-row"><div class="mini-dot done"></div><span class="mini-label done">Passport</span></div>
+        <div class="mini-row"><div class="mini-dot done"></div><span class="mini-label done">Flight confirmation</span></div>
+        <div class="mini-row"><div class="mini-dot todo"></div><span class="mini-label">Travel insurance</span></div>
+        <div class="mini-row"><div class="mini-dot todo"></div><span class="mini-label">Foreign currency</span></div>
+      </div>
+    </div>
+
+    <!-- Card 2: Destination recommendations -->
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(88,86,214,0.1)">🌍</div>
+      <div>
+        <h3>Destination Lists</h3>
+        <p>Country-specific must-haves auto-added to your list when you pick a destination.</p>
+      </div>
+      <div class="mini-countries">
+        <div class="mini-flag active">🇯🇵 Japan</div>
+        <div class="mini-flag">🇹🇭 Thailand</div>
+        <div class="mini-flag">🇪🇺 Europe</div>
+        <div class="mini-flag">🇺🇸 USA</div>
+      </div>
+    </div>
+
+    <!-- Card 3: PDF Export -->
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(255,159,10,0.1)">📄</div>
+      <div>
+        <h3>PDF Export</h3>
+        <p>Save or print your checklist. Choose between category view or timeline board view.</p>
+      </div>
+      <div class="mini-pdf">
+        <div class="pdf-pill cat">📂 By Category</div>
+        <div class="pdf-pill board">📋 By Timeline</div>
+      </div>
+    </div>
+
+    <!-- Card 4: My Items -->
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(52,199,89,0.1)">🗂️</div>
+      <div>
+        <h3>My Items Library</h3>
+        <p>Save your personal essentials once, reuse them on every future trip with one tap.</p>
+      </div>
+      <div class="mini-items">
+        <div class="item-row"><span class="item-name">Neck pillow</span><span class="item-badge">My Item</span></div>
+        <div class="item-row"><span class="item-name">Noise-canceling earphones</span><span class="item-badge">My Item</span></div>
+        <div class="item-row"><span class="item-name">Portable charger</span><span class="item-badge">My Item</span></div>
+      </div>
+    </div>
+
+    <!-- Card 5: Cloud sync -->
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(52,199,89,0.1)">☁️</div>
+      <div>
+        <h3>Cloud Sync</h3>
+        <p>Sign in with Google to sync your packing list across all your devices instantly.</p>
+      </div>
+      <div class="mini-sync">
+        <span class="sync-icon">✓</span>
+        <span class="sync-text">Synced across all devices</span>
+      </div>
+    </div>
+
+    <!-- Card 6: Bilingual -->
+    <div class="feat-card">
+      <div class="feat-icon-wrap" style="background:rgba(0,122,255,0.1)">🌐</div>
+      <div>
+        <h3>Korean &amp; English</h3>
+        <p>Full bilingual support — switch between Korean and English anytime, instantly.</p>
+      </div>
+      <div class="mini-langs">
+        <div class="lang-pill active">한국어</div>
+        <div class="lang-pill inactive">English</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

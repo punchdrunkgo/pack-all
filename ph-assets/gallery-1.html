@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    width:1270px;height:760px;overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
+    background:#cdd9ea;
+    background-image:
+      radial-gradient(ellipse 75% 65% at 10% 35%,rgba(0,122,255,0.22) 0%,transparent 65%),
+      radial-gradient(ellipse 60% 55% at 88% 12%,rgba(88,86,214,0.18) 0%,transparent 60%),
+      radial-gradient(ellipse 50% 60% at 55% 90%,rgba(52,199,89,0.1) 0%,transparent 58%);
+    display:flex;align-items:center;justify-content:center;gap:64px;padding:40px 56px}
+
+  /* Left column */
+  .left{flex:0 0 420px}
+  .logo-row{display:flex;align-items:center;gap:9px;margin-bottom:28px}
+  .logo-text{font-size:20px;font-weight:700;color:#1c1c1e;letter-spacing:-.5px}
+  .logo-text em{font-style:normal;background:linear-gradient(135deg,#007AFF,#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  h1{font-size:50px;font-weight:700;color:#1c1c1e;letter-spacing:-2px;line-height:1.1;margin-bottom:14px}
+  h1 em{font-style:normal;background:linear-gradient(135deg,#007AFF 0%,#5856D6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .sub{font-size:17px;color:#48484a;line-height:1.6;margin-bottom:32px;font-weight:400}
+  .pills{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid}
+  .pill-blue{color:#007AFF;background:rgba(0,122,255,0.09);border-color:rgba(0,122,255,0.22)}
+  .pill-green{color:#248A3D;background:rgba(52,199,89,0.09);border-color:rgba(52,199,89,0.25)}
+  .pill-purple{color:#5856D6;background:rgba(88,86,214,0.09);border-color:rgba(88,86,214,0.22)}
+
+  /* Right column — mockup */
+  .mockup{flex:1;display:flex;gap:12px;align-items:flex-start;max-width:640px}
+
+  .card{background:rgba(255,255,255,0.72);backdrop-filter:saturate(180%) blur(20px);
+    border:1px solid rgba(255,255,255,0.82);border-radius:16px;
+    box-shadow:0 4px 28px rgba(0,0,0,0.08),0 1px 4px rgba(0,0,0,0.04);overflow:hidden}
+
+  /* Category card */
+  .cat-card{width:190px;padding:16px}
+  .sec-label{font-size:10px;font-weight:700;color:#8e8e93;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px}
+  .cat-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;margin-bottom:2px;cursor:pointer}
+  .cat-row.active{background:rgba(0,122,255,0.09)}
+  .cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .cat-name{font-size:12px;font-weight:500;color:#1c1c1e;flex:1}
+  .cat-count{font-size:10px;color:#8e8e93;background:rgba(0,0,0,0.06);border-radius:8px;padding:1px 6px}
+
+  /* Checklist card */
+  .check-card{flex:1}
+  .check-top{padding:14px 16px 10px;border-bottom:0.5px solid rgba(0,0,0,0.06)}
+  .check-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .check-title{font-size:14px;font-weight:600;color:#1c1c1e}
+  .check-badge{font-size:10px;padding:2px 9px;border-radius:20px;background:rgba(0,122,255,0.09);color:#007AFF;border:0.5px solid rgba(0,122,255,0.2)}
+  .prog-bar{height:4px;background:rgba(0,0,0,0.07);border-radius:6px;overflow:hidden}
+  .prog-fill{height:100%;width:62%;background:linear-gradient(90deg,#007AFF,#5856D6);border-radius:6px}
+  .prog-label{font-size:10px;color:#8e8e93;margin-top:4px}
+
+  .country-row{display:flex;gap:6px;padding:10px 16px 0;flex-wrap:wrap}
+  .chip{font-size:11px;padding:4px 11px;border-radius:20px;border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.65);color:#48484a;font-weight:500;cursor:pointer}
+  .chip.active{background:#007AFF;border-color:transparent;color:#fff}
+
+  .check-body{padding:4px 0}
+  .check-row{display:flex;align-items:center;gap:9px;padding:9px 16px}
+  .check-box{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.16);background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .check-box.done{background:#34c759;border-color:#34c759}
+  .check-box.done::after{content:'✓';font-size:9px;color:#fff;font-weight:800}
+  .check-name{font-size:12px;color:#1c1c1e;flex:1}
+  .check-row.checked .check-name{color:#8e8e93;text-decoration:line-through}
+</style>
+</head>
+<body>
+  <div class="left">
+    <div class="logo-row">
+      <svg width="28" height="28" viewBox="0 0 34 34" fill="none">
+        <defs><linearGradient id="lg" x1="5" y1="8" x2="29" y2="30" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#007AFF"/><stop offset="100%" stop-color="#5856D6"/></linearGradient></defs>
+        <rect x="5" y="13" width="24" height="16" rx="4.5" fill="url(#lg)"/>
+        <path d="M13 13V10.5C13 9.12 14.12 8 15.5 8h3C19.88 8 21 9.12 21 10.5V13" stroke="url(#lg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="15" y="17" width="4" height="3.5" rx="1.5" fill="rgba(255,255,255,0.92)"/>
+        <line x1="5" y1="23" x2="29" y2="23" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+      </svg>
+      <span class="logo-text">pac<em>ko</em></span>
+    </div>
+    <h1>Pack smarter.<br><em>Travel better.</em></h1>
+    <p class="sub">The smart travel checklist that knows<br>what you need, before you forget.</p>
+    <div class="pills">
+      <div class="pill pill-blue">✈️ Destination-based lists</div>
+      <div class="pill pill-green">✅ Progress tracking</div>
+      <div class="pill pill-purple">📄 PDF export</div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="card cat-card">
+      <div class="sec-label">Categories</div>
+      <div class="cat-row active"><div class="cat-dot" style="background:#007AFF"></div><span class="cat-name">Documents</span><span class="cat-count">5</span></div>
+      <div class="cat-row"><div class="cat-dot" style="background:#34c759"></div><span class="cat-name">Toiletries</span><span class="cat-count">8</span></div>
+      <div class="cat-row"><div class="cat-dot" style="background:#FF9F0A"></div><span class="cat-name">Clothing</span><span class="cat-count">7</span></div>
+      <div class="cat-row"><div class="cat-dot" style="background:#5856D6"></div><span class="cat-name">Electronics</span><span class="cat-count">6</span></div>
+      <div class="cat-row"><div class="cat-dot" style="background:#FF3B30"></div><span class="cat-name">Medicine</span><span class="cat-count">4</span></div>
+      <div class="cat-row"><div class="cat-dot" style="background:#30B0C7"></div><span class="cat-name">Bookings</span><span class="cat-count">3</span></div>
+    </div>
+
+    <div class="card check-card">
+      <div class="country-row">
+        <div class="chip active">🇯🇵 Japan</div>
+        <div class="chip">🇹🇭 Thailand</div>
+        <div class="chip">🇪🇺 Europe</div>
+        <div class="chip">🇺🇸 USA</div>
+      </div>
+      <div class="check-top">
+        <div class="check-title-row">
+          <span class="check-title">Documents</span>
+          <span class="check-badge">7 / 12 done</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill"></div></div>
+        <div class="prog-label">62% packed</div>
+      </div>
+      <div class="check-body">
+        <div class="check-row checked"><div class="check-box done"></div><span class="check-name">Passport</span></div>
+        <div class="check-row checked"><div class="check-box done"></div><span class="check-name">Flight confirmation</span></div>
+        <div class="check-row checked"><div class="check-box done"></div><span class="check-name">Hotel reservation</span></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-name">Travel insurance</span></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-name">International driver's license</span></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-name">Foreign currency</span></div>
+        <div class="check-row"><div class="check-box"></div><span class="check-name">Visa documents</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

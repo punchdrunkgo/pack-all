@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    width:1270px;height:760px;overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
+    background:#cdd9ea;
+    background-image:
+      radial-gradient(ellipse 70% 60% at 80% 20%,rgba(88,86,214,0.2) 0%,transparent 62%),
+      radial-gradient(ellipse 65% 55% at 15% 75%,rgba(0,122,255,0.18) 0%,transparent 60%),
+      radial-gradient(ellipse 45% 50% at 50% 50%,rgba(52,199,89,0.08) 0%,transparent 55%);
+    display:flex;align-items:center;justify-content:center;gap:60px;padding:44px 56px}
+
+  .left{flex:0 0 400px}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+    color:#5856D6;background:rgba(88,86,214,0.1);padding:5px 14px;border-radius:20px;
+    border:1px solid rgba(88,86,214,0.22);margin-bottom:20px;letter-spacing:.02em;text-transform:uppercase}
+  h1{font-size:46px;font-weight:700;color:#1c1c1e;letter-spacing:-2px;line-height:1.12;margin-bottom:14px}
+  h1 em{font-style:normal;background:linear-gradient(135deg,#5856D6,#007AFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .sub{font-size:17px;color:#48484a;line-height:1.6;margin-bottom:32px}
+  .features{display:flex;flex-direction:column;gap:16px}
+  .feat{display:flex;align-items:flex-start;gap:14px}
+  .feat-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+  .feat-body h3{font-size:14px;font-weight:600;color:#1c1c1e;margin-bottom:3px}
+  .feat-body p{font-size:12px;color:#8e8e93;line-height:1.5}
+
+  .right{flex:1;display:flex;flex-direction:column;gap:12px;max-width:560px}
+  .card{background:rgba(255,255,255,0.72);backdrop-filter:saturate(180%) blur(20px);
+    border:1px solid rgba(255,255,255,0.82);border-radius:16px;
+    box-shadow:0 4px 28px rgba(0,0,0,0.08),0 1px 4px rgba(0,0,0,0.04);padding:18px}
+
+  .sec-label{font-size:10px;font-weight:700;color:#8e8e93;letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px}
+
+  .country-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+  .country-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;
+    border-radius:12px;border:1px solid rgba(0,0,0,0.09);background:rgba(255,255,255,0.6);
+    font-size:12px;color:#1c1c1e;font-weight:500;cursor:pointer;text-align:center}
+  .country-btn.active{background:rgba(0,122,255,0.1);border-color:rgba(0,122,255,0.25);color:#007AFF;font-weight:600}
+
+  .comp-row{display:flex;gap:8px}
+  .comp-btn{flex:1;text-align:center;padding:8px 6px;border-radius:12px;
+    border:1px solid rgba(0,0,0,0.09);background:rgba(255,255,255,0.6);
+    font-size:12px;color:#48484a;cursor:pointer;font-weight:500}
+  .comp-btn.active{background:#5856D6;border-color:transparent;color:#fff;font-weight:600}
+
+  .rec-list{display:flex;flex-direction:column;gap:7px}
+  .rec-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;
+    background:rgba(0,122,255,0.06);border:1px solid rgba(0,122,255,0.12)}
+  .rec-item.purple{background:rgba(88,86,214,0.07);border-color:rgba(88,86,214,0.16)}
+  .rec-dot{width:7px;height:7px;border-radius:50%;background:#007AFF;flex-shrink:0}
+  .rec-dot.purple{background:#5856D6}
+  .rec-name{font-size:12px;color:#1c1c1e;flex:1;font-weight:500}
+  .rec-add{font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0}
+  .rec-add.blue{color:#007AFF}
+  .rec-add.purple{color:#5856D6}
+</style>
+</head>
+<body>
+  <div class="left">
+    <div class="tag">✨ Smart Recommendations</div>
+    <h1>Built for<br>your <em>destination</em><br>&amp; travel style</h1>
+    <p class="sub">Select where you're going and who you're traveling with — packo does the rest.</p>
+
+    <div class="features">
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(0,122,255,0.1)">🌍</div>
+        <div class="feat-body">
+          <h3>Destination-based lists</h3>
+          <p>Japan, Thailand, Europe, USA and more — auto-generated must-haves</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(88,86,214,0.1)">👫</div>
+        <div class="feat-body">
+          <h3>Companion profiles</h3>
+          <p>Solo, couple, family, or friends — extra items added automatically</p>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:rgba(52,199,89,0.1)">🗂️</div>
+        <div class="feat-body">
+          <h3>My Items library</h3>
+          <p>Save your personal essentials and reuse them on every trip</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <div class="sec-label">Destination</div>
+      <div class="country-grid">
+        <div class="country-btn active">🇯🇵 Japan</div>
+        <div class="country-btn">🇹🇭 Thailand</div>
+        <div class="country-btn">🇪🇺 Europe</div>
+        <div class="country-btn">🇺🇸 USA</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">Traveling with</div>
+      <div class="comp-row">
+        <div class="comp-btn">Solo</div>
+        <div class="comp-btn active">Couple</div>
+        <div class="comp-btn">Family</div>
+        <div class="comp-btn">Friends</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">Recommended for Japan · Couple</div>
+      <div class="rec-list">
+        <div class="rec-item"><div class="rec-dot"></div><span class="rec-name">IC Card (Suica)</span><span class="rec-add blue">+ Add</span></div>
+        <div class="rec-item"><div class="rec-dot"></div><span class="rec-name">Pocket Wi-Fi</span><span class="rec-add blue">+ Add</span></div>
+        <div class="rec-item"><div class="rec-dot"></div><span class="rec-name">Stomach medicine</span><span class="rec-add blue">+ Add</span></div>
+        <div class="rec-item purple"><div class="rec-dot purple"></div><span class="rec-name" style="color:#5856D6">Couple — Matching passport holders</span><span class="rec-add purple">+ Add</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

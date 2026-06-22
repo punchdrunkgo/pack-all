@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    width:1270px;height:760px;overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
+    background:#cdd9ea;
+    background-image:
+      radial-gradient(ellipse 80% 55% at 20% 25%,rgba(52,199,89,0.15) 0%,transparent 62%),
+      radial-gradient(ellipse 60% 55% at 82% 70%,rgba(0,122,255,0.16) 0%,transparent 58%),
+      radial-gradient(ellipse 50% 50% at 50% 55%,rgba(88,86,214,0.1) 0%,transparent 55%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;padding:36px 44px}
+
+  .top{text-align:center}
+  .tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+    color:#248A3D;background:rgba(52,199,89,0.1);padding:5px 14px;border-radius:20px;
+    border:1px solid rgba(52,199,89,0.25);margin-bottom:14px;letter-spacing:.02em;text-transform:uppercase}
+  h1{font-size:44px;font-weight:700;color:#1c1c1e;letter-spacing:-2px;line-height:1.1;margin-bottom:8px}
+  h1 em{font-style:normal;background:linear-gradient(135deg,#34c759,#007AFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .sub{font-size:16px;color:#48484a;font-weight:400}
+
+  /* Board */
+  .board{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;width:100%}
+
+  .col{}
+  .col-hdr{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8e8e93;
+    background:rgba(255,255,255,0.6);backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.72);border-radius:10px;
+    padding:7px 10px;text-align:center;margin-bottom:8px}
+  .col-body{display:flex;flex-direction:column;gap:6px}
+
+  .bc{background:rgba(255,255,255,0.78);border:1px solid rgba(0,0,0,0.06);border-radius:8px;
+    padding:8px 10px;display:flex;align-items:center;gap:7px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+  .bc.done{background:rgba(52,199,89,0.08);border-color:rgba(52,199,89,0.2)}
+  .bd{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.14);flex-shrink:0}
+  .bc.done .bd{background:#34c759;border-color:#34c759}
+  .bn{font-size:11px;color:#1c1c1e;line-height:1.3;flex:1}
+  .bc.done .bn{color:#8e8e93;text-decoration:line-through}
+
+  /* PDF badge */
+  .pdf-strip{
+    display:flex;align-items:center;justify-content:center;gap:24px;
+    background:rgba(255,255,255,0.7);backdrop-filter:saturate(180%) blur(20px);
+    border:1px solid rgba(255,255,255,0.85);border-radius:16px;
+    padding:14px 28px;width:100%;
+    box-shadow:0 2px 16px rgba(0,0,0,0.06)}
+  .pdf-strip-item{display:flex;align-items:center;gap:10px}
+  .pdf-strip-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+  .pdf-strip-text h4{font-size:13px;font-weight:600;color:#1c1c1e}
+  .pdf-strip-text p{font-size:11px;color:#8e8e93}
+  .divider{width:1px;height:36px;background:rgba(0,0,0,0.08)}
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="tag">📋 Timeline View</div>
+    <h1>Know <em>exactly when</em><br>to pack what</h1>
+    <p class="sub">From "weeks before" to "during the trip" — stay on top of every step.</p>
+  </div>
+
+  <div class="board">
+    <div class="col">
+      <div class="col-hdr">Before Trip</div>
+      <div class="col-body">
+        <div class="bc done"><div class="bd"></div><span class="bn">Check passport expiry</span></div>
+        <div class="bc done"><div class="bd"></div><span class="bn">Book flights</span></div>
+        <div class="bc done"><div class="bd"></div><span class="bn">Book accommodation</span></div>
+        <div class="bc done"><div class="bd"></div><span class="bn">Travel insurance</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Exchange currency</span></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-hdr">Night Before</div>
+      <div class="col-body">
+        <div class="bc done"><div class="bd"></div><span class="bn">Check bag weight</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Pack toiletries</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Charge all devices</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Check passport &amp; wallet</span></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-hdr">Morning Of</div>
+      <div class="col-body">
+        <div class="bc"><div class="bd"></div><span class="bn">Set multiple alarms</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Book taxi / shuttle</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Phone charger in carry-on</span></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-hdr">At Airport</div>
+      <div class="col-body">
+        <div class="bc"><div class="bd"></div><span class="bn">Check-in counter</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Declare power banks</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Duty-free shopping</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Extra cash</span></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-hdr">On Arrival</div>
+      <div class="col-body">
+        <div class="bc"><div class="bd"></div><span class="bn">Pick up SIM / Wi-Fi</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Hotel check-in</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Save emergency numbers</span></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="col-hdr">During Trip</div>
+      <div class="col-body">
+        <div class="bc"><div class="bd"></div><span class="bn">Check passport daily</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Take medicine</span></div>
+        <div class="bc"><div class="bd"></div><span class="bn">Confirm return flight</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pdf-strip">
+    <div class="pdf-strip-item">
+      <div class="pdf-strip-icon" style="background:rgba(0,122,255,0.1)">📄</div>
+      <div class="pdf-strip-text">
+        <h4>Export as PDF</h4>
+        <p>Category view or timeline view</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="pdf-strip-item">
+      <div class="pdf-strip-icon" style="background:rgba(52,199,89,0.1)">☁️</div>
+      <div class="pdf-strip-text">
+        <h4>Cloud Sync</h4>
+        <p>Access your list on any device</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="pdf-strip-item">
+      <div class="pdf-strip-icon" style="background:rgba(88,86,214,0.1)">🌐</div>
+      <div class="pdf-strip-text">
+        <h4>Korean &amp; English</h4>
+        <p>Switch language anytime</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

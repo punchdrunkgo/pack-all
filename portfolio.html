@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 활용 역량 — Packo 프로젝트</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+
+  *{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --blue:#1a6ef5;
+    --blue-light:#eef3ff;
+    --ink:#111827;
+    --ink2:#374151;
+    --ink3:#6b7280;
+    --border:#e5e7eb;
+    --bg:#f9fafb;
+  }
+
+  body{
+    font-family:'Noto Sans KR',-apple-system,sans-serif;
+    background:#fff;
+    color:var(--ink);
+    font-size:14px;
+    line-height:1.7;
+  }
+
+  /* ── 레이아웃 ── */
+  .page{
+    max-width:780px;
+    margin:0 auto;
+    padding:56px 48px 64px;
+  }
+
+  /* ── 헤더 ── */
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    padding-bottom:28px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:36px;
+  }
+  .header-left h1{
+    font-size:26px;
+    font-weight:700;
+    letter-spacing:-.5px;
+    line-height:1.2;
+    margin-bottom:6px;
+  }
+  .header-left h1 span{color:var(--blue)}
+  .header-left p{
+    font-size:13px;
+    color:var(--ink3);
+    line-height:1.6;
+  }
+  .header-left a{
+    color:var(--blue);
+    text-decoration:none;
+    font-size:12px;
+  }
+  .kpi-row{
+    display:flex;
+    gap:20px;
+    text-align:right;
+  }
+  .kpi{
+    text-align:center;
+  }
+  .kpi-num{
+    font-size:22px;
+    font-weight:700;
+    color:var(--blue);
+    line-height:1;
+    display:block;
+  }
+  .kpi-label{
+    font-size:11px;
+    color:var(--ink3);
+    margin-top:3px;
+    white-space:nowrap;
+  }
+
+  /* ── 섹션 ── */
+  section{margin-bottom:32px}
+  .section-title{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--blue);
+    margin-bottom:14px;
+  }
+
+  /* ── 인트로 박스 ── */
+  .intro-box{
+    background:var(--blue-light);
+    border-left:3px solid var(--blue);
+    border-radius:0 8px 8px 0;
+    padding:16px 20px;
+    font-size:14px;
+    color:var(--ink2);
+    line-height:1.75;
+  }
+
+  /* ── 역할 분담 테이블 ── */
+  .role-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .role-card{
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 18px;
+  }
+  .role-card h3{
+    font-size:12px;
+    font-weight:700;
+    margin-bottom:10px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+  .role-card.human h3{color:var(--ink)}
+  .role-card.ai h3{color:var(--ink3)}
+  .role-card ul{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .role-card ul li{
+    font-size:13px;
+    color:var(--ink2);
+    padding-left:14px;
+    position:relative;
+  }
+  .role-card ul li::before{
+    content:'';
+    position:absolute;
+    left:0;
+    top:9px;
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:var(--border);
+  }
+  .role-card.human ul li::before{background:var(--blue)}
+
+  /* ── 사례 카드 ── */
+  .case-list{display:flex;flex-direction:column;gap:12px}
+  .case{
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 20px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:14px;
+    align-items:start;
+  }
+  .case-num{
+    width:28px;
+    height:28px;
+    background:var(--blue);
+    color:#fff;
+    border-radius:50%;
+    font-size:12px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    margin-top:1px;
+  }
+  .case-title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:5px;
+  }
+  .case-body{
+    font-size:13px;
+    color:var(--ink2);
+    line-height:1.7;
+  }
+  .case-quote{
+    background:var(--bg);
+    border-radius:6px;
+    padding:8px 12px;
+    margin:8px 0;
+    font-size:12.5px;
+    color:var(--ink3);
+    font-style:italic;
+    border-left:2px solid var(--border);
+  }
+
+  /* ── 결과 그리드 ── */
+  .result-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  .result-card{
+    background:var(--bg);
+    border-radius:10px;
+    padding:16px;
+    text-align:center;
+  }
+  .result-icon{font-size:20px;margin-bottom:6px}
+  .result-num{
+    font-size:18px;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.2;
+  }
+  .result-desc{
+    font-size:11px;
+    color:var(--ink3);
+    margin-top:3px;
+    line-height:1.4;
+  }
+
+  /* ── 마무리 ── */
+  .closing{
+    background:var(--ink);
+    color:#fff;
+    border-radius:12px;
+    padding:22px 24px;
+    font-size:14px;
+    line-height:1.8;
+  }
+  .closing strong{color:#93c5fd}
+
+  /* ── 푸터 ── */
+  .footer{
+    text-align:center;
+    margin-top:28px;
+    font-size:11px;
+    color:var(--ink3);
+  }
+  .footer a{color:var(--blue);text-decoration:none}
+
+  /* ── 인쇄 ── */
+  @media print{
+    body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .page{padding:32px 36px}
+    .print-btn{display:none}
+  }
+
+  /* ── 인쇄 버튼 ── */
+  .print-btn{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    border-radius:100px;
+    padding:10px 20px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(26,110,245,.35);
+    font-family:inherit;
+  }
+  .print-btn:hover{opacity:.88}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- 헤더 -->
+  <header class="header">
+    <div class="header-left">
+      <h1>AI 활용 역량<br><span>Packo 프로젝트 케이스</span></h1>
+      <p style="margin-top:8px">해외여행 준비물 체크리스트 앱 + SEO 블로그<br>
+      <a href="https://packo-travel.vercel.app" target="_blank">packo-travel.vercel.app</a>
+      &nbsp;·&nbsp; 2026년 5월 &nbsp;·&nbsp; 솔로 프로젝트</p>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-num">3주</span><div class="kpi-label">기획→배포</div></div>
+      <div class="kpi"><span class="kpi-num">11편</span><div class="kpi-label">블로그 포스트</div></div>
+      <div class="kpi"><span class="kpi-num">77</span><div class="kpi-label">커밋</div></div>
+    </div>
+  </header>
+
+  <!-- 무엇을 만들었나 -->
+  <section>
+    <div class="section-title">What</div>
+    <div class="intro-box">
+      개발자·외주 없이 3주 안에 <strong>Firebase 로그인, 실시간 동기화, PDF 내보내기, 리스트 공유</strong>를 갖춘 여행 앱과
+      일본·베트남·발리·괌·유럽 키워드를 타깃한 <strong>SEO 최적화 블로그 11편</strong>을 완성했습니다.
+      GA4 커스텀 이벤트 15종을 직접 설계해 실사용 데이터를 수집 중입니다.
+    </div>
+  </section>
+
+  <!-- 역할 분담 -->
+  <section>
+    <div class="section-title">Role Split — AI가 한 것과 내가 한 것</div>
+    <div class="role-grid">
+      <div class="role-card human">
+        <h3>👤 내가 담당</h3>
+        <ul>
+          <li>어떤 기능이 필요한지 결정</li>
+          <li>어떤 키워드를 타깃할지 결정</li>
+          <li>UX 흐름과 사용자 경험 판단</li>
+          <li>결과물 품질 검수 및 수정 지시</li>
+          <li>전략 → 실행 파이프라인 설계</li>
+        </ul>
+      </div>
+      <div class="role-card ai">
+        <h3>🤖 AI가 담당</h3>
+        <ul>
+          <li>코드 작성 (HTML/CSS/JS 2,500줄+)</li>
+          <li>블로그 글 초안 작성</li>
+          <li>Unsplash 사진 검색 및 후보 제시</li>
+          <li>SEO 태그·JSON-LD 구조 생성</li>
+          <li>반복 수정 실행</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 구체적 사례 -->
+  <section>
+    <div class="section-title">AI 리터러시가 드러난 순간들</div>
+    <div class="case-list">
+
+      <div class="case">
+        <div class="case-num">1</div>
+        <div>
+          <div class="case-title">기능 추가가 아닌 구조 재설계를 지시</div>
+          <div class="case-body">
+            "내 물품 가져오기" 버튼이 한 번 쓰면 잠기는 구조였습니다. 단순히 잠금을 해제하는 게 아니라
+            사용자가 원하는 항목만 골라서 반복 가져올 수 있는 체크박스 모달로 전체 UX를 다시 설계하도록 지시했습니다.
+            <div class="case-quote">"한 번 쓰면 잠기는 구조인데, 선택적으로 반복해서 쓸 수 있게 개선하자 — 중복 방지도 포함해서"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="case">
+        <div class="case-num">2</div>
+        <div>
+          <div class="case-title">AI 결과물에 검증 기준을 직접 세움</div>
+          <div class="case-body">
+            블로그 이미지를 AI가 제안했을 때, 초기 몇 장이 실제 해당 지역 사진이 아님을 발견했습니다.
+            이후 "Unsplash 사진 개별 페이지에서 지역 메타데이터가 확인된 사진만 사용"이라는 명확한 기준을 세우고
+            모든 사진을 원본 URL에서 직접 검증하도록 프로세스를 바꿨습니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="case">
+        <div class="case-num">3</div>
+        <div>
+          <div class="case-title">오류를 스스로 감지하고 수정 방법을 지시</div>
+          <div class="case-body">
+            AI가 HTML 파일을 생성하다 중간에 잘려 페이지가 깨지는 상황이 발생했습니다.
+            어느 줄에서 끊겼는지 직접 확인한 뒤, 이어쓰는 방식으로 정확한 수정을 지시해 해결했습니다.
+          </div>
+        </div>
+      </div>
+
+      <div class="case">
+        <div class="case-num">4</div>
+        <div>
+          <div class="case-title">전략 판단 → 실행 파이프라인 전체를 연결</div>
+          <div class="case-body">
+            "7월에 트래픽이 몰릴 키워드"를 먼저 분석한 뒤, 발리·괌·유럽 3편을 동시에 지시했습니다.
+            검색 의도 분석 → 글 작성 → 사진 검증 → SEO 설정 → 사이트맵 업데이트 → 배포까지
+            하나의 흐름으로 이어지는 파이프라인을 혼자 돌렸습니다.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 결과 -->
+  <section>
+    <div class="section-title">Results</div>
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="result-icon">⏱</div>
+        <div class="result-num">3주</div>
+        <div class="result-desc">기획 0 → 배포<br>개발자 없이</div>
+      </div>
+      <div class="result-card">
+        <div class="result-icon">✍️</div>
+        <div class="result-num">11편</div>
+        <div class="result-desc">SEO 블로그<br>OG·JSON-LD 완비</div>
+      </div>
+      <div class="result-card">
+        <div class="result-icon">💻</div>
+        <div class="result-num">2,500+</div>
+        <div class="result-desc">코드 라인<br>프레임워크 없음</div>
+      </div>
+      <div class="result-card">
+        <div class="result-icon">📊</div>
+        <div class="result-num">15종</div>
+        <div class="result-desc">GA4 커스텀 이벤트<br>실사용 데이터 수집 중</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 마무리 -->
+  <div class="closing">
+    AI 툴을 쓸 줄 아는 것과, AI로 <strong>결과를 만들어내는 것</strong>은 다릅니다.<br>
+    이 프로젝트에서 저는 요구사항 정의 → 실행 지시 → 품질 검수 → 방향 수정의 루프를 혼자 돌리며
+    개발·콘텐츠·SEO·데이터 수집이라는 서로 다른 도메인을 넘나들었습니다.
+    매 단계에서 <strong>무엇이 중요한지는 사람이 결정</strong>했습니다.
+  </div>
+
+  <!-- 푸터 -->
+  <div class="footer" style="margin-top:24px">
+    <a href="https://packo-travel.vercel.app" target="_blank">packo-travel.vercel.app</a>
+  </div>
+
+</div>
+
+<button class="print-btn" onclick="window.print()">🖨 PDF로 저장</button>
+
+</body>
+</html>
