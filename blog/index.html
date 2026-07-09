@@ -27,7 +27,7 @@
   body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;background:#f2f2f7;color:#1c1c1e;min-height:100vh}
 
   .blog-header{background:rgba(248,248,252,0.92);backdrop-filter:saturate(200%) blur(40px);-webkit-backdrop-filter:saturate(200%) blur(40px);border-bottom:0.5px solid rgba(0,0,0,0.09);position:sticky;top:0;z-index:100;padding:0 24px}
-  .blog-header-inner{max-width:780px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
+  .blog-header-inner{max-width:1100px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between}
   .blog-logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:#1c1c1e}
   .blog-logo-text{font-size:17px;font-weight:700;letter-spacing:-.5px}
   .blog-logo-text span{color:#007AFF}
@@ -35,13 +35,13 @@
   .blog-back:hover{opacity:.75}
 
   .blog-hero{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.06);padding:40px 24px 0}
-  .blog-hero-inner{max-width:780px;margin:0 auto}
+  .blog-hero-inner{max-width:1100px;margin:0 auto}
   .blog-hero h1{font-size:28px;font-weight:700;letter-spacing:-.8px;line-height:1.25;margin-bottom:8px}
   .blog-hero p{font-size:15px;color:#48484a;line-height:1.6;padding-bottom:28px}
 
   /* ── 나라 필터 탭 (Apple + Naver 스타일) ── */
   .filter-wrap{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.06);position:sticky;top:52px;z-index:90}
-  .filter-inner{max-width:780px;margin:0 auto;padding:0 24px;position:relative}
+  .filter-inner{max-width:1100px;margin:0 auto;padding:0 24px;position:relative}
   /* CHANGED: 2행 배치 */
   .filter-scroll{display:flex;flex-wrap:wrap;gap:6px;padding:12px 0}
   .filter-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;background:#f5f5f7;color:#3a3a3c;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;letter-spacing:-.01em}
@@ -49,15 +49,15 @@
   .filter-btn.active{background:#1c1c1e;color:#fff}
 
   /* ── 글 목록 ── */
-  .blog-list{max-width:780px;margin:0 auto;padding:24px 24px 60px}
+  .blog-list{max-width:1100px;margin:0 auto;padding:24px 24px 60px}
   .post-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.06),0 4px 16px rgba(0,0,0,0.04);margin-bottom:14px;text-decoration:none;display:flex;transition:transform .15s,box-shadow .15s}
   .post-card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,0.1)}
   .post-card[hidden]{display:none}
-  .post-thumb{width:120px;flex-shrink:0;background:linear-gradient(135deg,#e8f0ff,#d4e4ff);display:flex;align-items:center;justify-content:center;font-size:36px}
-  .post-body{padding:18px;flex:1;min-width:0}
-  .post-tag{font-size:11px;font-weight:600;color:#007AFF;letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px}
-  .post-title{font-size:16px;font-weight:600;color:#1c1c1e;letter-spacing:-.3px;line-height:1.3;margin-bottom:5px}
-  .post-summary{font-size:13px;color:#6e6e73;line-height:1.55;margin-bottom:8px}
+  .post-thumb{width:110px;flex-shrink:0;overflow:hidden;background:#e0e0e5}
+  .post-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .post-body{padding:10px 14px;flex:1;min-width:0}
+  .post-tag{font-size:11px;font-weight:600;color:#007AFF;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+  .post-title{font-size:15px;font-weight:600;color:#1c1c1e;letter-spacing:-.3px;line-height:1.35;margin-bottom:6px}
   .post-date{font-size:11px;color:#aeaeb2}
 
   .blog-cta{background:rgba(0,122,255,0.07);border:1px solid rgba(0,122,255,0.18);border-radius:14px;padding:24px;text-align:center;margin-top:8px}
@@ -70,12 +70,11 @@
     .blog-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding-bottom:60px}
     .post-card{margin-bottom:0}
     .blog-cta{grid-column:1/-1}
-    .post-summary{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   }
   @media(max-width:639px){
     .blog-hero h1{font-size:22px}
     .blog-list{padding:16px 14px 48px}
-    .post-thumb{width:90px;font-size:28px}
+    .post-thumb{width:85px}
     .post-body{padding:14px}
     .post-title{font-size:15px}
   }
@@ -127,291 +126,262 @@
 <main class="blog-list" id="post-list">
 
   <a class="post-card" href="/blog/okinawa-1" data-country="japan">
-    <div class="post-thumb">🏖</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">오키나와·미야코지마·이시가키 8월 9월 날씨 & 여행 꿀팁 (2026)</div>
-      <div class="post-summary">스노클링 황금기 8월, 태풍 시즌 9월 대처법. 래쉬가드·Reef-safe 선크림·렌터카 예약까지 류큐 제도 여름 필수 준비물 총정리.</div>
       <div class="post-date">2026년 7월 9일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/tokyo-2" data-country="japan">
-    <div class="post-thumb">🗼</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">도쿄 8월 9월 날씨 & 여행 꿀팁 완벽 정리 (2026)</div>
-      <div class="post-summary">폭염 절정 체감 42°C, 에도가와 불꽃놀이, 9월 태풍 대처. 냉감 의류·휴대용 선풍기·Suica 등 도쿄 여름 필수 준비물 총정리.</div>
       <div class="post-date">2026년 7월 9일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/osaka-2" data-country="japan">
-    <div class="post-thumb">🏯</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">오사카 8월 9월 날씨 & 여행 꿀팁 완벽 정리 (2026)</div>
-      <div class="post-summary">일본 최고 폭염 도시 오사카 공략법. USJ 성수기 혼잡 대처, 도톤보리 밤 관광, 태풍 대비까지 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 7월 9일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/fukuoka-2" data-country="japan">
-    <div class="post-thumb">🍜</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">후쿠오카 8월 9월 날씨 & 여행 꿀팁 완벽 정리 (2026)</div>
-      <div class="post-summary">하카타 폭염과 나카스 야타이 저녁 꿀팁, 나가사키 당일치기, 9월 태풍 대처법까지. 후쿠오카 여름·초가을 필수 준비물 총정리.</div>
       <div class="post-date">2026년 7월 9일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/sapporo-2" data-country="japan">
-    <div class="post-thumb">🍺</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">삿포로 8월 9월 날씨 & 여행 꿀팁 완벽 정리 (2026)</div>
-      <div class="post-summary">장마 없는 홋카이도 여름, 오도리 공원 맥주 축제, 9월 단풍 시작. 레이어링 옷차림과 삿포로 8·9월 필수 준비물 총정리.</div>
       <div class="post-date">2026년 7월 9일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/kaohsiung-1" data-country="taiwan">
-    <div class="post-thumb">🏙</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">대만 여행</div>
       <div class="post-title">가오슝 여행 준비물 & 날씨 완벽 가이드 (2026)</div>
-      <div class="post-summary">로터스 연못·치진 섬·보얼 예술특구 관광 팁, 이지카드·환전·유심까지. 대만 남부 가오슝 여행 완벽 정리.</div>
       <div class="post-date">2026년 6월 11일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/taiwan-2" data-country="taiwan">
-    <div class="post-thumb">🧋</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1470004914212-05527e49370b?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">대만 여행</div>
       <div class="post-title">대만 여행 준비물 총정리 2026 — 유심·환전·날씨</div>
-      <div class="post-summary">이지카드 발급법, 유심 vs 포켓와이파이 비교, 환전 꿀팁, 야시장 필수품, 계절별 옷차림. 대만 첫 여행자 필독.</div>
       <div class="post-date">2026년 6월 11일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/phuket-1" data-country="thailand">
-    <div class="post-thumb">🏖</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">태국 여행</div>
       <div class="post-title">푸켓 7월 날씨 & 준비물 완벽 정리 (2026)</div>
-      <div class="post-summary">우기 절정 푸켓, 오전 맑음·오후 스콜 패턴. 래쉬가드·우비·정장제·그랩 앱 등 필수 준비물 총정리.</div>
       <div class="post-date">2026년 6월 11일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/chiangmai-1" data-country="thailand">
-    <div class="post-thumb">🐘</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">태국 여행</div>
       <div class="post-title">치앙마이 여행 준비물 & 날씨 완벽 가이드 (2026)</div>
-      <div class="post-summary">건기·우기·화전 시즌별 날씨, 사원 복장 규정, 도이수텝 트레킹 준비물, 야시장 팁까지. 치앙마이 첫 여행자 필독.</div>
       <div class="post-date">2026년 6월 11일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/maldives-1" data-country="maldives">
-    <div class="post-thumb">🏝</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">몰디브 여행</div>
       <div class="post-title">몰디브 허니문 여행 준비물 완벽 가이드 (2026)</div>
-      <div class="post-summary">수상빌라 체크인 팁부터 씨플레인 짐 싸기, 래쉬가드·방수 카메라·Reef-safe 선크림까지. 몰디브 허니문 필수 준비물 총정리.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/singapore-1" data-country="singapore">
-    <div class="post-thumb">🦁</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">싱가포르 여행</div>
       <div class="post-title">싱가포르 여행 준비물 완벽 가이드 (2026)</div>
-      <div class="post-summary">연중 30°C 고온다습 대비 옷차림, EZ-Link 카드 발급법, 호커센터 활용법까지. 싱가포르 여행 필수 준비물 한 번에.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/cebu-1" data-country="philippines">
-    <div class="post-thumb">🤿</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">필리핀 여행</div>
       <div class="post-title">세부 7월 날씨 & 준비물 완벽 정리 (2026)</div>
-      <div class="post-summary">우기 스노클링 가능 여부, 고래상어 투어 시기, 래쉬가드·방수 파우치·멀미약 등 세부 여름 여행 필수 준비물 총정리.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/taipei-1" data-country="taiwan">
-    <div class="post-thumb">🧋</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1470004914212-05527e49370b?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">대만 여행</div>
       <div class="post-title">대만 타이페이 6월 7월 날씨 & 준비물 완벽 정리 (2026)</div>
-      <div class="post-summary">매화 장마·태풍 시즌 대비, 이지카드 발급법, 야시장·지우펀 여름 여행 필수 준비물을 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/bangkok-1" data-country="thailand">
-    <div class="post-thumb">🛺</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1563492065599-3520f775eeed?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">태국 여행</div>
       <div class="post-title">방콕 7월 날씨 & 준비물 완벽 정리 (2026)</div>
-      <div class="post-summary">우기 오후 스콜 패턴 완벽 분석. 우비·정장제·환전 팁·MRT 카드까지 방콕 여름 여행 필수 준비물 총정리.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/sapporo-1" data-country="japan">
-    <div class="post-thumb">🌿</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">삿포로 6월 7월 날씨 & 준비물 완벽 정리 (2026)</div>
-      <div class="post-summary">장마 없는 홋카이도의 여름. 라벤더 절정 시즌 준비물부터 일교차 대비 옷차림까지 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/fukuoka-1" data-country="japan">
-    <div class="post-thumb">🍜</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">후쿠오카 6월 7월 날씨 & 준비물 완벽 정리 (2026)</div>
-      <div class="post-summary">규슈 장마와 야마카사 축제, 태풍 대비까지. 하카타 여름 여행 필수 준비물을 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/osaka-1" data-country="japan">
-    <div class="post-thumb">🏯</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">오사카 6월 7월 날씨 & 준비물 완벽 정리 (2026)</div>
-      <div class="post-summary">일본에서 가장 더운 도시의 장마·폭염 대비. 도톤보리 여름 여행 필수 준비물을 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/tokyo-1" data-country="japan">
-    <div class="post-thumb">🗼</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">도쿄 6월 7월 날씨 & 준비물 완벽 정리 (2026)</div>
-      <div class="post-summary">장마철 우비부터 7월 폭염 냉감 용품까지. 도쿄 여름 여행 필수 준비물을 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 6월 10일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/nhatrang-2" data-country="vietnam">
-    <div class="post-thumb">🏛</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1689326232193-d55f0b7965eb?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
       <div class="post-title">나트랑 6월 여행지 추천 5곳 (2026)</div>
-      <div class="post-summary">섬 투어·포나가르 탑·롱선 사원·빈원더스·혼쫑 곶. 나트랑 핵심 여행지 5곳을 골랐습니다.</div>
       <div class="post-date">2026년 5월 28일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/nhatrang-1" data-country="vietnam">
-    <div class="post-thumb">🌊</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1570366290364-5e76a15ae408?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
       <div class="post-title">나트랑 6월 날씨와 여행 팁 (2026)</div>
-      <div class="post-summary">나트랑 6월은 건기 절정. 기온·자외선·섬 투어 팁과 필수 준비물을 간단히 정리했습니다.</div>
       <div class="post-date">2026년 5월 28일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/phuquoc-2" data-country="vietnam">
-    <div class="post-thumb">🏝</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1693282814784-649be45a459b?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
       <div class="post-title">푸꾸옥 6월 여행지 추천 5곳 (2026)</div>
-      <div class="post-summary">사오 비치·드엉동 야시장·혼톰 케이블카·빈펄 사파리·국립공원. 푸꾸옥 핵심 여행지 5곳.</div>
       <div class="post-date">2026년 5월 28일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/phuquoc-1" data-country="vietnam">
-    <div class="post-thumb">☁️</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1732243395944-cb3ff9311091?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
       <div class="post-title">푸꾸옥 6월 날씨와 여행 팁 (2026)</div>
-      <div class="post-summary">우기지만 오전은 맑아 해변 활동 충분. 비수기 가격 혜택·준비물·하루 일정 짜는 법 정리.</div>
       <div class="post-date">2026년 5월 28일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/europe-1" data-country="europe">
-    <div class="post-thumb">🌍</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">유럽 여행</div>
       <div class="post-title">유럽 여행 필수 준비물 2026 — 소매치기·환전·짐싸기</div>
-      <div class="post-summary">ETIAS 서류, C타입 어댑터, 환전 카드, 소매치기 방지 가방까지 빠뜨리면 후회하는 것들만 골랐습니다.</div>
       <div class="post-date">2026년 5월 28일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/guam-1" data-country="guam">
-    <div class="post-thumb">🏖</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1602328142707-12b9c0476d59?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">괌 여행</div>
       <div class="post-title">괌 7월 날씨와 여행 팁 (2026)</div>
-      <div class="post-summary">우기지만 오전엔 맑아 해변 즐기기 충분. 태풍 대비법·렌터카 팁·핵심 스폿 5곳 정리했습니다.</div>
       <div class="post-date">2026년 5월 28일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/bali-1" data-country="indonesia">
-    <div class="post-thumb">🌴</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1555400038-63f5ba517a47?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">발리 여행</div>
       <div class="post-title">발리 7월 날씨와 여행 팁 (2026)</div>
-      <div class="post-summary">건기 성수기 발리, 꾸따·우붓·누사페니다 지역별 특징과 사원 복장 규정·예약 타이밍 팁 정리.</div>
       <div class="post-date">2026년 5월 28일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/vietnam-2" data-country="vietnam">
-    <div class="post-thumb">💆</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
       <div class="post-title">베트남 다낭 마사지 종류 완벽 가이드</div>
-      <div class="post-summary">아로마, 핫스톤, 임산부, 썬번, 풋, 딥티슈까지 8가지 종류별 특징·가격·추천 대상 + 팁 문화·주의사항 총정리.</div>
       <div class="post-date">2026년 5월 24일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/vietnam-1" data-country="vietnam">
-    <div class="post-thumb">🇻🇳</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1583417319070-4a69db38a482?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">베트남 여행</div>
       <div class="post-title">다낭 5월 6월 날씨 및 필수 준비물 (2026)</div>
-      <div class="post-summary">건기의 다낭 5~6월, 미케 비치·바나힐스부터 그랩 앱·정장제·모기 기피제까지 준비물 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 5월 24일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/japan-2" data-country="japan">
-    <div class="post-thumb">🏖</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">오키나와·미야코지마·이시가키 5월 6월 날씨 & 준비물</div>
-      <div class="post-summary">에메랄드빛 바다의 세 섬 비교부터 래쉬가드·스노클 준비물, 장마 대비 팁까지 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 5월 24일</div>
     </div>
   </a>
 
   <a class="post-card" href="/blog/japan-1" data-country="japan">
-    <div class="post-thumb">🇯🇵</div>
+    <div class="post-thumb"><img src="https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?auto=format&fit=crop&w=240&q=70" alt="" loading="lazy"></div>
     <div class="post-body">
       <div class="post-tag">일본 여행</div>
       <div class="post-title">일본 5월 6월 날씨 및 필수 준비물 정리</div>
-      <div class="post-summary">벚꽃 엔딩과 장마 사이, 5월~6월 일본 여행 날씨와 옷차림·준비물을 한 번에 정리했습니다.</div>
       <div class="post-date">2026년 5월 24일</div>
     </div>
   </a>
