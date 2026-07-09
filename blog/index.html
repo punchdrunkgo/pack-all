@@ -42,9 +42,8 @@
   /* ── 나라 필터 탭 (Apple + Naver 스타일) ── */
   .filter-wrap{background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.06);position:sticky;top:52px;z-index:90}
   .filter-inner{max-width:780px;margin:0 auto;padding:0 24px;position:relative}
-  .filter-inner::after{content:'';position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(to right,transparent,#fff);pointer-events:none}
-  .filter-scroll{display:flex;gap:6px;overflow-x:auto;padding:12px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .filter-scroll::-webkit-scrollbar{display:none}
+  /* CHANGED: 2행 배치 */
+  .filter-scroll{display:flex;flex-wrap:wrap;gap:6px;padding:12px 0}
   .filter-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;border:none;background:#f5f5f7;color:#3a3a3c;font-size:13px;font-weight:500;font-family:inherit;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap;letter-spacing:-.01em}
   .filter-btn:hover{background:#e8e8ed}
   .filter-btn.active{background:#1c1c1e;color:#fff}
@@ -126,6 +125,56 @@
 </div>
 
 <main class="blog-list" id="post-list">
+
+  <a class="post-card" href="/blog/okinawa-1" data-country="japan">
+    <div class="post-thumb">🏖</div>
+    <div class="post-body">
+      <div class="post-tag">일본 여행</div>
+      <div class="post-title">오키나와·미야코지마·이시가키 8월 9월 날씨 & 여행 꿀팁 (2026)</div>
+      <div class="post-summary">스노클링 황금기 8월, 태풍 시즌 9월 대처법. 래쉬가드·Reef-safe 선크림·렌터카 예약까지 류큐 제도 여름 필수 준비물 총정리.</div>
+      <div class="post-date">2026년 7월 9일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/tokyo-2" data-country="japan">
+    <div class="post-thumb">🗼</div>
+    <div class="post-body">
+      <div class="post-tag">일본 여행</div>
+      <div class="post-title">도쿄 8월 9월 날씨 & 여행 꿀팁 완벽 정리 (2026)</div>
+      <div class="post-summary">폭염 절정 체감 42°C, 에도가와 불꽃놀이, 9월 태풍 대처. 냉감 의류·휴대용 선풍기·Suica 등 도쿄 여름 필수 준비물 총정리.</div>
+      <div class="post-date">2026년 7월 9일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/osaka-2" data-country="japan">
+    <div class="post-thumb">🏯</div>
+    <div class="post-body">
+      <div class="post-tag">일본 여행</div>
+      <div class="post-title">오사카 8월 9월 날씨 & 여행 꿀팁 완벽 정리 (2026)</div>
+      <div class="post-summary">일본 최고 폭염 도시 오사카 공략법. USJ 성수기 혼잡 대처, 도톤보리 밤 관광, 태풍 대비까지 한 번에 정리했습니다.</div>
+      <div class="post-date">2026년 7월 9일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/fukuoka-2" data-country="japan">
+    <div class="post-thumb">🍜</div>
+    <div class="post-body">
+      <div class="post-tag">일본 여행</div>
+      <div class="post-title">후쿠오카 8월 9월 날씨 & 여행 꿀팁 완벽 정리 (2026)</div>
+      <div class="post-summary">하카타 폭염과 나카스 야타이 저녁 꿀팁, 나가사키 당일치기, 9월 태풍 대처법까지. 후쿠오카 여름·초가을 필수 준비물 총정리.</div>
+      <div class="post-date">2026년 7월 9일</div>
+    </div>
+  </a>
+
+  <a class="post-card" href="/blog/sapporo-2" data-country="japan">
+    <div class="post-thumb">🍺</div>
+    <div class="post-body">
+      <div class="post-tag">일본 여행</div>
+      <div class="post-title">삿포로 8월 9월 날씨 & 여행 꿀팁 완벽 정리 (2026)</div>
+      <div class="post-summary">장마 없는 홋카이도 여름, 오도리 공원 맥주 축제, 9월 단풍 시작. 레이어링 옷차림과 삿포로 8·9월 필수 준비물 총정리.</div>
+      <div class="post-date">2026년 7월 9일</div>
+    </div>
+  </a>
 
   <a class="post-card" href="/blog/kaohsiung-1" data-country="taiwan">
     <div class="post-thumb">🏙</div>
@@ -369,7 +418,7 @@
 
   <div class="blog-cta">
     <p>준비물 리스트, 직접 체크하면서 준비하고 싶다면?<br>Packo에서 나만의 체크리스트를 무료로 만들어보세요.</p>
-    <a class="cta-btn" href="/">체크리스트 만들러 가기 →</a>
+    <a class="cta-btn" href="/">지금부터 여행 준비하기 →</a>
   </div>
 
 </main>
